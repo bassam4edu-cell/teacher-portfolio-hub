@@ -12,7 +12,7 @@ import {
 } from "./model";
 const reportStyles = `
 @font-face{font-family:Tajawal;src:url('__FONT__') format('truetype');font-weight:400;font-display:block}
-*{box-sizing:border-box}body{margin:0;background:#edf2f1;color:#18343d;font-family:Tajawal,Arial,sans-serif;direction:rtl;line-height:1.7}.export-page{background:white;width:794px;height:1123px;padding:38px 46px;position:relative;margin:16px auto;break-after:page;overflow:hidden}.export-header{height:100px;border-bottom:3px solid #176754;display:flex;justify-content:space-between;align-items:center;font-size:14px;gap:20px}.export-header strong{font-size:17px}.export-header small{display:block;color:#53716c}.export-body{height:894px;padding-top:20px;overflow:hidden}.export-footer{height:50px;border-top:1px solid #cfddda;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#59736f}.export-block{margin:0 0 13px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal}.export-block h1{font-size:32px;line-height:1.4;color:#125747;margin:0 0 10px}.export-block h2{font-size:24px;color:#125747;margin:0 0 8px}.export-block h3{font-size:16px;margin:0 0 4px;color:#176754}.export-block p{font-size:16px;margin:0}.export-photo{width:100%;max-height:790px;object-fit:contain;display:block}.export-image-label{font-size:12px!important;color:#53716c;text-align:center}.export-attachment{color:#176754;overflow-wrap:anywhere}.export-note{font-size:13px!important;color:#53716c}.export-cover{padding-top:120px}.export-cover h1{font-size:43px;margin-bottom:24px}.export-cover p{font-size:22px;margin:14px 0}.export-page a{color:#176754;text-decoration:underline}.export-toolbar{position:sticky;top:0;z-index:10;background:#123f36;color:white;padding:14px;text-align:center}.export-toolbar button{font:inherit;background:white;border:0;border-radius:8px;padding:10px 24px;cursor:pointer}.export-toolbar span{margin:0 16px}@page{size:A4;margin:0}@media print{body{background:white}.export-page{margin:0;width:210mm;height:297mm;box-shadow:none}.export-toolbar{display:none}}
+*{box-sizing:border-box}body{margin:0;background:#edf2f1;color:#18343d;font-family:Tajawal,Arial,sans-serif;direction:rtl;line-height:1.7}.export-page{background:white;width:794px;height:1123px;padding:38px 46px;position:relative;margin:16px auto;break-after:page;overflow:hidden}.export-header{height:100px;border-bottom:3px solid #176754;display:flex;justify-content:space-between;align-items:center;font-size:14px;gap:20px}.export-header strong{font-size:17px}.export-header small{display:block;color:#53716c}.export-body{height:894px;padding-top:20px;overflow:hidden}.export-footer{height:50px;border-top:1px solid #cfddda;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#59736f}.export-block{margin:0 0 13px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal}.export-block h1{font-size:32px;line-height:1.4;color:#125747;margin:0 0 10px}.export-block h2{font-size:24px;line-height:1.5;color:#125747;margin:0 0 8px}.export-block h3{font-size:16px;line-height:1.6;margin:0 0 4px;color:#176754}.export-block p{font-size:16px;margin:0}.export-photo{width:100%;max-height:790px;object-fit:contain;display:block}.export-image-label{font-size:12px!important;color:#53716c;text-align:center}.export-attachment{color:#176754;overflow-wrap:anywhere}.export-note{font-size:13px!important;color:#53716c}.export-cover{padding-top:120px}.export-cover h1{font-size:43px;margin-bottom:24px}.export-cover p{font-size:22px;margin:14px 0}.export-page a{color:#176754;text-decoration:underline}.export-toolbar{position:sticky;top:0;z-index:10;background:#123f36;color:white;padding:14px;text-align:center}.export-toolbar button{font:inherit;background:white;border:0;border-radius:8px;padding:10px 24px;cursor:pointer}.export-toolbar span{margin:0 16px}@page{size:A4;margin:0}@media print{body{background:white}.export-page{margin:0;width:210mm;height:297mm;box-shadow:none}.export-toolbar{display:none}}
 `;
 function node<K extends keyof HTMLElementTagNameMap>(tag: K, text?: string, className?: string) {
   const el = document.createElement(tag);
@@ -81,7 +81,10 @@ async function paginate(host: HTMLElement, blocks: Block[], s: Settings) {
       body.append(block);
       if (b.image)
         await Promise.all(Array.from(block.querySelectorAll("img")).map((img) => img.decode()));
-      if (body.scrollHeight <= body.clientHeight + 1) {
+      if (
+        body.lastElementChild!.getBoundingClientRect().bottom <=
+        body.getBoundingClientRect().bottom - 40
+      ) {
         remaining = "";
         break;
       }
@@ -100,7 +103,9 @@ async function paginate(host: HTMLElement, blocks: Block[], s: Settings) {
         const mid = Math.ceil((low + high) / 2);
         const candidate = makeBlock({ ...b, title, text: words.slice(0, mid).join(" ") });
         body.append(candidate);
-        const fits = body.scrollHeight <= body.clientHeight + 1;
+        const fits =
+          body.lastElementChild!.getBoundingClientRect().bottom <=
+          body.getBoundingClientRect().bottom - 40;
         candidate.remove();
         if (fits) low = mid;
         else high = mid - 1;
