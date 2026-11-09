@@ -1,24 +1,21 @@
-# Teacher Portfolio Hub
+# ملف الإنجاز المهني — بسام العنزي
 
-ابي اسوي موقع ملف انجاز معلم لي. سوي لي الموقع بسيط بقاعده بيانات وانا اشتغل عليه من codex
+نظام شخصي عربي لمعلم اللغة الإنجليزية، مبني على مشروع Lovable الحالي باستخدام TanStack Start وReact وSupabase.
 
-This project was built with [Lovable](https://lovable.dev).
+يتضمن تنظيم الشواهد حسب عناصر الأداء، مستهدفات توثيق قابلة للضبط، أصول الصور ونسخ الشواهد، قوالب تقارير وPNG وطباعة PDF بالعربية، جدولًا مدرسيًا، ودعوات خاصة للمراجعة. تجهيز المحتوى الذكي يتم خارج الموقع، ولا يشترط OpenAI API أو Lovable AI.
 
-## Build with Lovable
+**الحالة:** كود تطوير قابل للمراجعة. حزمة قاعدة البيانات لم تُطبق؛ أوقفتها المراجعة الآلية لحين الموافقة الصريحة على الصلاحيات ودوال الاستيراد. اختبارات القاعدة والمتصفح محلية ومعزولة. لا تُعتبر النسخة متصلة بالحفظ الإنتاجي أو جاهزة للنشر بعد.
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/379cc9dd-1e37-48b1-9421-9ee990363a78).
+- [حالة التنفيذ والمراحل والقرارات](docs/IMPLEMENTATION.md)
+- [التغيير المطلوب مراجعته قبل تطبيق القاعدة](docs/DATABASE-REVIEW.md)
+- [عقد التكامل وتجهيز حزم الشواهد](docs/INTEGRATION.md)
+- [حزمة قاعدة البيانات المقترحة — لم تُطبق](docs/database-proposal.sql)
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+```bash
+npm ci
+npm run dev -- --host 0.0.0.0 --port 5173
 ```
+
+التحقق: `npm run typecheck`، `npm run test`، `npm run test:db`، `npm run lint`، `npm run build`. اختبارات المتصفح: ثبت Chromium بـ `npx playwright install chromium` ثم شغل `npm run test:browser` أثناء تشغيل خادم التطوير.
+
+الأصول الفعلية للشواهد والجدول لم تُستلم بعد. جميع بيانات الاختبار تبقى خارج قاعدة المشروع. لم تُضف خدمة مدفوعة أو اشتراك أو شحن تلقائي.
