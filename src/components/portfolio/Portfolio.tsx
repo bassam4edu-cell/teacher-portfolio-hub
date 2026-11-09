@@ -26,6 +26,7 @@ import {
   errorText,
   initializePortfolio,
   loadPortfolio,
+  loadPublicPortfolio,
   loadShared,
   missingBackendMessage,
   rpc,
@@ -257,11 +258,20 @@ export function Portfolio({ initialView = "home" }: { initialView?: View }) {
     setSettings(defaultSettings);
     setSettingsVersion(0);
     setBackend(false);
-    if (!session) {
-      setLoading(false);
-      return;
-    }
     try {
+      if (!session) {
+        const d = await loadPublicPortfolio();
+        if (d.settings) {
+          setSettings(d.settings);
+          setPeriod((p) =>
+            p && d.settings!.periods.some((x) => x.id === p) ? p : d.settings!.current_period,
+          );
+        }
+        setEvidence(d.evidence);
+        setAttachments(d.attachments);
+        setBackend(true);
+        return;
+      }
       if ((shareToken || grantedEvidence) && !(await rpc<boolean>("portfolio_is_owner"))) {
         const d = await loadShared(shareToken, grantedEvidence || undefined);
         setSettings(d.settings);
@@ -284,8 +294,6 @@ export function Portfolio({ initialView = "home" }: { initialView?: View }) {
         setEvidence(d.evidence);
         setAttachments(d.attachments);
         setReviews(d.reviews);
-        if (!d.owner)
-          setError("هذا الحساب غير مصرح له بإدارة الملف. افتح رابط الدعوة للاطلاع على ملف مشارك.");
       }
     } catch (err) {
       setError(errorText(err));

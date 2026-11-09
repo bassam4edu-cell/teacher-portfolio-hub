@@ -14,6 +14,14 @@ const page = await context.newPage();
 page.setDefaultTimeout(20000);
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
+const { defaultSettings: publicDefaults } = await import("../src/lib/portfolio/model.ts");
+await context.route("**/rest/v1/rpc/portfolio_public_view", (route) =>
+  route.fulfill({
+    status: 200,
+    contentType: "application/json",
+    body: JSON.stringify({ settings: publicDefaults, evidence: [], attachments: [] }),
+  }),
+);
 await page.goto("http://localhost:5173/");
 await page.waitForSelector(".cover");
 const settings = await page.evaluate(async () =>

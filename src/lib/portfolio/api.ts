@@ -32,17 +32,24 @@ export async function rpc<T>(name: string, args: Record<string, unknown> = {}) {
   if (error) throw new Error(error.message);
   return data as T;
 }
+export async function loadPublicPortfolio() {
+  const payload = await rpc<{
+    settings: Settings;
+    evidence: Evidence[];
+    attachments: Attachment[];
+  } | null>("portfolio_public_view");
+  return {
+    owner: false,
+    settings: payload?.settings ? { ...defaultSettings, ...payload.settings } : null,
+    evidence: payload?.evidence ?? [],
+    attachments: payload?.attachments ?? [],
+    reviews: [] as Review[],
+    settingsVersion: 0,
+  };
+}
 export async function loadPortfolio() {
   const owner = await rpc<boolean>("portfolio_is_owner");
-  if (!owner)
-    return {
-      owner: false,
-      settings: null,
-      evidence: [],
-      attachments: [],
-      reviews: [],
-      settingsVersion: 0,
-    };
+  if (!owner) return loadPublicPortfolio();
   const [s, e, a, r] = await Promise.all([
     db.from("portfolio_settings").select("*").maybeSingle(),
     db.from("portfolio_evidence").select("*").order("updated_at", { ascending: false }),
