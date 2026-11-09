@@ -14,7 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      achievements: {
+        Row: {
+          achieved_on: string
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          achieved_on?: string
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          title: string
+          user_id?: string
+        }
+        Update: {
+          achieved_on?: string
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
