@@ -80,15 +80,13 @@ export function About({ settings: s }: { settings: Settings }) {
     const observer = new ResizeObserver(update);
     if (track.current) observer.observe(track.current);
     if (content.current) observer.observe(content.current);
-    track.current
-      ?.querySelector('[aria-selected="true"]')
-      ?.scrollIntoView({
-        block: "nearest",
-        inline: "nearest",
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-          ? "instant"
-          : "smooth",
-      });
+    track.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({
+      block: "nearest",
+      inline: "nearest",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : "smooth",
+    });
     return () => observer.disconnect();
   }, [active]);
   function select(id: Tab) {
@@ -199,9 +197,24 @@ export function About({ settings: s }: { settings: Settings }) {
                   </Card>
                 </div>
                 <Card title="القيم">
-                  <div className="about-values">
+                  <div className="about-value-grid">
                     {s.values.length ? (
-                      s.values.map((v) => <span key={v}>{v}</span>)
+                      s.values.map((value, index) => {
+                        const colon = value.indexOf(":");
+                        const title = colon < 0 ? value : value.slice(0, colon).trim();
+                        const description = colon < 0 ? "" : value.slice(colon + 1).trim();
+                        return (
+                          <article className="about-value-card" key={value}>
+                            <span className="about-value-number" aria-hidden="true">
+                              {String(index + 1).padStart(2, "0")}
+                            </span>
+                            <div>
+                              <h4>{title}</h4>
+                              {description && <p>{description}</p>}
+                            </div>
+                          </article>
+                        );
+                      })
                     ) : (
                       <p>تُضاف القيم المهنية عند إعدادها.</p>
                     )}

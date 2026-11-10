@@ -20,7 +20,7 @@ s.about = {
 };
 s.vision = "رؤية المعلم المحفوظة";
 s.mission = "رسالة المعلم المحفوظة";
-s.values = ["الأمانة", "الإتقان"];
+s.values = ["الأمانة: ألتزم بالأمانة المهنية واحترام الطلاب في عملي اليومي.", "الإتقان"];
 s.current_period = "p";
 s.periods = [{ id: "p", name: "فترة اختبار", archived: false }];
 s.schedules = [
@@ -237,6 +237,18 @@ ok(
   (await p.getByRole("tabpanel").innerText()).includes(s.vision) &&
     p.url().endsWith("#about/vision"),
   "Vision tab uses saved content and a direct URL",
+);
+ok(
+  (await p.locator(".about-value-card").count()) === 2 &&
+    (await p.locator(".about-value-card").first().locator("h4").innerText()) === "الأمانة" &&
+    (await p.locator(".about-value-card").first().locator("p").innerText()).includes(
+      "الأمانة المهنية",
+    ),
+  "Values display separate titles and full descriptions",
+);
+ok(
+  await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+  "Detailed values fit the iPhone viewport",
 );
 await p.getByRole("tab", { name: "ميثاق أخلاقيات مهنة التعليم", exact: true }).click();
 ok(

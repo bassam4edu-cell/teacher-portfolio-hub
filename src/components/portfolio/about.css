@@ -322,3 +322,50 @@
     scroll-behavior: auto;
   }
 }
+
+.about-value-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.about-value-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  background: white;
+  border: 1px solid #e0ebe6;
+  border-radius: 12px;
+  padding: 20px;
+  min-width: 0;
+}
+.about-value-number {
+  color: #3b967e;
+  background: #eff7f3;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.folio .about-value-card h4 {
+  font-size: 17px;
+  line-height: 1.7;
+  color: #245c54;
+  margin: 0 0 7px;
+}
+.folio .about-value-card p {
+  font-size: 14px;
+  line-height: 2;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  .about-value-grid {
+    grid-template-columns: 1fr;
+  }
+  .about-value-card {
+    padding: 17px 14px;
+    gap: 11px;
+  }
+}
