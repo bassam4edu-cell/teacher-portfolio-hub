@@ -34,6 +34,7 @@ try {
 await pg.exec(`grant usage on schema public,auth,storage to anon,authenticated;grant select,insert,update,delete on all tables in schema public,storage to anon,authenticated;
  insert into auth.users values ('00000000-0000-4000-8000-000000000001','bassam4edu@gmail.com',now()),('00000000-0000-4000-8000-000000000002','reviewer@example.test',now()),('00000000-0000-4000-8000-000000000003','stranger@example.test',now());
 `);
+await pg.exec(readFileSync(new URL("../docs/simple-portfolio.sql", import.meta.url), "utf8"));
 const owner = "00000000-0000-4000-8000-000000000001",
   reviewer = "00000000-0000-4000-8000-000000000002",
   stranger = "00000000-0000-4000-8000-000000000003";
@@ -396,6 +397,99 @@ try {
     /غير مصرح/,
   );
   ok(true, "Revoked integration key denied");
+} finally {
+  await pg.exec("reset role");
+}
+const assetId = (await pg.query("select id from portfolio_attachments where evidence_id=$1", [eid]))
+  .rows[0].id;
+const sourceVersion = (await pg.query("select version from portfolio_evidence where id=$1", [eid]))
+  .rows[0].version;
+let publicationRevision;
+await asUser(owner, async () => {
+  const safe = {
+    id: eid,
+    version: sourceVersion,
+    request_id: "public-simple-test-001",
+    report: {
+      description: "تقرير مختصر من بيانات الاختبار",
+      objectives: ["هدف الاختبار"],
+      execution_on: "2026-10-20",
+      date_estimated: true,
+    },
+    asset_ids: [assetId],
+  };
+  await pg.query("select portfolio_agent_publish($1)", [safe]);
+  publicationRevision = (await scalar("select revision from portfolio_public_updates")).revision;
+  ok(publicationRevision > 1, "Publishing signals a public update");
+  await pg.query("select portfolio_agent_publish($1)", [safe]);
+  ok(
+    (await scalar("select revision from portfolio_public_updates")).revision ===
+      publicationRevision,
+    "Retrying a publication does not duplicate or signal changes",
+  );
+  await assert.rejects(
+    () =>
+      pg.query("select portfolio_agent_publish($1)", [
+        {
+          ...safe,
+          request_id: "public-forbidden-field-001",
+          report: { ...safe.report, source: "private notes" },
+        },
+      ]),
+    /حقول القالب/,
+  );
+  ok(true, "Public reports reject internal fields and source notes");
+  await assert.rejects(
+    () => pg.query("update portfolio_publications set title='forged'"),
+    /permission denied/,
+  );
+  ok(true, "Direct browser writes to publications denied");
+});
+await pg.exec("set role anon");
+try {
+  const pub = (await scalar("select portfolio_public_view() as p")).p;
+  ok(
+    pub.publications.length === 1 && pub.publications[0].assets.length === 1,
+    "Visitors receive only the explicit publication and its selected images",
+  );
+  ok(
+    !pub.publications[0].report.source && !pub.evidence.length,
+    "Internal evidence/source records remain private",
+  );
+  const img = (await scalar("select portfolio_report_asset($1) as p", [assetId])).p;
+  ok(
+    img.base64 === png.toString("base64"),
+    "Published image is byte-identical to the selected original",
+  );
+  await assert.rejects(
+    () => pg.query("select portfolio_report_asset($1)", ["00000000-0000-4000-8000-000000000099"]),
+    /غير منشورة/,
+  );
+  ok(true, "Unselected or unknown original image not exposed");
+  await assert.rejects(() => pg.query("select portfolio_agent_context('invalid')"), /غير مصرح/);
+  ok(true, "Agent context denied without a valid key");
+  await assert.rejects(
+    () => pg.query("update portfolio_public_updates set revision=0"),
+    /permission denied/,
+  );
+  ok(true, "Visitors cannot tamper with live update signals");
+} finally {
+  await pg.exec("reset role");
+}
+await asUser(owner, async () => {
+  await pg.query("update portfolio_evidence set status='archived' where id=$1", [eid]);
+});
+await pg.exec("set role anon");
+try {
+  ok(
+    (await scalar("select portfolio_public_view() as p")).p.publications.length === 0,
+    "Archived report disappears from public display",
+  );
+  await assert.rejects(
+    () => pg.query("select portfolio_report_asset($1)", [assetId]),
+    /غير منشورة/,
+  );
+  ok(true, "Archiving also withdraws published image access");
 } finally {
   await pg.exec("reset role");
 }

@@ -128,7 +128,7 @@ create function public.portfolio_import(p_package jsonb,p_key text default null)
  if (p_package->>'version')::integer is distinct from (select version from portfolio_settings) then raise exception 'تغيرت الإعدادات، حدّث الصفحة';end if;
  if jsonb_typeof(p_package->'data')<>'object' then raise exception 'بيانات غير صالحة';end if;
  if p_package->'data'?'teacher' then if jsonb_typeof(p_package->'data'->'teacher')<>'object' then raise exception 'بيانات المعلم غير صالحة';end if; s=jsonb_set(s,'{teacher}',s->'teacher'||(p_package->'data'->'teacher'));end if;
- update portfolio_settings set data=s||((p_package->'data')-'teacher'); output=jsonb_build_object('saved',true);
+ update portfolio_settings set data=s||((p_package->'data')-'teacher') where id=true; output=jsonb_build_object('saved',true);
  elsif op='progress' then output=portfolio_progress();
  else raise exception 'عملية غير مدعومة';end if;
  if jsonb_array_length(coalesce(p_package->'attachments','[]'))>30 then raise exception 'الحد الأقصى 30 مرفقًا';end if;

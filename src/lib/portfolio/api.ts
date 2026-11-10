@@ -236,3 +236,25 @@ export const examplePackage: ImportPackage = {
     },
   },
 };
+
+export async function loadSimplePortfolio() {
+  const payload = await rpc<{
+    settings: Partial<Settings>;
+    publications: import("./simple-report").Publication[];
+    revision: number;
+  }>("portfolio_public_view");
+  return {
+    settings: { ...defaultSettings, ...payload.settings },
+    publications: payload.publications ?? [],
+    revision: Number(payload.revision ?? 0),
+  };
+}
+export async function publicReportAsset(id: string) {
+  const asset = await rpc<{ name: string; mime: string; sha256: string; base64: string }>(
+    "portfolio_report_asset",
+    { p_id: id },
+  );
+  const bytes = Uint8Array.from(atob(asset.base64), (c) => c.charCodeAt(0));
+  if ((await sha256(bytes.buffer)) !== asset.sha256) throw new Error("تعذر التحقق من الصورة");
+  return URL.createObjectURL(new Blob([bytes], { type: asset.mime }));
+}

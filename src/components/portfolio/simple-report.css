@@ -1,0 +1,361 @@
+.simple-report {
+  --sr-navy: #19465b;
+  --sr-blue: #2989bb;
+  --sr-green: #40b879;
+  position: relative;
+  isolation: isolate;
+  background: #fff;
+  color: #37414a;
+  font-family: Tajawal, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  width: 100%;
+  max-width: 794px;
+  margin: 0 auto 24px;
+  border: 1px solid #e1e8e9;
+  overflow: hidden;
+  box-sizing: border-box;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+.simple-report * {
+  box-sizing: border-box;
+}
+.simple-report h2,
+.simple-report p,
+.simple-report ul,
+.simple-report figure {
+  margin: 0;
+}
+.sr-header {
+  min-height: 145px;
+  background: linear-gradient(115deg, var(--sr-blue), var(--sr-green));
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 28px 42px;
+  border-radius: 0 0 20px 20px;
+}
+.sr-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 125px;
+}
+.sr-identity img {
+  width: 125px;
+  height: 95px;
+  object-fit: contain;
+}
+.sr-ministry {
+  text-align: center;
+  font-size: 19px;
+  line-height: 1.25;
+}
+.sr-ministry small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+}
+.sr-school {
+  border-right: 2px solid #ffffffa6;
+  padding-right: 24px;
+  max-width: 310px;
+  line-height: 1.6;
+  font-size: 20px;
+}
+.sr-school strong {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+}
+.simple-report .sr-title {
+  position: relative;
+  z-index: 1;
+  width: 86%;
+  margin: -24px auto 0;
+  padding: 13px 18px;
+  background: var(--sr-navy);
+  color: white;
+  text-align: center;
+  border-radius: 11px;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.sr-content {
+  padding: 22px 28px 12px;
+}
+.sr-grid {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.sr-two {
+  grid-template-columns: 1fr 1fr;
+}
+.sr-three {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.simple-report fieldset {
+  display: block;
+  min-width: 0;
+  border: 1.3px solid transparent;
+  border-radius: 9px;
+  padding: 4px 12px 12px;
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(110deg, var(--sr-blue), var(--sr-green)) border-box;
+  margin: 0;
+}
+.simple-report legend {
+  padding: 0 6px;
+  margin-right: 6px;
+  font-size: 17px;
+  line-height: 1.3;
+  font-weight: 500;
+  color: #36a971;
+}
+.sr-grid > fieldset > p {
+  text-align: center;
+  line-height: 1.55;
+  font-size: 15px;
+}
+.sr-narrative {
+  align-items: stretch;
+  margin-top: 14px;
+}
+.sr-narrative fieldset {
+  min-height: 145px;
+}
+.sr-narrative p {
+  font-size: 15px !important;
+  text-align: right !important;
+  line-height: 1.8 !important;
+  white-space: pre-wrap;
+}
+.sr-narrative ul {
+  padding-right: 18px;
+  list-style: disc;
+  font-size: 15px;
+  line-height: 1.8;
+}
+.sr-narrative li + li {
+  margin-top: 6px;
+}
+.sr-evidence {
+  margin-top: 15px !important;
+}
+.sr-evidence legend {
+  margin-inline: auto;
+  font-size: 21px;
+}
+.sr-photos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 7px 0 0;
+}
+.sr-photos figure {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d9eae3;
+  border-radius: 7px;
+  overflow: hidden;
+  background: #fff;
+}
+.sr-photos a {
+  display: block;
+  width: 100%;
+}
+.sr-photos img {
+  width: 100%;
+  height: 215px;
+  object-fit: contain;
+  display: block;
+}
+.sr-image-loading {
+  height: 215px;
+  display: grid;
+  place-items: center;
+  color: #71928a;
+  font-size: 12px;
+}
+.sr-no-images {
+  text-align: center;
+  font-size: 13px;
+  color: #7a888e;
+  padding: 25px;
+}
+.sr-signatures {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  padding: 20px 4px 13px;
+  gap: 24px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.sr-signatures strong {
+  display: block;
+  font-size: 17px;
+  font-weight: 500;
+}
+.sr-bottom {
+  background: var(--sr-navy);
+  border-bottom: 8px solid var(--sr-blue);
+  color: white;
+  text-align: center;
+  padding: 7px 20px;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+}
+.sr-bottom small {
+  font-size: 10px;
+  opacity: 0.8;
+}
+@media (max-width: 600px) {
+  .simple-report {
+    font-size: 12px;
+  }
+  .sr-header {
+    min-height: 120px;
+    gap: 14px;
+    padding: 18px 15px 32px;
+  }
+  .sr-identity {
+    flex-basis: 85px;
+  }
+  .sr-identity img {
+    width: 82px;
+    height: 64px;
+  }
+  .sr-ministry {
+    font-size: 15px;
+  }
+  .sr-school {
+    padding-right: 14px;
+    font-size: 14px;
+  }
+  .sr-school strong {
+    font-size: 16px;
+  }
+  .simple-report .sr-title {
+    font-size: 17px;
+    padding: 11px 10px;
+    width: 92%;
+    margin-top: -20px;
+  }
+  .sr-content {
+    padding: 19px 12px 8px;
+  }
+  .sr-grid {
+    gap: 7px;
+    margin-bottom: 10px;
+  }
+  .simple-report legend {
+    font-size: 13px;
+    padding: 0 3px;
+    margin-right: 0;
+  }
+  .simple-report fieldset {
+    padding: 5px 7px 9px;
+  }
+  .sr-grid > fieldset > p {
+    font-size: 12px;
+  }
+  .sr-three {
+    grid-template-columns: 1fr 1fr;
+  }
+  .sr-three > fieldset:first-child {
+    grid-column: 1/-1;
+  }
+  .sr-narrative {
+    grid-template-columns: 1fr;
+  }
+  .sr-narrative fieldset {
+    min-height: 0;
+  }
+  .sr-narrative p,
+  .sr-narrative ul {
+    font-size: 13px !important;
+  }
+  .sr-photos {
+    grid-template-columns: 1fr;
+  }
+  .sr-photos img {
+    height: auto;
+    max-height: 330px;
+  }
+  .sr-evidence legend {
+    font-size: 17px;
+  }
+  .sr-signatures {
+    font-size: 12px;
+    padding-top: 17px;
+  }
+  .sr-signatures strong {
+    font-size: 13px;
+  }
+  .sr-bottom {
+    font-size: 11px;
+    padding: 7px 12px;
+  }
+  .sr-bottom small {
+    font-size: 8px;
+  }
+}
+@media print {
+  .report-pages {
+    margin: 0;
+  }
+  .simple-report {
+    width: 210mm;
+    max-width: none;
+    min-height: 297mm;
+    margin: 0;
+    box-shadow: none;
+    border: 0;
+    break-after: page;
+  }
+  .simple-report:last-child {
+    break-after: auto;
+  }
+  .sr-header {
+    padding-top: 22px;
+  }
+  .sr-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  .sr-content {
+    padding-bottom: 55px;
+  }
+  .sr-photos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sr-three {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .sr-three > fieldset:first-child {
+    grid-column: auto;
+  }
+  .sr-narrative {
+    grid-template-columns: 1fr 1fr;
+  }
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}

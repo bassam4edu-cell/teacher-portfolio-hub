@@ -1,1316 +1,766 @@
-import { useCallback, useEffect, useState, type ReactNode } from "react";
-import type { Session } from "@supabase/supabase-js";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   ArrowUpLeft,
   BookOpen,
   CalendarDays,
-  CheckCheck,
   ChevronLeft,
-  ClipboardList,
-  Download,
   FileText,
-  FolderOpen,
   GraduationCap,
-  LayoutDashboard,
-  LogIn,
-  LogOut,
+  LayoutGrid,
   Menu,
-  Settings2,
+  RefreshCw,
+  School,
   ShieldCheck,
   Target,
   UserRound,
   X,
+  Download,
+  ArrowRight,
 } from "lucide-react";
-import {
-  db,
-  errorText,
-  initializePortfolio,
-  loadPortfolio,
-  loadPublicPortfolio,
-  loadShared,
-  missingBackendMessage,
-  rpc,
-} from "@/lib/portfolio/api";
-import {
-  completion,
-  currentDayRiyadh,
-  days,
-  defaultSettings,
-  kinds,
-  latestSchedule,
-  statusNames,
-  type Attachment,
-  type Evidence,
-  type Review,
-  type Settings,
-} from "@/lib/portfolio/model";
-import {
-  EvidenceDetail,
-  EvidenceEditor,
-  OriginalPreview,
-  ImportPanel,
-  SettingsPanel,
-  SharingPanel,
-} from "./management";
-import { exportPortfolio } from "@/lib/portfolio/report-export";
-
-type View =
-  | "home"
-  | "profile"
-  | "career"
-  | "vision"
-  | "goals"
-  | "schedule"
-  | "criteria"
-  | "library"
-  | "development"
-  | "reflection"
-  | "sharing"
-  | "settings"
-  | "import";
-const nav: { id: View; label: string; icon: typeof BookOpen }[] = [
-  { id: "home", label: "الرئيسية", icon: LayoutDashboard },
-  { id: "profile", label: "عن المعلم", icon: UserRound },
-  { id: "career", label: "السيرة المهنية", icon: GraduationCap },
-  { id: "vision", label: "الرؤية والرسالة", icon: BookOpen },
-  { id: "goals", label: "الأهداف المهنية", icon: Target },
-  { id: "schedule", label: "الجدول المدرسي", icon: CalendarDays },
-  { id: "criteria", label: "عناصر الأداء", icon: ClipboardList },
-  { id: "library", label: "مكتبة الشواهد", icon: FolderOpen },
-  { id: "development", label: "التطوير والتكريمات", icon: GraduationCap },
-  { id: "reflection", label: "التأمل والتحسين", icon: FileText },
-  { id: "sharing", label: "المشاركة والمراجعة", icon: ShieldCheck },
-];
+import { db, errorText, loadSimplePortfolio, publicReportAsset, rpc } from "@/lib/portfolio/api";
+import { defaultSettings, days, currentDayRiyadh, type Settings } from "@/lib/portfolio/model";
+import type { Publication } from "@/lib/portfolio/simple-report";
+import { printSimpleReport } from "@/lib/portfolio/simple-export";
+import { SimpleReport } from "./SimpleReport";
+import "./folio.css";
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <section className={`portfolio-panel ${className}`}>{children}</section>;
+  return <section className={`folio-card ${className}`}>{children}</section>;
+}
+export function Notice({ children }: { children: ReactNode }) {
+  return <p className="folio-note">{children}</p>;
 }
 export function Empty({
-  title = "لم تُضف بيانات بعد",
+  title = "لم يُضف محتوى بعد",
   children,
 }: {
   title?: string;
   children?: ReactNode;
 }) {
   return (
-    <div className="empty-state">
-      <FolderOpen size={30} />
+    <div className="folio-empty">
+      <BookOpen size={30} />
       <h3>{title}</h3>
       {children && <p>{children}</p>}
     </div>
   );
 }
-export function Notice({ children }: { children: ReactNode }) {
-  return <p className="notice">{children}</p>;
-}
 export function PageTitle({
-  eyebrow,
   title,
+  eyebrow,
   children,
   action,
 }: {
-  eyebrow?: string;
   title: string;
+  eyebrow?: string | undefined;
   children?: ReactNode;
   action?: ReactNode;
 }) {
   return (
-    <div className="page-heading">
+    <div className="folio-page-title">
       <div>
-        {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+        {eyebrow && <span className="folio-eyebrow">{eyebrow}</span>}
         <h1>{title}</h1>
-        {children && <p className="muted">{children}</p>}
+        {children && <p>{children}</p>}
       </div>
       {action}
     </div>
   );
 }
-export function Login({ reviewer = false }: { reviewer?: boolean }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [busy, setBusy] = useState(false);
-  async function submit(e: React.FormEvent, signup = false) {
-    e.preventDefault();
-    setBusy(true);
-    setMessage("");
-    try {
-      const { error } = signup
-        ? await db.auth.signUp({
-            email,
-            password,
-            options: { emailRedirectTo: window.location.origin + "/admin" },
-          })
-        : await db.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-      if (signup) setMessage("تحقق من بريدك لتأكيد الحساب. إنشاء حساب لا يمنح صلاحية إدارة الملف.");
-    } catch (err) {
-      setMessage(errorText(err));
-    } finally {
-      setBusy(false);
-    }
-  }
-  return (
-    <Panel>
-      <h2>{reviewer ? "دخول المراجع المدعو" : "الدخول إلى ملفك"}</h2>
-      <p className="muted">استخدم البريد المصرح له. محتوى الشواهد والمرفقات خاص.</p>
-      <form className="form-stack" onSubmit={submit}>
-        <label>
-          البريد الإلكتروني
-          <input
-            required
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            dir="ltr"
-          />
-        </label>
-        <label>
-          كلمة المرور
-          <input
-            required
-            type="password"
-            minLength={8}
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            dir="ltr"
-          />
-        </label>
-        <div className="actions">
-          <button className="primary-button" disabled={busy}>
-            تسجيل الدخول
-          </button>
-          <button
-            type="button"
-            disabled={busy || !email || password.length < 8}
-            onClick={(e) => submit(e, true)}
-          >
-            إنشاء الحساب وتأكيد البريد
-          </button>
-        </div>
-        {message && <p role="status">{message}</p>}
-      </form>
-    </Panel>
-  );
-}
-export function Portfolio({ initialView = "home" }: { initialView?: View }) {
-  const [view, setView] = useState<View>(initialView);
-  const [criterion, setCriterion] = useState<number | null>(null);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [menu, setMenu] = useState(false);
-  const [session, setSession] = useState<Session | null>(null);
-  const [authReady, setAuthReady] = useState(false);
-  const [owner, setOwner] = useState(false);
-  const [reviewer, setReviewer] = useState(false);
-  const [shared, setShared] = useState(false);
+type View = "home" | "about" | "schedule" | "criteria";
+const navigation = [
+  { id: "home", label: "الرئيسية", icon: BookOpen },
+  { id: "about", label: "عن المعلم", icon: UserRound },
+  { id: "schedule", label: "الجدول المدرسي", icon: CalendarDays },
+  { id: "criteria", label: "عناصر الأداء", icon: LayoutGrid },
+] as const;
+export function Portfolio({ initialView = "home" }: { initialView?: string }) {
   const [settings, setSettings] = useState<Settings>(defaultSettings);
-  const [settingsVersion, setSettingsVersion] = useState(0);
-  const [evidence, setEvidence] = useState<Evidence[]>([]);
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [period, setPeriod] = useState("");
-  const [backend, setBackend] = useState(false);
+  const [publications, setPublications] = useState<Publication[]>([]);
+  const [view, setView] = useState<View>("home");
+  const [criterion, setCriterion] = useState<number | null>(null);
+  const [reportId, setReportId] = useState("");
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [edit, setEdit] = useState<Evidence | "new" | null>(null);
-  const [login, setLogin] = useState(false);
-  const [shareToken, setShareToken] = useState("");
-  const [grantedEvidence, setGrantedEvidence] = useState("");
-  useEffect(() => {
-    let active = true;
-    db.auth.getSession().then(({ data, error }) => {
-      if (!active) return;
-      if (error) setError(error.message);
-      setSession(data.session);
-      setAuthReady(true);
-    });
-    const { data } = db.auth.onAuthStateChange((_e, s) => {
-      setSession(s);
-      setAuthReady(true);
-    });
-    setShareToken(new URLSearchParams(window.location.search).get("share") ?? "");
-    setGrantedEvidence(new URLSearchParams(window.location.search).get("sharedEvidence") ?? "");
-    function hash() {
-      const [page, id] = window.location.hash.slice(1).split("/");
-      if (nav.some((n) => n.id === page) || page === "settings" || page === "import")
-        setView(page as View);
-      setCriterion(page === "criteria" && id ? Number(id) : null);
-      setSelected(page === "library" && id ? id : null);
-    }
-    hash();
-    window.addEventListener("hashchange", hash);
-    return () => {
-      active = false;
-      data.subscription.unsubscribe();
-      window.removeEventListener("hashchange", hash);
-    };
-  }, []);
+  const [menu, setMenu] = useState(false);
+  const [ownerPage, setOwnerPage] = useState(initialView === "settings");
+  const revision = useRef(-1);
+  const refreshing = useRef(false);
   const refresh = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    setOwner(false);
-    setReviewer(false);
-    setShared(false);
-    setEvidence([]);
-    setAttachments([]);
-    setReviews([]);
-    setSettings(defaultSettings);
-    setSettingsVersion(0);
-    setBackend(false);
+    if (refreshing.current) return;
+    refreshing.current = true;
     try {
-      if (!session) {
-        const d = await loadPublicPortfolio();
-        if (d.settings) {
-          setSettings(d.settings);
-          setPeriod((p) =>
-            p && d.settings!.periods.some((x) => x.id === p) ? p : d.settings!.current_period,
-          );
-        }
-        setEvidence(d.evidence);
-        setAttachments(d.attachments);
-        setBackend(true);
-        return;
-      }
-      if ((shareToken || grantedEvidence) && !(await rpc<boolean>("portfolio_is_owner"))) {
-        const d = await loadShared(shareToken, grantedEvidence || undefined);
-        setSettings(d.settings);
-        setEvidence(d.evidence);
-        setAttachments(d.attachments);
-        setReviews(d.reviews);
-        setReviewer(d.role === "reviewer");
-        setShared(true);
-        setBackend(true);
-        setPeriod(d.settings.current_period);
-      } else {
-        const d = await loadPortfolio();
-        setOwner(d.owner);
-        setBackend(true);
-        if (d.settings) {
-          setSettings(d.settings);
-          setPeriod((p) => p || d.settings!.current_period);
-        }
-        setSettingsVersion(d.settingsVersion);
-        setEvidence(d.evidence);
-        setAttachments(d.attachments);
-        setReviews(d.reviews);
-      }
-    } catch (err) {
-      setError(errorText(err));
+      const data = await loadSimplePortfolio();
+      setSettings(data.settings);
+      setPublications(data.publications);
+      revision.current = data.revision;
+      setError("");
+    } catch (e) {
+      setError(errorText(e));
     } finally {
       setLoading(false);
+      refreshing.current = false;
     }
-  }, [session, shareToken, grantedEvidence]);
+  }, []);
   useEffect(() => {
     void refresh();
+    function route() {
+      const segments = location.hash.slice(1).split("/");
+      const raw = segments[0];
+      setView(
+        navigation.some((n) => n.id === raw)
+          ? (raw as View)
+          : ["profile", "career", "vision", "goals"].includes(raw ?? "")
+            ? "about"
+            : raw === "library"
+              ? "criteria"
+              : "home",
+      );
+      setCriterion(raw === "criteria" && segments[1] ? Number(segments[1]) : null);
+      setReportId(
+        raw === "library"
+          ? (segments[1] ?? "")
+          : segments[2] === "report"
+            ? (segments[3] ?? "")
+            : "",
+      );
+      setMenu(false);
+    }
+    route();
+    window.addEventListener("hashchange", route);
+    return () => window.removeEventListener("hashchange", route);
   }, [refresh]);
-  function navigate(page: View, id?: number | string) {
-    setView(page);
-    setCriterion(page === "criteria" && id ? Number(id) : null);
-    setSelected(page === "library" && id ? String(id) : null);
+  useEffect(() => {
+    const channel = db
+      .channel("folio-public-updates")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "portfolio_public_updates" },
+        () => void refresh(),
+      )
+      .subscribe();
+    const check = async () => {
+      if (document.visibilityState === "hidden") return;
+      const { data, error } = await db
+        .from("portfolio_public_updates")
+        .select("revision")
+        .eq("id", true)
+        .single();
+      if (!error && data && Number(data.revision) !== revision.current) void refresh();
+    };
+    const timer = window.setInterval(check, 15000);
+    const focus = () => void refresh();
+    window.addEventListener("focus", focus);
+    document.addEventListener("visibilitychange", check);
+    return () => {
+      clearInterval(timer);
+      void db.removeChannel(channel);
+      window.removeEventListener("focus", focus);
+      document.removeEventListener("visibilitychange", check);
+    };
+  }, [refresh]);
+  function go(next: View, c?: number, id?: string) {
+    setView(next);
+    setCriterion(c ?? null);
+    setReportId(id ?? "");
     setMenu(false);
-    setLogin(false);
-    window.location.hash = `${page}${id ? "/" + id : ""}`;
+    location.hash = next + (c ? "/" + c : "") + (id ? "/report/" + id : "");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
-  const visible = evidence.filter((e) => e.period_id === period);
-  const metrics = completion(settings, visible, period);
-  const chosen = evidence.find((e) => e.id === selected);
-  const canView = owner || shared;
-  const currentPeriod = settings.periods.find((p) => p.id === period);
-  const links = nav.filter(
-    (n) =>
-      !shared ||
-      ["home", "profile", "criteria", "library", "sharing"].includes(n.id) ||
-      (
-        {
-          career: settings.career.length,
-          vision: settings.vision || settings.mission,
-          goals: settings.goals.length,
-          schedule: settings.schedules.length,
-          development: settings.career.length,
-          reflection: settings.reflection || settings.improvement,
-        } as Record<string, unknown>
-      )[n.id],
-  );
-  let content: ReactNode;
-  if (
-    (login && !session) ||
-    ((view === "settings" || view === "import") && !session) ||
-    ((shareToken || grantedEvidence) && !session)
-  )
-    content = (
-      <>
-        <PageTitle title={shareToken ? "ملف مشترك معك" : "مساحة المالك"}>
-          المحتوى الخاص متاح بعد تسجيل الدخول.
-        </PageTitle>
-        <Login reviewer={!!shareToken} />
-      </>
-    );
-  else if (chosen && view === "library")
-    content = (
-      <EvidenceDetail
-        evidence={chosen}
-        settings={settings}
-        attachments={attachments.filter((a) => a.evidence_id === chosen.id)}
-        reviews={reviews.filter((r) => r.evidence_id === chosen.id)}
-        owner={owner}
-        reviewer={reviewer}
-        onBack={() => navigate("library")}
-        onEdit={() => setEdit(chosen)}
-        onRefresh={refresh}
+  const current = settings.periods.find((p) => p.id === settings.current_period);
+  const reports = publications.filter((p) => p.period_id === settings.current_period);
+  const selected = publications.find((p) => p.id === reportId);
+  const chosen = settings.criteria.find((c) => c.id === criterion);
+  if (ownerPage)
+    return (
+      <OwnerAccess
+        onBack={() => {
+          setOwnerPage(false);
+          go("home");
+        }}
       />
     );
-  else
-    switch (view) {
-      case "home":
-        content = (
-          <>
-            <section className="cover">
-              <div className="cover-art" aria-hidden="true">
-                <div />
-                <div />
-                <BookOpen />
-              </div>
-              <div className="cover-content">
-                <span className="cover-label">رحلة تعلم • ممارسة • أثر</span>
-                <p className="cover-subtitle">ملف الإنجاز المهني</p>
-                <h1>{settings.teacher.name}</h1>
-                <p className="cover-role">معلم {settings.teacher.subject}</p>
-                <p>{settings.teacher.school}</p>
-                <div className="cover-divider" />
-                <div className="cover-meta">
-                  <span>{currentPeriod?.name || "لم يُحدد العام الدراسي بعد"}</span>
-                  <span>ملف شخصي مهني</span>
-                </div>
-                <div className="actions">
-                  <button className="white-button" onClick={() => navigate("library")}>
-                    استعراض الشواهد <ArrowUpLeft size={17} />
-                  </button>
-                  <button className="cover-button" onClick={() => navigate("career")}>
-                    السيرة المهنية
-                  </button>
-                  {canView && (
-                    <button
-                      className="cover-button"
-                      onClick={() =>
-                        exportPortfolio(settings, visible, attachments, period).catch((e) =>
-                          setError(errorText(e)),
-                        )
-                      }
-                    >
-                      <Download size={16} /> تحميل الملف
-                    </button>
-                  )}
-                </div>
-              </div>
-            </section>
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">التعليم ممارسة تتجدد</p>
-                <h2>تعلم واضح، وممارسة موثّقة</h2>
-              </div>
-              <span className="pill">{settings.teacher.subject}</span>
+  let content: ReactNode;
+  if (selected)
+    content = (
+      <ReportPage
+        publication={selected}
+        settings={settings}
+        onBack={() => go("criteria", selected.criterion)}
+      />
+    );
+  else if (reportId && !loading)
+    content = (
+      <>
+        <PageTitle title="التقرير غير متاح" />
+        <Empty title="لا توجد نسخة منشورة بهذا الرابط" />
+        <button onClick={() => go("criteria")}>عناصر الأداء</button>
+      </>
+    );
+  else if (view === "home")
+    content = (
+      <>
+        <section className="folio-hero">
+          <div className="hero-lines" aria-hidden="true" />
+          <div className="folio-hero-copy">
+            <span className="hero-kicker">
+              <i /> ملف الإنجاز المهني · {current?.name ?? "معلم اللغة الإنجليزية"}
+            </span>
+            <h1>
+              تعليمٌ يُلهم،
+              <br />
+              <span>وممارسةٌ تُوثَّق.</span>
+            </h1>
+            <p>{settings.teacher.name}</p>
+            <div className="hero-subline">
+              معلم {settings.teacher.subject} <span>•</span> {settings.teacher.school}
             </div>
-            <Panel>
-              <p className="bio-text">{settings.teacher.bio}</p>
-              <button className="text-button" onClick={() => navigate("profile")}>
-                المزيد عن المعلم <ChevronLeft size={16} />
-              </button>
-            </Panel>
-            {canView && (
-              <>
-                <div className="stats-grid">
-                  <Stat
-                    value={metrics.percent === null ? "—" : `${metrics.percent}%`}
-                    label="اكتمال التوثيق"
-                    detail={`${metrics.included} من 11 عنصرًا لها مستهدف`}
-                  />
-                  <Stat
-                    value={visible.filter((e) => e.status === "complete").length}
-                    label="شاهد مكتمل"
-                    detail="حسب اكتمال البيانات"
-                  />
-                  <Stat
-                    value={
-                      new Set(
-                        visible.filter((e) => e.status === "complete").map((e) => e.criterion),
-                      ).size
-                    }
-                    label="عناصر لديها شواهد"
-                    detail="من أصل 11 عنصرًا"
-                  />
-                  <Stat
-                    value={visible.filter((e) => e.status === "incomplete").length}
-                    label="شواهد تحتاج استكمالًا"
-                    detail={
-                      visible.length
-                        ? `آخر تحديث: ${new Date(visible.reduce((a, e) => (e.updated_at > a ? e.updated_at : a), "")).toLocaleDateString("ar-SA", { timeZone: "Asia/Riyadh" })}`
-                        : "لم تُضف شواهد بعد"
-                    }
-                  />
-                </div>
-                <Notice>
-                  نسب الاكتمال تقيس التوثيق داخل الملف، ولا تمثل درجة تقييم الأداء الوظيفي.
-                </Notice>
-              </>
-            )}
-            {(settings.vision || settings.mission) && (
-              <div className="two-columns">
-                {settings.vision && (
-                  <Panel>
-                    <p className="eyebrow">إلى أين نتجه</p>
-                    <h2>الرؤية</h2>
-                    <p>{settings.vision}</p>
-                  </Panel>
-                )}
-                {settings.mission && (
-                  <Panel>
-                    <p className="eyebrow">كيف نعمل</p>
-                    <h2>الرسالة</h2>
-                    <p>{settings.mission}</p>
-                  </Panel>
-                )}
-              </div>
-            )}
-            {settings.goals.length > 0 && (
-              <>
-                <SectionHeading title="أهدافي المهنية" action={() => navigate("goals")} />
-                <Goals settings={settings} />
-              </>
-            )}
-            {visible.some((e) => e.data.featured && e.status !== "archived") && (
-              <>
-                <SectionHeading title="ممارسات مختارة" />
-                <EvidenceCards
-                  evidence={visible.filter((e) => e.data.featured && e.status !== "archived")}
-                  attachments={attachments}
-                  open={(id) => navigate("library", id)}
-                />
-              </>
-            )}
-            <SectionHeading title="عناصر الأداء الوظيفي" action={() => navigate("criteria")} />
-            <CriteriaGrid
-              settings={settings}
-              evidence={visible}
-              period={period}
-              open={(id) => navigate("criteria", id)}
-              compact={!canView}
-            />
-            {canView && (
-              <>
-                <SectionHeading title="أحدث الشواهد" action={() => navigate("library")} />
-                <EvidenceCards
-                  evidence={visible.filter((e) => e.status !== "archived").slice(0, 3)}
-                  attachments={attachments}
-                  open={(id) => navigate("library", id)}
-                />
-              </>
-            )}
-            {latestSchedule(settings) && (
-              <Panel>
-                <h2>حصص اليوم</h2>
-                <Today settings={settings} />
-                <button className="text-button" onClick={() => navigate("schedule")}>
-                  الجدول الأسبوعي <ChevronLeft size={16} />
-                </button>
-              </Panel>
-            )}
-          </>
-        );
-        break;
-      case "criteria": {
-        const row = metrics.rows.find((r) => r.criterion.id === criterion);
-        content = row ? (
-          <>
-            <button className="text-button" onClick={() => navigate("criteria")}>
-              جميع عناصر الأداء
+            <button className="folio-primary hero-cta" onClick={() => go("criteria")}>
+              استعرض عناصر الأداء <ArrowUpLeft size={19} />
             </button>
-            <PageTitle
-              eyebrow={`العنصر ${row.criterion.id} • الوزن ${row.criterion.weight}%`}
-              title={row.criterion.name}
-            >
-              {row.criterion.description}
-            </PageTitle>
-            <Panel>
-              <Progress percent={row.percent} />
-              <Notice>اكتمال توثيق داخلي؛ لا يمثل تقييمًا رسميًا.</Notice>
-              <h3>الشواهد المستهدفة</h3>
-              {row.targets.length ? (
-                <ul className="target-list">
-                  {row.targets.map((t) => (
-                    <li key={t.id}>
-                      <CheckCheck size={18} />
-                      <span>{t.title}</span>
-                      <span className="pill">
-                        {row.completed.includes(t) ? "مكتمل" : "ينقصه شاهد مكتمل"}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="muted">لم يُحدد المستهدف. يحدده المالك وفق خطة توثيقه.</p>
-              )}
-            </Panel>
-            <SectionHeading
-              title="الشواهد المرتبطة"
-              actionLabel="تصدير شواهد العنصر PDF"
-              action={
-                canView
-                  ? () =>
-                      exportPortfolio(
-                        settings,
-                        visible,
-                        attachments,
-                        period,
-                        row.criterion.id,
-                      ).catch((e) => setError(errorText(e)))
-                  : undefined
-              }
-            />
-            <EvidenceCards
-              evidence={visible.filter(
-                (e) =>
-                  e.criterion === criterion ||
-                  e.data.additional_criteria?.some((c) => c.criterion === criterion),
-              )}
-              attachments={attachments}
-              open={(id) => navigate("library", id)}
-            />
-            <Panel>
-              <h3>أمثلة مقترحة للتوثيق</h3>
-              <p className="muted">اقتراحات فقط؛ لا تثبت تنفيذ أي ممارسة.</p>
-              <div className="actions">
-                {row.criterion.suggestions.map((s) => (
-                  <span className="pill" key={s}>
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </Panel>
+          </div>
+          <div className="hero-visual" aria-hidden="true">
+            <div className="hero-orbit orbit-one" />
+            <div className="hero-orbit orbit-two" />
+            <div className="hero-emblem">
+              <BookOpen strokeWidth={1} />
+              <span>تعلم · ممارسة · أثر</span>
+            </div>
+            <div className="hero-float float-one">
+              <GraduationCap />
+              <span>اللغة الإنجليزية</span>
+            </div>
+            <div className="hero-float float-two">
+              <FileText />
+              <span>شواهد من الممارسة</span>
+            </div>
+          </div>
+          <div className="hero-foot">
+            <span>
+              <School size={16} />
+              {settings.teacher.administration}
+            </span>
+            <span>ملف شخصي مهني</span>
+          </div>
+        </section>
+        <div className="folio-intro">
+          <span className="folio-eyebrow">عن المعلم</span>
+          <h2>
+            رحلة مهنية،
+            <br />
+            محورها تعلّم الطالب.
+          </h2>
+          <div>
+            <p>{settings.teacher.bio}</p>
+            <button className="folio-link" onClick={() => go("about")}>
+              تعرّف على المعلم <ChevronLeft size={16} />
+            </button>
+          </div>
+        </div>
+        <Section
+          title="عناصر الأداء الوظيفي"
+          subtitle="الممارسة التعليمية، موثقة في مكانها."
+          action={() => go("criteria")}
+        />
+        <Criteria
+          settings={settings}
+          reports={reports}
+          onOpen={(id) => go("criteria", id)}
+          compact
+        />
+        {reports.length > 0 && (
+          <>
+            <Section title="أحدث التقارير" subtitle="من داخل الصف إلى ملف الإنجاز." />
+            <div className="folio-report-grid">
+              {reports.slice(0, 3).map((p) => (
+                <ReportCard
+                  key={p.id}
+                  publication={p}
+                  criterionName={settings.criteria.find((c) => c.id === p.criterion)?.name ?? ""}
+                  onOpen={() => go("criteria", p.criterion, p.id)}
+                />
+              ))}
+            </div>
           </>
+        )}
+        <div className="folio-schedule-teaser">
+          <div className="teaser-icon">
+            <CalendarDays size={32} />
+          </div>
+          <div>
+            <span className="folio-eyebrow">تنظيم اليوم الدراسي</span>
+            <h2>الجدول المدرسي</h2>
+            <p>الحصص والتكليفات الأسبوعية في عرض واضح.</p>
+          </div>
+          <button onClick={() => go("schedule")}>
+            استعراض الجدول <ArrowUpLeft size={18} />
+          </button>
+        </div>
+      </>
+    );
+  else if (view === "criteria")
+    content = chosen ? (
+      <>
+        <button className="folio-back" onClick={() => go("criteria")}>
+          <ArrowRight size={17} /> جميع عناصر الأداء
+        </button>
+        <PageTitle
+          eyebrow={`العنصر ${chosen.id.toString().padStart(2, "0")} · الوزن ${chosen.weight}%`}
+          title={chosen.name}
+        >
+          {chosen.description}
+        </PageTitle>
+        <div className="folio-element-summary">
+          <span>{reports.filter((r) => r.criterion === chosen.id).length} تقارير منشورة</span>
+          <span>اضغط التقرير لعرضه وصوره</span>
+        </div>
+        {reports.some((r) => r.criterion === chosen.id) ? (
+          <div className="folio-report-grid">
+            {reports
+              .filter((r) => r.criterion === chosen.id)
+              .map((p) => (
+                <ReportCard
+                  publication={p}
+                  key={p.id}
+                  criterionName={chosen.name}
+                  onOpen={() => go("criteria", chosen.id, p.id)}
+                />
+              ))}
+          </div>
         ) : (
-          <>
-            <PageTitle title="عناصر الأداء الوظيفي">إطار واضح لتنظيم الممارسة والشواهد.</PageTitle>
-            <Notice>{settings.standard.note}</Notice>
-            <CriteriaGrid
-              settings={settings}
-              evidence={visible}
-              period={period}
-              open={(id) => navigate("criteria", id)}
-              compact={!canView}
-            />
-            <Panel>
-              <h3>مرجع المعايير</h3>
-              <p>{settings.standard.name}</p>
-              <p className="muted">
-                {settings.standard.authority} · {settings.standard.edition} · تاريخ التحقق:{" "}
-                {settings.standard.verified_on}
-              </p>
-              <a href={settings.standard.document_url} target="_blank" rel="noreferrer">
-                فتح دليل الوزارة
-              </a>
-            </Panel>
-          </>
-        );
-        break;
-      }
-      case "library":
-        content = (
-          <Library
-            evidence={visible}
-            attachments={attachments}
-            open={(id) => navigate("library", id)}
-            owner={owner}
-            add={() => setEdit("new")}
-            importAction={() => navigate("import")}
-            canView={canView}
-          />
-        );
-        break;
-      case "profile":
-        content = (
-          <>
-            <PageTitle title="نبذة عن المعلم">التعلم المستمر، وتوثيق الممارسة المهنية.</PageTitle>
-            <Panel>
-              <div className="profile-heading">
-                <span className="avatar-mark">ب ع</span>
-                <div>
-                  <h2>{settings.teacher.name}</h2>
-                  <p>
-                    {settings.teacher.subject} • {settings.teacher.school}
-                  </p>
-                </div>
-              </div>
-              <p className="bio-text">{settings.teacher.bio}</p>
-              <dl className="info-grid">
-                <Info label="الإدارة" value={settings.teacher.administration} />
-                <Info label="المدرسة" value={settings.teacher.school} />
-                <Info label="مدير المدرسة" value={settings.teacher.director} />
-                <Info label="التخصص" value={settings.teacher.subject} />
-              </dl>
-            </Panel>
-          </>
-        );
-        break;
-      case "career":
-      case "development": {
-        const entries =
-          view === "development"
-            ? settings.career.filter((x) => ["course", "award"].includes(x.type))
-            : settings.career;
-        content = (
-          <>
-            <PageTitle title={view === "career" ? "السيرة المهنية" : "التطوير المهني والتكريمات"} />
-            {view === "career" && (
-              <Panel>
-                <dl className="info-grid">
-                  {(["qualification", "rank", "experience", "license", "contact"] as const).map(
-                    (key, i) =>
-                      settings.teacher[key] && (
-                        <Info
-                          key={key}
-                          label={["المؤهل", "الرتبة", "الخبرات", "الرخصة المهنية", "التواصل"][i]!}
-                          value={settings.teacher[key]!}
-                        />
-                      ),
-                  )}
-                </dl>
-                <p className="muted">تُضاف المؤهلات والخبرات عندما تتوفر معلوماتها أو مستنداتها.</p>
-              </Panel>
-            )}
-            {entries.length ? (
-              entries.map((x) => (
-                <Panel key={x.id}>
-                  <span className="pill">{x.date || "دون تاريخ محدد"}</span>
-                  <h2>{x.title}</h2>
-                  <p>{x.institution}</p>
-                  <p>{x.description}</p>
-                </Panel>
-              ))
-            ) : (
-              <Empty title="بانتظار إضافة البيانات المهنية الموثقة" />
-            )}
-          </>
-        );
-        break;
-      }
-      case "vision":
-        content = (
-          <>
-            <PageTitle title="الرؤية والرسالة والقيم" />
-            {settings.vision || settings.mission ? (
-              <>
-                <Panel>
-                  <h2>الرؤية</h2>
-                  <p>{settings.vision || "لم تُضف بعد"}</p>
-                  <h2>الرسالة</h2>
-                  <p>{settings.mission || "لم تُضف بعد"}</p>
-                  <div className="actions">
-                    {settings.values.map((v) => (
-                      <span className="pill" key={v}>
-                        {v}
-                      </span>
-                    ))}
-                  </div>
-                </Panel>
-              </>
-            ) : (
-              <Empty title="بانتظار صياغتك المعتمدة للرؤية والرسالة" />
-            )}
-          </>
-        );
-        break;
-      case "goals":
-        content = (
-          <>
-            <PageTitle title="الأهداف المهنية">
-              التقدم يعتمد على متابعة فعلية، ولا يُستنتج من عدد الصور.
-            </PageTitle>
-            <Goals settings={settings} />
-          </>
-        );
-        break;
-      case "schedule":
-        content = (
-          <>
-            <PageTitle
-              title="الجدول المدرسي"
-              action={
-                settings.schedules.length ? (
-                  <button onClick={() => window.print()}>
-                    <Download size={16} /> طباعة / PDF
-                  </button>
-                ) : undefined
-              }
-            >
-              الأحد إلى الخميس • بتوقيت الرياض
-            </PageTitle>
-            <Timetable settings={settings} attachments={attachments} />
-          </>
-        );
-        break;
-      case "reflection":
-        content = (
-          <>
-            <PageTitle title="التأمل المهني وخطة التحسين" />
-            {settings.reflection || settings.improvement ? (
-              <>
-                <Panel>
-                  <h2>التأمل المهني</h2>
-                  <p className="preserve-text">{settings.reflection}</p>
-                  <h2>خطة التحسين</h2>
-                  <p className="preserve-text">{settings.improvement}</p>
-                </Panel>
-              </>
-            ) : (
-              <Empty title="لم تُضف تأملات أو خطة تحسين بعد" />
-            )}
-          </>
-        );
-        break;
-      case "sharing":
-        content = owner ? (
-          <SharingPanel evidence={visible} refresh={refresh} />
-        ) : (
-          <>
-            <PageTitle title="المشاركة ومراجعة المدير" />
-            <Notice>
-              المراجعة داخل الملف ليست تقييمًا رسميًا في فارس. ظهور اسم المدير في التقرير لا يعني
-              اعتماده.
-            </Notice>
-            {shared ? (
-              <Panel>
-                <h2>{reviewer ? "وصول المراجع" : "وصول الزائر المدعو"}</h2>
-                <p>
-                  يمكنك فتح الشواهد التي شملتها الدعوة
-                  {reviewer ? " وإضافة الملاحظات على نسخة الشاهد الحالية." : "."}
-                </p>
-                <button onClick={() => navigate("library")}>فتح الشواهد</button>
-              </Panel>
-            ) : (
-              <Empty title="الاطلاع يتطلب دعوة خاصة من المالك" />
-            )}
-          </>
-        );
-        break;
-      case "import":
-        content = owner ? (
-          <ImportPanel settings={settings} refresh={refresh} />
-        ) : (
-          <Notice>{backend ? "الحساب غير مصرح له بإدارة الملف." : missingBackendMessage}</Notice>
-        );
-        break;
-      case "settings":
-        content = owner ? (
-          settingsVersion ? (
-            <SettingsPanel settings={settings} version={settingsVersion} refresh={refresh} />
-          ) : (
-            <Panel>
-              <h2>تهيئة الملف للمرة الأولى</h2>
-              <p>حفظ بيانات المعلم الأساسية دون إنشاء شواهد أو سنوات دراسية افتراضية.</p>
-              <button
-                className="primary-button"
-                onClick={() =>
-                  initializePortfolio()
-                    .then(refresh)
-                    .catch((e) => setError(errorText(e)))
-                }
-              >
-                تهيئة الملف
-              </button>
-            </Panel>
-          )
-        ) : (
-          <Notice>{backend ? "هذا الحساب غير مصرح له بالإدارة." : missingBackendMessage}</Notice>
-        );
-        break;
-    }
+          <Empty title="لم يُضف تقرير لهذا العنصر بعد">
+            ستظهر التقارير هنا مباشرة عند إضافتها.
+          </Empty>
+        )}
+      </>
+    ) : (
+      <>
+        <PageTitle eyebrow="شواهد الممارسة المهنية" title="عناصر الأداء الوظيفي">
+          كل تقرير تحت العنصر الذي يوثّقه، مع صوره ونسخة للطباعة.
+        </PageTitle>
+        <Criteria settings={settings} reports={reports} onOpen={(id) => go("criteria", id)} />
+        <p className="folio-reference">
+          العناصر والأوزان وفق نموذج تقييم المعلم في دليل وزارة التعليم.{" "}
+          <a href={settings.standard.document_url} target="_blank" rel="noreferrer">
+            الاطلاع على المرجع
+          </a>
+        </p>
+      </>
+    );
+  else if (view === "about") content = <About settings={settings} />;
+  else
+    content = (
+      <>
+        <PageTitle eyebrow={current?.name} title="الجدول المدرسي">
+          تنظيم الحصص والتكليفات من الأحد إلى الخميس.
+        </PageTitle>
+        <Schedule settings={settings} />
+      </>
+    );
   return (
-    <div className="portfolio-app">
-      <aside className={`sidebar ${menu ? "sidebar-open" : ""}`}>
-        <a href="#home" className="brand" onClick={() => navigate("home")}>
-          <span className="brand-symbol">
-            <BookOpen />
+    <div className="folio" data-revision={revision.current}>
+      <header className="folio-header">
+        <a
+          className="folio-brand"
+          href="#home"
+          onClick={(e) => {
+            e.preventDefault();
+            go("home");
+          }}
+        >
+          <span className="folio-brand-icon">
+            <BookOpen size={25} strokeWidth={1.5} />
           </span>
           <span>
-            ملف الإنجاز <small>المهني • بسام العنزي</small>
+            بسام العنزي<small>ملف الإنجاز المهني</small>
           </span>
         </a>
-        <button className="mobile-close" aria-label="إغلاق القائمة" onClick={() => setMenu(false)}>
-          <X />
-        </button>
-        <div className="sidebar-caption">مساحة الممارسة المهنية</div>
-        <nav aria-label="التنقل الرئيسي">
-          {links.map((n) => (
+        <nav className={menu ? "is-open" : ""} aria-label="التنقل الرئيسي">
+          {navigation.map((n) => (
             <a
+              href={"#" + n.id}
               key={n.id}
-              href={`#${n.id}`}
               className={view === n.id ? "active" : ""}
               onClick={(e) => {
                 e.preventDefault();
-                navigate(n.id);
+                go(n.id);
               }}
             >
-              <n.icon size={19} />
-              <span>{n.label}</span>
-              {view === n.id && <span className="active-dot" />}
+              <n.icon size={17} />
+              {n.label}
             </a>
           ))}
-          {owner && (
-            <>
-              <div className="sidebar-caption">إدارة الملف</div>
-              <a
-                href="#import"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate("import");
-                }}
-                className={view === "import" ? "active" : ""}
-              >
-                <Download size={19} /> استقبال الشواهد
-              </a>
-              <a
-                href="#settings"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate("settings");
-                }}
-                className={view === "settings" ? "active" : ""}
-              >
-                <Settings2 size={19} /> الإعدادات
-              </a>
-            </>
-          )}
         </nav>
-        <div className="sidebar-bottom">
-          <ShieldCheck size={19} />
-          <div>
-            ملف شخصي للمعلم<small>ليس منصة رسمية تابعة للوزارة</small>
-          </div>
+        <div className="folio-header-end">
+          <span className="folio-live">
+            <i />
+            {loading ? "جارٍ التحميل" : "ملف متجدد"}
+          </span>
+          <button
+            className="folio-menu"
+            aria-label={menu ? "إغلاق القائمة" : "فتح القائمة"}
+            onClick={() => setMenu(!menu)}
+          >
+            {menu ? <X /> : <Menu />}
+          </button>
         </div>
-      </aside>
-      {menu && (
-        <button
-          className="menu-overlay"
-          aria-label="إغلاق القائمة"
-          onClick={() => setMenu(false)}
-        />
-      )}
-      <div className="main-layout">
-        <header className="topbar">
-          <div className="topbar-title">
-            <button
-              className="mobile-menu icon-button"
-              aria-label="فتح القائمة"
-              onClick={() => setMenu(true)}
-            >
-              <Menu />
+      </header>
+      <main className="folio-main">
+        {error && (
+          <div className="folio-error" role="alert">
+            تعذر تحميل آخر تحديث.{" "}
+            <button onClick={refresh}>
+              إعادة المحاولة <RefreshCw size={15} />
             </button>
+          </div>
+        )}
+        {loading ? (
+          <div className="folio-loading" role="status">
+            <span />
+            جارٍ تحميل ملف الإنجاز…
+          </div>
+        ) : (
+          content
+        )}
+      </main>
+      <footer className="folio-footer">
+        <div className="footer-identity">
+          <BookOpen size={24} />
+          <div>
+            <strong>{settings.teacher.name}</strong>
             <span>
-              ملف الإنجاز المهني <ChevronLeft size={14} />{" "}
-              <strong>{nav.find((n) => n.id === view)?.label || "إدارة الملف"}</strong>
+              معلم {settings.teacher.subject} · {settings.teacher.school}
             </span>
           </div>
-          <div className="topbar-actions">
-            {settings.periods.length > 0 && (
-              <select
-                aria-label="فترة الملف"
-                value={period}
-                onChange={(e) => setPeriod(e.target.value)}
-              >
-                {settings.periods.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                    {p.archived ? " (أرشيف)" : ""}
-                  </option>
-                ))}
-              </select>
-            )}
-            {session ? (
-              <button title="تسجيل الخروج" onClick={() => db.auth.signOut()}>
-                <LogOut size={17} />
-                <span className="desktop-only">خروج</span>
-              </button>
-            ) : (
-              <button onClick={() => setLogin(true)}>
-                <LogIn size={17} /> الدخول
-              </button>
-            )}
-          </div>
-        </header>
-        <main id="main-content" className="main-content">
-          {error && (
-            <div role="alert" className="error-banner">
-              {!backend && session ? missingBackendMessage : error}
-              <button onClick={refresh}>إعادة المحاولة</button>
-            </div>
-          )}
-          {loading ? (
-            <Panel>
-              <p role="status">جارٍ تحميل بيانات الملف…</p>
-            </Panel>
-          ) : authReady ? (
-            content
-          ) : (
-            <Panel>
-              <p>جارٍ التحقق من الجلسة…</p>
-            </Panel>
-          )}
-          {owner && !settingsVersion && view !== "settings" && (
-            <Notice>قاعدة البيانات جاهزة. افتح الإعدادات لتهيئة الملف لأول مرة.</Notice>
-          )}
-        </main>
-        <footer className="site-footer">
-          <span>ملف الإنجاز المهني — {settings.teacher.name}</span>
-          <span>الممارسة أولًا، والتوثيق شاهد عليها.</span>
-        </footer>
-      </div>
-      {edit && (
-        <EvidenceEditor
-          evidence={edit === "new" ? undefined : edit}
-          settings={settings}
-          period={period}
-          onClose={() => setEdit(null)}
-          onSaved={async () => {
-            setEdit(null);
-            await refresh();
-          }}
-        />
-      )}
+        </div>
+        <div className="footer-links">
+          {navigation.map((n) => (
+            <a
+              href={"#" + n.id}
+              key={n.id}
+              onClick={(e) => {
+                e.preventDefault();
+                go(n.id);
+              }}
+            >
+              {n.label}
+            </a>
+          ))}
+        </div>
+        <div className="footer-bottom">
+          <span>ملف إنجاز مهني شخصي</span>
+          <span>تعلمٌ مستمر، وأثرٌ يستحق التوثيق.</span>
+        </div>
+      </footer>
     </div>
   );
 }
-function Stat({ value, label, detail }: { value: string | number; label: string; detail: string }) {
-  return (
-    <Panel className="stat">
-      <strong>{value}</strong>
-      <span>{label}</span>
-      <small>{detail}</small>
-    </Panel>
-  );
-}
-function SectionHeading({
+function Section({
   title,
+  subtitle,
   action,
-  actionLabel = "عرض الكل",
 }: {
   title: string;
-  action?: (() => void) | undefined;
-  actionLabel?: string;
+  subtitle?: string;
+  action?: () => void;
 }) {
   return (
-    <div className="section-heading">
-      <h2>{title}</h2>
+    <div className="folio-section-heading">
+      <div>
+        <span className="folio-eyebrow">ملف الإنجاز</span>
+        <h2>{title}</h2>
+        {subtitle && <p>{subtitle}</p>}
+      </div>
       {action && (
-        <button className="text-button" onClick={action}>
-          {actionLabel} <ChevronLeft size={16} />
+        <button className="folio-link" onClick={action}>
+          جميع العناصر <ChevronLeft size={16} />
         </button>
       )}
     </div>
   );
 }
-function Info({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <dt>{label}</dt>
-      <dd>{value}</dd>
-    </div>
-  );
-}
-export function Progress({ percent }: { percent: number | null }) {
-  return (
-    <div className="completion">
-      <div>
-        <span>اكتمال التوثيق</span>
-        <strong>{percent === null ? "لم يُحدد المستهدف" : `${percent}%`}</strong>
-      </div>
-      {percent !== null && <progress value={percent} max={100} aria-label="اكتمال التوثيق" />}
-    </div>
-  );
-}
-function CriteriaGrid({
+function Criteria({
   settings,
-  evidence,
-  period,
-  open,
-  compact,
+  reports,
+  onOpen,
+  compact = false,
 }: {
   settings: Settings;
-  evidence: Evidence[];
-  period: string;
-  open: (id: number) => void;
+  reports: Publication[];
+  onOpen: (id: number) => void;
   compact?: boolean;
 }) {
   return (
-    <div className="criteria-grid">
-      {completion(settings, evidence, period).rows.map((r) => (
-        <button
-          className="criterion-card"
-          key={r.criterion.id}
-          onClick={() => open(r.criterion.id)}
-        >
-          <div className="criterion-top">
-            <span className="criterion-number">{String(r.criterion.id).padStart(2, "0")}</span>
-            <span className="muted">{r.criterion.weight}% وزن العنصر</span>
+    <div className="folio-criteria">
+      {settings.criteria.slice(0, compact ? 6 : 11).map((c) => (
+        <button className="folio-criterion" key={c.id} onClick={() => onOpen(c.id)}>
+          <div className="fc-top">
+            <span>{String(c.id).padStart(2, "0")}</span>
+            <small>{c.weight}%</small>
           </div>
-          <h3>{r.criterion.name}</h3>
-          {compact ? (
-            <span className="muted">
-              عرض العنصر <ChevronLeft size={14} />
-            </span>
-          ) : (
-            <Progress percent={r.percent} />
-          )}
+          <h3>{c.name}</h3>
+          <div className="fc-bottom">
+            <span>{reports.filter((p) => p.criterion === c.id).length} تقارير</span>
+            <ArrowUpLeft size={20} />
+          </div>
         </button>
       ))}
     </div>
   );
 }
-function EvidenceCards({
-  evidence,
-  attachments,
-  open,
+function ReportCard({
+  publication: p,
+  criterionName,
+  onOpen,
 }: {
-  evidence: Evidence[];
-  attachments: Attachment[];
-  open: (id: string) => void;
+  publication: Publication;
+  criterionName: string;
+  onOpen: () => void;
 }) {
-  return evidence.length ? (
-    <div className="evidence-grid">
-      {evidence.map((e) => (
-        <button className="evidence-card" key={e.id} onClick={() => open(e.id)}>
-          <div className="evidence-preview">
-            {attachments.find((a) => a.evidence_id === e.id && a.mime.startsWith("image/")) ? (
-              <OriginalPreview
-                attachment={attachments.find(
-                  (a) => a.evidence_id === e.id && a.mime.startsWith("image/"),
-                )!}
-                thumbnail
-              />
-            ) : (
-              <FileText size={35} />
-            )}
-            <span>{kinds[e.kind]}</span>
-          </div>
-          <div className="evidence-card-body">
-            <div className="criterion-top">
-              <span className={`status status-${e.status}`}>{statusNames[e.status]}</span>
-              <span className="muted">العنصر {e.criterion}</span>
-            </div>
-            <h3>{e.title}</h3>
-            <p className="muted">{e.data.execution_on || "تاريخ التنفيذ غير محدد"}</p>
-            <div className="card-footer">
-              <span>{attachments.filter((a) => a.evidence_id === e.id).length} مرفقات أصلية</span>
-              <ChevronLeft size={18} />
-            </div>
-          </div>
-        </button>
-      ))}
-    </div>
-  ) : (
-    <Empty title="لا توجد شواهد في هذه الفترة">ستظهر الشواهد الفعلية بعد استلامها وحفظها.</Empty>
+  const [src, setSrc] = useState("");
+  useEffect(() => {
+    let active = true;
+    let url = "";
+    if (p.assets[0])
+      publicReportAsset(p.assets[0].id)
+        .then((u) => {
+          url = u;
+          if (active) setSrc(u);
+          else URL.revokeObjectURL(u);
+        })
+        .catch(() => {});
+    return () => {
+      active = false;
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [p.assets]);
+  return (
+    <button className="folio-report-card" onClick={onOpen}>
+      <div className="frc-photo">
+        {src ? <img src={src} alt={p.title} /> : <FileText size={40} strokeWidth={1} />}
+        <span>العنصر {p.criterion}</span>
+      </div>
+      <div className="frc-body">
+        <small>{criterionName}</small>
+        <h3>{p.title}</h3>
+        <div className="frc-bottom">
+          <span>{p.assets.length} صور</span>
+          <span>
+            عرض التقرير <ChevronLeft size={16} />
+          </span>
+        </div>
+      </div>
+    </button>
   );
 }
-function Library({
-  evidence,
-  attachments,
-  open,
-  owner,
-  add,
-  importAction,
-  canView,
+function ReportPage({
+  publication: p,
+  settings,
+  onBack,
 }: {
-  evidence: Evidence[];
-  attachments: Attachment[];
-  open: (id: string) => void;
-  owner: boolean;
-  add: () => void;
-  importAction: () => void;
-  canView: boolean;
+  publication: Publication;
+  settings: Settings;
+  onBack: () => void;
 }) {
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("active");
-  const [criterion, setCriterion] = useState("");
-  const filtered = evidence.filter(
-    (e) =>
-      (status === "active" ? e.status !== "archived" : e.status === status) &&
-      (!criterion || e.criterion === Number(criterion)) &&
-      e.title.includes(search),
-  );
+  const [urls, setUrls] = useState<Record<string, string>>({});
+  const [error, setError] = useState("");
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    let active = true;
+    const all: string[] = [];
+    setUrls({});
+    Promise.all(
+      p.assets.map(async (a) => {
+        const url = await publicReportAsset(a.id);
+        all.push(url);
+        if (!active) URL.revokeObjectURL(url);
+        return [a.id, url];
+      }),
+    )
+      .then((entries) => {
+        if (active) setUrls(Object.fromEntries(entries));
+      })
+      .catch((e) => {
+        if (active) setError(errorText(e));
+      });
+    return () => {
+      active = false;
+      all.forEach((u) => URL.revokeObjectURL(u));
+    };
+  }, [p]);
   return (
     <>
-      <PageTitle
-        title="مكتبة الشواهد"
-        action={
-          owner ? (
-            <div className="actions">
-              <button onClick={importAction}>استيراد حزمة المساعد</button>
-              <button className="primary-button" onClick={add}>
-                إضافة شاهد
-              </button>
-            </div>
-          ) : undefined
-        }
-      >
-        كل ممارسة في مكانها، مع صورها الأصلية وتاريخها ونسخها.
-      </PageTitle>
-      {canView ? (
-        <>
-          <div className="filter-bar">
-            <input
-              aria-label="البحث في الشواهد"
-              placeholder="ابحث بعنوان الشاهد…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <select
-              aria-label="حالة الشاهد"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              <option value="active">الشواهد الحالية</option>
-              {Object.entries(statusNames).map(([k, v]) => (
-                <option key={k} value={k}>
-                  {v}
-                </option>
-              ))}
-            </select>
-            <select
-              aria-label="عنصر الأداء"
-              value={criterion}
-              onChange={(e) => setCriterion(e.target.value)}
-            >
-              <option value="">جميع العناصر</option>
-              {defaultSettings.criteria.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.id}. {c.name}
-                </option>
-              ))}
-            </select>
+      <div className="folio-report-toolbar">
+        <button className="folio-back" onClick={onBack}>
+          <ArrowRight size={17} /> العودة إلى عنصر الأداء
+        </button>
+        <button
+          className="folio-primary"
+          disabled={Object.keys(urls).length < p.assets.length}
+          onClick={() =>
+            ref.current &&
+            printSimpleReport(ref.current, p.title).catch((e) => setError(errorText(e)))
+          }
+        >
+          <Download size={17} /> تحميل PDF
+        </button>
+      </div>
+      {error && (
+        <p role="alert" className="folio-error">
+          {error}
+        </p>
+      )}
+      <div ref={ref}>
+        <SimpleReport publication={p} settings={settings} urls={urls} />
+      </div>
+    </>
+  );
+}
+function About({ settings: s }: { settings: Settings }) {
+  return (
+    <>
+      <PageTitle eyebrow="مسيرة مهنية في التعليم" title="عن المعلم" />
+      <section className="folio-about-cover">
+        <span className="about-monogram">ب ع</span>
+        <div>
+          <span className="folio-eyebrow">معلم اللغة الإنجليزية</span>
+          <h2>{s.teacher.name}</h2>
+          <p>{s.teacher.school}</p>
+        </div>
+      </section>
+      <Panel>
+        <h2>نبذة عني</h2>
+        <p className="about-bio">{s.teacher.bio}</p>
+        <div className="about-facts">
+          {[
+            ["التخصص", s.teacher.subject],
+            ["الإدارة", s.teacher.administration],
+            ["المؤهل", s.teacher.qualification],
+            ["الرتبة", s.teacher.rank],
+            ["الخبرة", s.teacher.experience],
+            ["الرخصة المهنية", s.teacher.license],
+          ]
+            .filter(([, v]) => v)
+            .map(([k, v]) => (
+              <div key={k}>
+                <small>{k}</small>
+                <strong>{v}</strong>
+              </div>
+            ))}
+        </div>
+      </Panel>
+      {(s.vision || s.mission) && (
+        <div className="about-two">
+          {s.vision && (
+            <Panel>
+              <Target />
+              <h2>الرؤية</h2>
+              <p>{s.vision}</p>
+            </Panel>
+          )}
+          {s.mission && (
+            <Panel>
+              <BookOpen />
+              <h2>الرسالة</h2>
+              <p>{s.mission}</p>
+            </Panel>
+          )}
+        </div>
+      )}
+      {s.values.length > 0 && (
+        <Panel>
+          <h2>القيم</h2>
+          <div className="about-values">
+            {s.values.map((v) => (
+              <span key={v}>{v}</span>
+            ))}
           </div>
-          <EvidenceCards evidence={filtered} attachments={attachments} open={open} />
+        </Panel>
+      )}
+      {s.goals.length > 0 && (
+        <>
+          <Section title="الأهداف المهنية" />
+          {s.goals.map((g) => (
+            <Panel key={g.id}>
+              <h3>{g.title}</h3>
+              <p>{g.description}</p>
+              {g.indicator && <p>{g.indicator}</p>}
+            </Panel>
+          ))}
         </>
-      ) : (
-        <Empty title="مكتبة خاصة">يلزم تسجيل دخول المالك أو دعوة مشاركة لعرض الشواهد.</Empty>
+      )}
+      {s.career.length > 0 && (
+        <>
+          <Section title="السيرة والتطوير المهني" />
+          {s.career.map((x) => (
+            <Panel key={x.id}>
+              <small>{x.date}</small>
+              <h3>{x.title}</h3>
+              <p>{x.institution}</p>
+              <p>{x.description}</p>
+            </Panel>
+          ))}
+        </>
       )}
     </>
   );
 }
-function Goals({ settings }: { settings: Settings }) {
-  return settings.goals.length ? (
-    <div className="two-columns">
-      {settings.goals.map((g) => (
-        <Panel key={g.id}>
-          <span className="pill">{g.status}</span>
-          <h3>{g.title}</h3>
-          <p>{g.description}</p>
-          {g.start && (
-            <p className="muted">
-              {g.start} — {g.end || "دون نهاية محددة"}
-            </p>
-          )}
-          {g.indicator && <p>مؤشر المتابعة: {g.indicator}</p>}
-          {g.progress !== undefined && g.indicator && <Progress percent={g.progress} />}
-          <p>{g.notes}</p>
-        </Panel>
-      ))}
-    </div>
-  ) : (
-    <Empty title="لم تُحدد أهداف مهنية بعد" />
-  );
-}
-function Today({ settings }: { settings: Settings }) {
-  const day = ["Sun", "Mon", "Tue", "Wed", "Thu"].indexOf(currentDayRiyadh());
-  const schedule = latestSchedule(settings);
-  const lessons =
-    schedule?.lessons.filter((l) => l.day === day).sort((a, b) => a.period - b.period) ?? [];
-  return (
-    <div>
-      {day < 0 ? (
-        <p className="muted">اليوم خارج أيام الجدول الأسبوعي.</p>
-      ) : lessons.length ? (
-        lessons.map((l) => (
-          <p key={l.id}>
-            الحصة {l.period} · {l.subject} · {l.grade || "الصف غير محدد"} · {l.duty}
-          </p>
-        ))
-      ) : (
-        <p className="muted">لا توجد حصص مسجلة لهذا اليوم.</p>
-      )}
-    </div>
-  );
-}
-function Timetable({ settings, attachments }: { settings: Settings; attachments: Attachment[] }) {
-  const [scheduleId, setScheduleId] = useState("");
+function Schedule({ settings: s }: { settings: Settings }) {
+  const [selected, setSelected] = useState("");
   const [day, setDay] = useState(
     Math.max(0, ["Sun", "Mon", "Tue", "Wed", "Thu"].indexOf(currentDayRiyadh())),
   );
-  const schedule =
-    settings.schedules.find((s) => s.id === scheduleId) ||
-    latestSchedule(settings) ||
-    settings.schedules[0];
-  if (!schedule)
-    return (
-      <Empty title="بانتظار صورة الجدول وبياناته المنظمة">
-        لن تُفترض أيام أو أوقات حصص غير متوفرة.
-      </Empty>
-    );
+  const schedule = s.schedules.find((x) => x.id === selected) ?? s.schedules.at(-1);
+  if (!schedule) return <Empty title="لم يُضف الجدول المدرسي بعد" />;
   const periods = [...new Set(schedule.lessons.map((l) => l.period))].sort((a, b) => a - b);
-  const load = schedule.lessons.filter((l) => l.duty === "تدريس").length;
   return (
     <>
-      <Panel>
-        <div className="actions">
+      <div className="folio-schedule-meta">
+        <span>
+          <CalendarDays size={18} />
+          {schedule.lessons.filter((l) => l.duty === "تدريس").length} حصة تدريس أسبوعيًا
+        </span>
+        {s.schedules.length > 1 && (
           <select
             aria-label="نسخة الجدول"
             value={schedule.id}
-            onChange={(e) => setScheduleId(e.target.value)}
+            onChange={(e) => setSelected(e.target.value)}
           >
-            {settings.schedules.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.effective_on ? `ساري من ${s.effective_on}` : "نسخة دون تاريخ سريان"}
+            {s.schedules.map((sc, i) => (
+              <option value={sc.id} key={sc.id}>
+                {sc.effective_on ?? `نسخة ${i + 1}`}
               </option>
             ))}
           </select>
-          <span className="pill">النصاب المسجل: {load} حصة تدريس أسبوعيًا</span>
-        </div>
-        {schedule.original_path && attachments.find((a) => a.path === schedule.original_path) && (
-          <OriginalPreview
-            attachment={attachments.find((a) => a.path === schedule.original_path)!}
-          />
         )}
-        <Notice>تعرض الأوقات والصفوف كما حُفظت فقط. النسخ السابقة محفوظة.</Notice>
-      </Panel>
-      <div className="day-tabs">
+      </div>
+      <div className="folio-days">
         {days.map((d, i) => (
-          <button className={day === i ? "primary-button" : ""} onClick={() => setDay(i)} key={d}>
+          <button className={day === i ? "active" : ""} key={d} onClick={() => setDay(i)}>
             {d}
           </button>
         ))}
       </div>
-      <div className="schedule-mobile">
+      <div className="folio-daily">
         {schedule.lessons
           .filter((l) => l.day === day)
           .sort((a, b) => a.period - b.period)
           .map((l) => (
-            <Panel key={l.id}>
-              <h3>
-                الحصة {l.period} — {l.subject}
-              </h3>
-              <p>
-                {l.grade} · {l.duty}
-              </p>
-              {l.start && (
-                <p>
-                  {l.start} — {l.end}
-                </p>
-              )}
-              {l.room && <p>القاعة: {l.room}</p>}
-            </Panel>
+            <div className="folio-lesson" key={l.id}>
+              <span>
+                {l.period}
+                <small>الحصة</small>
+              </span>
+              <div>
+                <h3>{l.subject}</h3>
+                <p>{l.grade ?? l.duty}</p>
+              </div>
+              <small>
+                {l.start ? `${l.start} — ${l.end ?? ""}` : l.duty === "انتظار" ? "انتظار" : "تدريس"}
+              </small>
+            </div>
           ))}
       </div>
-      <Panel className="schedule-desktop">
+      <div className="folio-week">
         <table>
           <thead>
             <tr>
@@ -1327,26 +777,15 @@ function Timetable({ settings, attachments }: { settings: Settings; attachments:
                 {days.map((d, i) => {
                   const l = schedule.lessons.find((l) => l.day === i && l.period === p);
                   return (
-                    <td
-                      key={d}
-                      className={
-                        i === ["Sun", "Mon", "Tue", "Wed", "Thu"].indexOf(currentDayRiyadh())
-                          ? "today-cell"
-                          : ""
-                      }
-                    >
+                    <td key={d}>
                       {l ? (
                         <>
                           <strong>{l.subject}</strong>
-                          <p>{l.grade}</p>
-                          <small>
-                            {l.duty}
-                            {l.room ? ` · ${l.room}` : ""}
-                          </small>
+                          <span>{l.grade ?? l.duty}</span>
                           {l.start && (
-                            <p dir="ltr">
+                            <small>
                               {l.start} — {l.end}
-                            </p>
+                            </small>
                           )}
                         </>
                       ) : (
@@ -1359,7 +798,80 @@ function Timetable({ settings, attachments }: { settings: Settings; attachments:
             ))}
           </tbody>
         </table>
-      </Panel>
+      </div>
     </>
+  );
+}
+function OwnerAccess({ onBack }: { onBack: () => void }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [owner, setOwner] = useState(false);
+  const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    db.auth.getSession().then(async ({ data }) => {
+      if (data.session) setOwner(await rpc<boolean>("portfolio_is_owner"));
+    });
+  }, []);
+  return (
+    <div className="folio owner-access">
+      <div className="owner-box">
+        <button className="folio-back" onClick={onBack}>
+          <ArrowRight size={17} /> ملف الإنجاز
+        </button>
+        <ShieldCheck />
+        <h1>مساحة المالك</h1>
+        <p>التحديث اليومي يتم من محادثتك مع الإيجنت.</p>
+        {owner ? (
+          <>
+            <p>تم التحقق من حساب المالك.</p>
+            <button onClick={() => db.auth.signOut().then(() => setOwner(false))}>
+              تسجيل الخروج
+            </button>
+          </>
+        ) : (
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              setBusy(true);
+              try {
+                const { error } = await db.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                setOwner(await rpc<boolean>("portfolio_is_owner"));
+                setMessage("");
+              } catch (err) {
+                setMessage(errorText(err));
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            <label>
+              البريد الإلكتروني
+              <input
+                type="email"
+                dir="ltr"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </label>
+            <label>
+              كلمة المرور
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </label>
+            <button className="folio-primary" disabled={busy}>
+              الدخول
+            </button>
+          </form>
+        )}
+        {message && <p role="alert">{message}</p>}
+      </div>
+    </div>
   );
 }
