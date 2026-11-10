@@ -1,6 +1,6 @@
 """Direct content API: no Lovable tool, build, or service_role required.
 Credentials live outside the repository in a mode-0600 file.
-Usage: python scripts/portfolio-agent.py context|import|publish [package.json]
+Usage: python scripts/portfolio-agent.py context|import|publish|courses|course-import|course-document [package.json]
 """
 import json,os,sys,subprocess
 from pathlib import Path
@@ -9,10 +9,12 @@ def request(operation,package_path=None):
  credentials=Path(os.environ.get('PORTFOLIO_AGENT_CREDENTIALS','/workspace/.portfolio-agent/teacher-portfolio.json'))
  if credentials.stat().st_mode & 0o077: raise RuntimeError('Credential file must have mode 0600')
  cfg=json.loads(credentials.read_text())
- routes={'context':'portfolio_agent_context','import':'portfolio_import','publish':'portfolio_agent_publish'}
- if operation not in routes:raise ValueError('Use context, import or publish')
+ routes={'context':'portfolio_agent_context','import':'portfolio_import','publish':'portfolio_agent_publish','courses':'portfolio_courses_view','course-import':'portfolio_course_import','course-document':'portfolio_course_document'}
+ if operation not in routes:raise ValueError('Unknown agent operation')
  body={'p_key':cfg['integration_key']}
- if operation!='context':body['p_package']=json.loads(Path(package_path).read_text())
+ if operation=='courses':body['p_owner']=True
+ elif operation=='course-document':body['p_id']=json.loads(Path(package_path).read_text())['id']
+ elif operation!='context':body['p_package']=json.loads(Path(package_path).read_text())
  url=cfg['url'].rstrip('/')+'/rest/v1/rpc/'+routes[operation]
  # curl uses the session proxy and CA trust; secrets are supplied over stdin only.
  config='url = '+json.dumps(url)+'\nheader = '+json.dumps('apikey: '+cfg['publishable_key'])+'\nheader = "Content-Type: application/json"\nrequest = "POST"\ndata = '+json.dumps(json.dumps(body,ensure_ascii=False),ensure_ascii=False)+'\n'

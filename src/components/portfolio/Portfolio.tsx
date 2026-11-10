@@ -23,6 +23,8 @@ import { reportDate, type Publication } from "@/lib/portfolio/simple-report";
 import { printSimpleReport } from "@/lib/portfolio/simple-export";
 import { SimpleReport } from "./SimpleReport";
 import { About } from "./About";
+import { Courses } from "./Courses";
+import { CourseManager } from "./CourseManager";
 import "./folio.css";
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <section className={`folio-card ${className}`}>{children}</section>;
@@ -67,12 +69,13 @@ export function PageTitle({
     </div>
   );
 }
-type View = "home" | "about" | "schedule" | "criteria";
+type View = "home" | "about" | "schedule" | "criteria" | "courses";
 const navigation = [
   { id: "home", label: "الرئيسية", icon: BookOpen },
   { id: "about", label: "عن المعلم", icon: UserRound },
   { id: "schedule", label: "الجدول المدرسي", icon: CalendarDays },
   { id: "criteria", label: "عناصر الأداء", icon: LayoutGrid },
+  { id: "courses", label: "الدورات", icon: GraduationCap },
 ] as const;
 export function Portfolio({ initialView = "home" }: { initialView?: string }) {
   const [settings, setSettings] = useState<Settings>(defaultSettings);
@@ -350,6 +353,8 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
       </>
     );
   else if (view === "about") content = <About settings={settings} />;
+  else if (view === "courses")
+    content = <Courses settings={settings} revision={revision.current} />;
   else
     content = (
       <>
@@ -793,6 +798,7 @@ function OwnerAccess({ onBack }: { onBack: () => void }) {
         {owner ? (
           <>
             <p>تم التحقق من حساب المالك.</p>
+            <CourseManager />
             <button onClick={() => db.auth.signOut().then(() => setOwner(false))}>
               تسجيل الخروج
             </button>

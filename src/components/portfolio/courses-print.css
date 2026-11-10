@@ -1,0 +1,180 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #edf3f2;
+  color: #183f4b;
+  font-family: Tajawal, Arial, sans-serif;
+  direction: rtl;
+}
+.course-print-toolbar {
+  text-align: center;
+  padding: 16px;
+  background: white;
+}
+.course-print-toolbar button {
+  border: 0;
+  border-radius: 8px;
+  background: #175950;
+  color: white;
+  font: inherit;
+  padding: 12px 24px;
+  cursor: pointer;
+}
+.course-print-report,
+.course-certificate {
+  background: white;
+  max-width: 210mm;
+  margin: 18px auto;
+  padding: 15mm;
+}
+.course-print-report header {
+  border-bottom: 3px solid #3ba880;
+  padding-bottom: 20px;
+}
+.course-print-report header > span {
+  font-size: 12px;
+  color: #368672;
+}
+h1 {
+  font-size: 26px;
+  margin: 12px 0;
+}
+h2 {
+  font-size: 20px;
+  margin: 10px 0;
+}
+p {
+  line-height: 1.9;
+  font-size: 14px;
+}
+.course-print-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 12px;
+  margin: 25px 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: fixed;
+}
+th,
+td {
+  border: 1px solid #d9e5df;
+  padding: 10px 8px;
+  text-align: right;
+  overflow-wrap: anywhere;
+  line-height: 1.8;
+}
+th {
+  background: #eaf4ef;
+  color: #215c50;
+}
+th:first-child {
+  width: 7%;
+}
+th:nth-child(2) {
+  width: 32%;
+}
+th:nth-child(3) {
+  width: 24%;
+}
+th:nth-child(4) {
+  width: 20%;
+}
+th:nth-child(5) {
+  width: 17%;
+}
+thead {
+  display: table-header-group;
+}
+tr {
+  break-inside: avoid;
+}
+footer {
+  margin-top: 24px;
+  font-size: 12px;
+  color: #54766c;
+}
+.course-print-note {
+  color: #678078;
+  font-size: 11px;
+}
+.course-certificate {
+  text-align: center;
+  break-before: page;
+  break-inside: avoid;
+}
+.course-certificate img {
+  display: block;
+  max-width: 100%;
+  width: auto;
+  max-height: 225mm;
+  object-fit: contain;
+  margin: 15px auto;
+}
+.course-certificate p {
+  font-size: 12px;
+}
+.course-certificate h2 {
+  font-size: 18px;
+}
+@page {
+  size: A4;
+  margin: 12mm;
+  @bottom-center {
+    content: counter(page) " / " counter(pages);
+    font-family: Tajawal;
+    font-size: 9px;
+    color: #57756b;
+  }
+}
+@media print {
+  body {
+    background: white;
+  }
+  .course-print-toolbar {
+    display: none;
+  }
+  .course-print-report,
+  .course-certificate {
+    padding: 0;
+    margin: 0;
+    max-width: none;
+  }
+  .course-print-summary {
+    margin: 18px 0;
+  }
+  .course-certificate {
+    padding-top: 5mm;
+  }
+  th {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+@media print {
+  .course-certificate {
+    display: flex;
+    flex-direction: column;
+    height: 270mm;
+  }
+  .course-certificate img {
+    flex: 1;
+    min-height: 0;
+    height: 0;
+    max-height: none;
+    width: 100%;
+    margin: 10px auto;
+  }
+  .course-certificate h2,
+  .course-certificate p,
+  .course-certificate footer {
+    flex-shrink: 0;
+  }
+}

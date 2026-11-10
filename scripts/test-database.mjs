@@ -493,5 +493,189 @@ try {
 } finally {
   await pg.exec("reset role");
 }
+await pg.exec(readFileSync(new URL("../docs/courses.sql", import.meta.url), "utf8"));
+const courseId = "30000000-0000-4000-8000-000000000001";
+const coursePack = {
+  schema_version: 1,
+  request_id: "course-private-test-001",
+  operation: "upsert",
+  course: {
+    id: courseId,
+    title: "دورة اختبار معزولة",
+    provider: "جهة الاختبار",
+    duration_value: 6,
+    duration_unit: "hours",
+  },
+  original: {
+    name: "original-private.png",
+    mime: "image/png",
+    base64: png.toString("base64"),
+    sha256: hash,
+  },
+};
+const courseCall = async (pack) =>
+  (await scalar("select portfolio_course_import($1) as r", [pack])).r;
+let courseVersion;
+await asUser(owner, async () => {
+  const created = await courseCall(coursePack);
+  courseVersion = created.version;
+  ok(created.saved, "Owner saves a course and private original");
+  ok((await courseCall(coursePack)).duplicate, "Course request replay is idempotent");
+  await assert.rejects(
+    () =>
+      courseCall({
+        ...coursePack,
+        request_id: "course-duplicate-test-001",
+        course: { ...coursePack.course, id: "30000000-0000-4000-8000-000000000002" },
+      }),
+    /مسجلة/,
+  );
+  ok(true, "Duplicate original certificate is rejected across courses");
+});
+await pg.exec("set role anon");
+try {
+  const list = (await scalar("select portfolio_courses_view() as r")).r;
+  ok(
+    list.length === 1 && list[0].document === null && !("original_document" in list[0]),
+    "Public course feed excludes private document identifiers and bytes",
+  );
+  await assert.rejects(
+    () => courseCall({ ...coursePack, request_id: "course-anon-write-001" }),
+    /غير مصرح/,
+  );
+  await assert.rejects(() => pg.query("select portfolio_courses_view(true)"), /غير مصرح/);
+  await assert.rejects(
+    () => pg.query("select content_base64 from portfolio_course_documents"),
+    /permission denied/,
+  );
+  const originalId = (
+    await (async () => {
+      await pg.exec("reset role");
+      const row = await scalar("select original_document from portfolio_courses where id=$1", [
+        courseId,
+      ]);
+      await pg.exec("set role anon");
+      return row;
+    })()
+  ).original_document;
+  await assert.rejects(
+    () => pg.query("select portfolio_course_document($1)", [originalId]),
+    /غير متاحة/,
+  );
+  ok(true, "Anonymous clients cannot write courses, request owner feed, or access originals");
+} finally {
+  await pg.exec("reset role");
+}
+const publicBytes = Buffer.concat([png, Buffer.from("public-copy")]);
+const publicFile = {
+  name: "redacted.png",
+  mime: "image/png",
+  base64: publicBytes.toString("base64"),
+  sha256: createHash("sha256").update(publicBytes).digest("hex"),
+};
+await asUser(owner, async () => {
+  await assert.rejects(
+    () =>
+      courseCall({
+        schema_version: 1,
+        request_id: "course-privacy-test-001",
+        operation: "upsert",
+        course: { id: courseId, version: courseVersion },
+        public_copy: publicFile,
+      }),
+    /خصوصية/,
+  );
+  ok(true, "Publishing a certificate requires explicit privacy review");
+  await assert.rejects(
+    () =>
+      courseCall({
+        schema_version: 1,
+        request_id: "course-conflicting-copy-001",
+        operation: "upsert",
+        course: { id: courseId, version: courseVersion },
+        public_copy: publicFile,
+        publish_original: true,
+        privacy_reviewed: true,
+      }),
+    /نسخة نشر واحدة/,
+  );
+  ok(true, "A reviewed public copy cannot be accidentally overridden by publishing the original");
+  const updated = await courseCall({
+    schema_version: 1,
+    request_id: "course-publish-test-001",
+    operation: "upsert",
+    course: { id: courseId, version: courseVersion },
+    public_copy: publicFile,
+    privacy_reviewed: true,
+  });
+  await assert.rejects(
+    () =>
+      courseCall({
+        schema_version: 1,
+        request_id: "course-stale-test-001",
+        operation: "upsert",
+        course: { id: courseId, version: courseVersion, title: "نسخة قديمة" },
+      }),
+    /نسخة الدورة/,
+  );
+  courseVersion = updated.version;
+  ok(
+    (
+      await scalar("select count(*)::int as n from portfolio_course_versions where course_id=$1", [
+        courseId,
+      ])
+    ).n >= 2,
+    "Course edits preserve previous snapshots",
+  );
+});
+await pg.exec("set role anon");
+let coursePublicId;
+try {
+  const list = (await scalar("select portfolio_courses_view() as r")).r;
+  coursePublicId = list[0].document.id;
+  const file = (await scalar("select portfolio_course_document($1) as r", [coursePublicId])).r;
+  ok(
+    file.base64 === publicFile.base64 && file.name !== publicFile.name,
+    "Public certificate endpoint returns only the selected reviewed copy with a generic filename",
+  );
+} finally {
+  await pg.exec("reset role");
+}
+await asUser(owner, async () => {
+  courseVersion = (
+    await courseCall({
+      schema_version: 1,
+      request_id: "course-archive-test-001",
+      operation: "archive",
+      course: { id: courseId, version: courseVersion },
+    })
+  ).version;
+});
+await pg.exec("set role anon");
+try {
+  ok(
+    (await scalar("select portfolio_courses_view() as r")).r.length === 0,
+    "Archiving withdraws a course from public view",
+  );
+  await assert.rejects(
+    () => pg.query("select portfolio_course_document($1)", [coursePublicId]),
+    /غير متاحة/,
+  );
+  ok(true, "Archiving withdraws certificate access too");
+} finally {
+  await pg.exec("reset role");
+}
+await asUser(owner, async () => {
+  await courseCall({
+    schema_version: 1,
+    request_id: "course-restore-test-001",
+    operation: "restore",
+    course: { id: courseId, version: courseVersion },
+  });
+  ok(
+    (await scalar("select jsonb_array_length(portfolio_courses_view()) as n")).n === 1,
+    "Owner can restore the archived course",
+  );
+});
 await pg.close();
 console.log(`\n${checks} isolated database/security checks passed. Production database untouched.`);

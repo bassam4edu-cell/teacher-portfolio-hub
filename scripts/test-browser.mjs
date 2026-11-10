@@ -106,7 +106,10 @@ const ok = (v, label) => {
   checks++;
   console.log("PASS", label);
 };
-ok((await p.locator(".folio-header nav a").count()) === 4, "Four public navigation links only");
+ok(
+  (await p.locator(".folio-header nav a").count()) === 5,
+  "Five public navigation links including courses",
+);
 ok(
   !(await p.locator("body").innerText()).includes("مكتبة الشواهد"),
   "No separate evidence library in public navigation",
