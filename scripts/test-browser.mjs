@@ -108,6 +108,27 @@ ok(
   !(await p.locator(".report-pages").innerText()).includes("حالة البيانات"),
   "No workflow/status clutter in the report",
 );
+async function containedReportBoxes(page, label) {
+  const violations = await page.evaluate(() =>
+    [...document.querySelectorAll(".simple-report .sr-box")].flatMap((box) => {
+      const rect = box.getBoundingClientRect();
+      const nodes = [...box.querySelectorAll(".sr-label,p,li")];
+      return nodes
+        .filter((node) => {
+          const r = node.getBoundingClientRect();
+          return (
+            r.left < rect.left + 3 ||
+            r.right > rect.right - 3 ||
+            r.top < rect.top + 3 ||
+            r.bottom > rect.bottom - 3
+          );
+        })
+        .map((n) => n.textContent);
+    }),
+  );
+  ok(violations.length === 0, `${label}: all labels and text stay inside their boxes`);
+}
+await containedReportBoxes(p, "Desktop");
 const promise = c.waitForEvent("page");
 await p.getByRole("button", { name: "تحميل PDF", exact: true }).click({ noWaitAfter: true });
 const pop = await promise;
@@ -124,6 +145,7 @@ await pop.evaluate(async () => {
   return true;
 });
 await pop.emulateMedia({ media: "print" });
+await containedReportBoxes(pop, "A4 print");
 ok((await pop.locator(".simple-report").count()) === 1, "Short report uses a single A4 document");
 await pop.pdf({
   path: "/tmp/portfolio-validation/simple-report.pdf",
@@ -133,6 +155,7 @@ await pop.pdf({
 });
 await pop.close();
 await p.setViewportSize({ width: 390, height: 844 });
+await containedReportBoxes(p, "iPhone");
 ok(
   await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
   "Report fits the iPhone viewport",

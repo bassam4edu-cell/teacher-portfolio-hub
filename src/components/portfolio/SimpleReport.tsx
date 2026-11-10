@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Settings } from "@/lib/portfolio/model";
 import { reportDate, type Publication } from "@/lib/portfolio/simple-report";
 import "./simple-report.css";
@@ -62,35 +63,24 @@ export function SimpleReport({
                   <Field title="المجال" value={p.report.field ?? "تعليم"} />
                 </div>
                 <div className="sr-grid sr-two sr-narrative">
-                  <fieldset>
-                    <legend>خطوات التنفيذ / الوصف</legend>
+                  <ReportBox title="خطوات التنفيذ / الوصف">
                     <p>
-                      {p.report.description
-                        .split(/([A-Za-z][A-Za-z0-9 .—-]*[A-Za-z0-9])/g)
-                        .map((part, i) =>
-                          /[A-Za-z]/.test(part) ? (
-                            <bdi dir="ltr" key={i}>
-                              {part}
-                            </bdi>
-                          ) : (
-                            part
-                          ),
-                        )}
+                      <ReportText value={p.report.description} />
                     </p>
-                  </fieldset>
-                  <fieldset>
-                    <legend>الأهداف</legend>
+                  </ReportBox>
+                  <ReportBox title="الأهداف">
                     <ul>
                       {p.report.objectives.map((o, i) => (
-                        <li key={i}>{o}</li>
+                        <li key={i}>
+                          <ReportText value={o} />
+                        </li>
                       ))}
                     </ul>
-                  </fieldset>
+                  </ReportBox>
                 </div>
               </>
             )}
-            <fieldset className="sr-evidence">
-              <legend>الشواهد</legend>
+            <ReportBox title="الشواهد" className="sr-evidence">
               {photos.length ? (
                 <div className="sr-photos">
                   {photos.map((a) => (
@@ -110,7 +100,7 @@ export function SimpleReport({
               ) : (
                 <p className="sr-no-images">لا توجد صور مرفقة بهذا التقرير.</p>
               )}
-            </fieldset>
+            </ReportBox>
             <footer className="sr-signatures">
               <div>
                 إعداد المعلم<strong>{s.teacher.name}</strong>
@@ -133,9 +123,41 @@ export function SimpleReport({
 }
 function Field({ title, value }: { title: string; value: string }) {
   return (
-    <fieldset>
-      <legend>{title}:</legend>
-      <p>{value}</p>
-    </fieldset>
+    <ReportBox title={title}>
+      <p className="sr-value">
+        <ReportText value={value} />
+      </p>
+    </ReportBox>
+  );
+}
+function ReportBox({
+  title,
+  children,
+  className = "",
+}: {
+  title: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={`sr-box ${className}`} aria-label={title}>
+      <h3 className="sr-label">{title}</h3>
+      <div className="sr-box-content">{children}</div>
+    </section>
+  );
+}
+function ReportText({ value }: { value: string }) {
+  return (
+    <>
+      {value.split(/([«“"]?[A-Za-z][A-Za-z0-9 .—-]*[A-Za-z0-9][»”"]?)/g).map((part, i) =>
+        /[A-Za-z]/.test(part) ? (
+          <bdi dir="ltr" key={i}>
+            {part}
+          </bdi>
+        ) : (
+          part
+        ),
+      )}
+    </>
   );
 }
