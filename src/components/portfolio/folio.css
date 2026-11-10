@@ -480,15 +480,24 @@
   transform: translateY(-4px);
   border-color: #a3cbbf;
 }
-.frc-photo {
+.folio .frc-photo {
   position: relative;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
   height: 208px;
+  overflow: hidden;
   background: #e9f1f1;
   display: grid;
   place-items: center;
   color: #94acae;
 }
 .frc-photo > img {
+  display: block;
+  min-height: 0;
+  min-width: 0;
+  max-height: 100%;
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -517,24 +526,54 @@
 }
 .frc-body h3 {
   font-size: 18px;
-  min-height: 58px;
+  color: var(--ink);
+  overflow-wrap: anywhere;
 }
-.frc-bottom {
+.folio .frc-date {
+  font-size: 12px;
+  margin-top: 8px;
+  color: #56707b;
+}
+.folio .frc-summary {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.85;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.frc-count {
+  display: block;
+  margin-top: 10px;
+  color: #56707b;
+  font-size: 12px;
+}
+.frc-actions {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 17px;
-  padding-top: 13px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 14px;
   border-top: 1px solid #edf2f3;
-  color: #80979e;
-  font-size: 11px;
 }
-.frc-bottom > span:last-child {
-  display: flex;
+.folio .frc-actions button {
+  display: inline-flex;
+  justify-content: center;
   align-items: center;
-  gap: 7px;
-  color: #2a8575;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  flex: 1 1 auto;
+}
+.folio .frc-actions button:first-child {
+  background: #19544f;
+  border-color: #19544f;
+  color: white;
+}
+.folio .frc-actions button:first-child:hover {
+  background: #247367;
 }
 .folio-schedule-teaser {
   display: flex;
@@ -1203,7 +1242,7 @@
   .folio-report-grid {
     grid-template-columns: 1fr;
   }
-  .frc-photo {
+  .folio .frc-photo {
     height: 230px;
   }
   .frc-body {
@@ -1212,9 +1251,6 @@
   .frc-body h3 {
     min-height: 0;
     font-size: 20px;
-  }
-  .frc-bottom {
-    margin-top: 17px;
   }
   .folio-schedule-teaser {
     padding: 24px 20px;

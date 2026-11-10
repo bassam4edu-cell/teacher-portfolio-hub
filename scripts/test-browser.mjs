@@ -93,7 +93,54 @@ ok(
   "Report count is calculated under its primary element",
 );
 await p.locator(".folio-criterion").nth(3).click();
-await p.locator(".folio-report-card").click();
+const card = p.locator(".folio-report-card");
+ok(
+  (await card.locator("h3").isVisible()) && (await card.locator("h3").innerText()) === report.title,
+  "Card displays the report title",
+);
+ok(
+  (await card.locator(".frc-date").innerText()).includes("2026-10-20") &&
+    (await card.locator(".frc-date").innerText()).includes("تقديري"),
+  "Card displays the execution date and its estimated label",
+);
+ok(
+  (await card.locator(".frc-summary").innerText()) === report.report.description,
+  "Card displays the saved report summary",
+);
+ok(
+  await card.locator(".frc-photo").evaluate((el) => {
+    const frame = el.getBoundingClientRect();
+    const photo = el.querySelector("img").getBoundingClientRect();
+    const body = el.nextElementSibling.getBoundingClientRect();
+    return photo.bottom <= frame.bottom + 1 && photo.bottom <= body.top + 1;
+  }),
+  "Preview image stays inside its frame and does not cover card information",
+);
+const cardPdfPromise = c.waitForEvent("page");
+await card.getByRole("button", { name: "تحميل PDF", exact: true }).click({ noWaitAfter: true });
+const cardPdf = await cardPdfPromise;
+await cardPdf.waitForSelector(".simple-report");
+await cardPdf.waitForFunction(
+  () =>
+    document.querySelectorAll(".sr-photos img").length === 2 &&
+    [...document.images].every((i) => i.complete && i.naturalWidth),
+);
+ok(
+  (await cardPdf.locator(".sr-title").innerText()) === report.title &&
+    (await cardPdf.locator(".sr-photos img").count()) === 2,
+  "Card PDF includes report information and both images",
+);
+ok(p.url().endsWith("#criteria/4"), "Card PDF preserves the element page");
+await cardPdf.close();
+await p.setViewportSize({ width: 390, height: 844 });
+ok(
+  (await card.locator("h3").isVisible()) &&
+    (await card.locator(".frc-summary").isVisible()) &&
+    (await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth)),
+  "Card information and actions fit the iPhone viewport",
+);
+await p.setViewportSize({ width: 1440, height: 1000 });
+await card.getByRole("button", { name: "عرض التقرير كاملًا", exact: true }).click();
 await p.waitForFunction(
   () =>
     document.querySelectorAll(".sr-photos img").length === 2 &&

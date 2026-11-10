@@ -1,6 +1,6 @@
 import reportCss from "@/components/portfolio/simple-report.css?raw";
-export async function printSimpleReport(report: HTMLElement, title: string) {
-  const win = window.open("", "_blank");
+export async function printSimpleReport(report: HTMLElement, title: string, targetWindow?: Window) {
+  const win = targetWindow ?? window.open("", "_blank");
   if (!win) throw new Error("اسمح بفتح نافذة التقرير لحفظ PDF.");
   win.document.open();
   win.document.write(

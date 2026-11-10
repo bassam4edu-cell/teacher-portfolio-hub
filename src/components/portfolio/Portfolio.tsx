@@ -1,3 +1,4 @@
+import { flushSync } from "react-dom";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   ArrowUpLeft,
@@ -19,7 +20,7 @@ import {
 } from "lucide-react";
 import { db, errorText, loadSimplePortfolio, publicReportAsset, rpc } from "@/lib/portfolio/api";
 import { defaultSettings, days, currentDayRiyadh, type Settings } from "@/lib/portfolio/model";
-import type { Publication } from "@/lib/portfolio/simple-report";
+import { reportDate, type Publication } from "@/lib/portfolio/simple-report";
 import { printSimpleReport } from "@/lib/portfolio/simple-export";
 import { SimpleReport } from "./SimpleReport";
 import "./folio.css";
@@ -275,6 +276,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
                 <ReportCard
                   key={p.id}
                   publication={p}
+                  settings={settings}
                   criterionName={settings.criteria.find((c) => c.id === p.criterion)?.name ?? ""}
                   onOpen={() => go("criteria", p.criterion, p.id)}
                 />
@@ -320,6 +322,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
               .map((p) => (
                 <ReportCard
                   publication={p}
+                  settings={settings}
                   key={p.id}
                   criterionName={chosen.name}
                   onOpen={() => go("criteria", chosen.id, p.id)}
@@ -510,13 +513,18 @@ function Criteria({
 function ReportCard({
   publication: p,
   criterionName,
+  settings,
   onOpen,
 }: {
   publication: Publication;
+  settings: Settings;
   criterionName: string;
   onOpen: () => void;
 }) {
   const [src, setSrc] = useState("");
+  const [exportUrls, setExportUrls] = useState<Record<string, string> | null>(null);
+  const [exportError, setExportError] = useState("");
+  const exportRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     let active = true;
     let url = "";
@@ -533,25 +541,74 @@ function ReportCard({
       if (url) URL.revokeObjectURL(url);
     };
   }, [p.assets]);
+  async function downloadPdf() {
+    const win = window.open("", "_blank");
+    if (!win) {
+      setExportError("اسمح بفتح نافذة التقرير لحفظ PDF.");
+      return;
+    }
+    win.document.body.textContent = "جارٍ تجهيز التقرير…";
+    setExportError("");
+    setExportUrls({});
+    const allocated: string[] = [];
+    try {
+      const entries = await Promise.all(
+        p.assets.map(async (asset) => {
+          const url = await publicReportAsset(asset.id);
+          allocated.push(url);
+          return [asset.id, url];
+        }),
+      );
+      flushSync(() => setExportUrls(Object.fromEntries(entries)));
+      if (!exportRef.current) throw new Error("تعذر تجهيز التقرير");
+      await printSimpleReport(exportRef.current, p.title, win);
+    } catch (error) {
+      setExportError(errorText(error));
+      win.document.body.textContent = "تعذر تجهيز التقرير. أعد المحاولة من بطاقة التقرير.";
+    } finally {
+      allocated.forEach((url) => URL.revokeObjectURL(url));
+      setExportUrls(null);
+    }
+  }
   return (
-    <button className="folio-report-card" onClick={onOpen}>
-      <div className="frc-photo">
+    <article className="folio-report-card" aria-label={p.title}>
+      <button className="frc-photo" onClick={onOpen} aria-label={`عرض تقرير ${p.title}`}>
         {src ? <img src={src} alt={p.title} /> : <FileText size={40} strokeWidth={1} />}
         <span>العنصر {p.criterion}</span>
-      </div>
+      </button>
       <div className="frc-body">
         <small>{criterionName}</small>
         <h3>{p.title}</h3>
-        <div className="frc-bottom">
-          <span>{p.assets.length} صور</span>
-          <span>
-            عرض التقرير <ChevronLeft size={16} />
-          </span>
+        <p className="frc-date">
+          تاريخ التنفيذ: <bdi>{reportDate(p.report)}</bdi>
+        </p>
+        {p.report.description && <p className="frc-summary">{p.report.description}</p>}
+        <span className="frc-count">{p.assets.length} صور مرفقة</span>
+        <div className="frc-actions">
+          <button onClick={onOpen}>
+            عرض التقرير كاملًا <ChevronLeft size={16} />
+          </button>
+          <button onClick={downloadPdf} disabled={exportUrls !== null}>
+            <Download size={16} /> {exportUrls !== null ? "جارٍ التجهيز…" : "تحميل PDF"}
+          </button>
         </div>
+        {exportError && (
+          <p className="folio-error" role="alert">
+            {exportError}
+          </p>
+        )}
       </div>
-    </button>
+      {exportUrls !== null && (
+        <div hidden aria-hidden="true">
+          <div ref={exportRef}>
+            <SimpleReport publication={p} settings={settings} urls={exportUrls} />
+          </div>
+        </div>
+      )}
+    </article>
   );
 }
+
 function ReportPage({
   publication: p,
   settings,
