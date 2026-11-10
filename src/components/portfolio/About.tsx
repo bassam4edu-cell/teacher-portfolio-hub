@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import type { Settings } from "@/lib/portfolio/model";
 import { aboutDefaults, aboutSources } from "@/lib/portfolio/about-content";
+import { CareerCV } from "./CareerCV";
 import "./about.css";
 const tabs = [
   { id: "introduction", label: "المقدمة", icon: BookOpen },
@@ -106,16 +107,6 @@ export function About({ settings: s }: { settings: Settings }) {
       ?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
       [next]?.focus({ preventScroll: true });
   }
-  const facts = [
-    ["الاسم", s.teacher.name],
-    ["التخصص", s.teacher.subject],
-    ["المدرسة", s.teacher.school],
-    ["الإدارة", s.teacher.administration],
-    ["المؤهل", s.teacher.qualification],
-    ["الرتبة", s.teacher.rank],
-    ["الخبرات", s.teacher.experience],
-    ["الرخصة المهنية", s.teacher.license],
-  ].filter(([, value]) => value);
   return (
     <>
       <div className="folio-page-title">
@@ -239,29 +230,7 @@ export function About({ settings: s }: { settings: Settings }) {
                 </aside>
               </>
             )}
-            {active === "cv" && (
-              <>
-                <dl className="about-cv-facts">
-                  {facts.map(([label, value]) => (
-                    <div key={label}>
-                      <dt>{label}</dt>
-                      <dd>{value}</dd>
-                    </div>
-                  ))}
-                </dl>
-                {s.career.length > 0 && (
-                  <div className="about-career-list">
-                    {s.career.map((x) => (
-                      <Card title={x.title} key={x.id}>
-                        {x.date && <time>{x.date}</time>}
-                        {x.institution && <p>{x.institution}</p>}
-                        {x.description && <p>{x.description}</p>}
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
+            {active === "cv" && <CareerCV settings={s} />}
             {active === "objectives" && (
               <>
                 <ol className="about-objectives">

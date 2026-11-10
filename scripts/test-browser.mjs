@@ -21,6 +21,23 @@ s.about = {
 s.vision = "رؤية المعلم المحفوظة";
 s.mission = "رسالة المعلم المحفوظة";
 s.values = ["الأمانة: ألتزم بالأمانة المهنية واحترام الطلاب في عملي اليومي.", "الإتقان"];
+s.teacher.contact = "private-contact@example.test";
+s.career = [
+  {
+    id: "cv-test-degree",
+    type: "qualification",
+    title: "بكالوريوس اللغة الإنجليزية",
+    institution: "جامعة اختبار",
+  },
+  { id: "cv-test-work", type: "experience", title: "معلم", institution: "وزارة التعليم" },
+  {
+    id: "cv-test-skill",
+    type: "skill",
+    title: "تقنيات التعليم",
+    description: "استخدام المنصات التعليمية",
+  },
+  { id: "cv-test-other", type: "course", title: "دورة محفوظة سابقة" },
+];
 s.current_period = "p";
 s.periods = [{ id: "p", name: "فترة اختبار", archived: false }];
 s.schedules = [
@@ -282,9 +299,21 @@ ok(
   "Arrow keys follow RTL tab order",
 );
 await p.getByRole("tab", { name: "السيرة الذاتية", exact: true }).click();
+ok((await p.locator(".cv-highest").count()) === 0, "CV omits an unavailable highest qualification");
 ok(
-  !(await p.getByRole("tabpanel").innerText()).includes("المؤهل"),
-  "CV omits unavailable qualifications",
+  (await p.locator(".cv-section-qualification").innerText()).includes(
+    "بكالوريوس اللغة الإنجليزية",
+  ) && (await p.locator(".cv-section-experience").innerText()).includes("وزارة التعليم"),
+  "CV groups qualifications and experience from saved data",
+);
+ok(
+  (await p.locator(".cv-section-other").innerText()).includes("دورة محفوظة سابقة"),
+  "CV preserves existing career entries with other types",
+);
+ok(
+  !(await p.getByRole("tabpanel").innerText()).includes("private-contact@example.test") &&
+    (await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth)),
+  "CV omits personal contact and fits iPhone",
 );
 await p.getByRole("tab", { name: "أهداف الملف", exact: true }).click();
 ok(
