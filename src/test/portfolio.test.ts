@@ -125,3 +125,18 @@ describe("Evidence and schedule data integrity", () => {
     );
   });
 });
+
+describe("About content settings", () => {
+  it("preserves editable about text without requiring invented career fields", () => {
+    const settings = structuredClone(defaultSettings);
+    settings.about = {
+      introduction: "مقدمة",
+      ethics: "ميثاق",
+      policy: "سياسة",
+      objectives: "أهداف",
+    };
+    const parsed = settingsSchema.parse(settings);
+    expect(parsed.about).toEqual(settings.about);
+    expect(parsed.teacher.qualification).toBeUndefined();
+  });
+});

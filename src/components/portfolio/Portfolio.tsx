@@ -12,7 +12,6 @@ import {
   RefreshCw,
   School,
   ShieldCheck,
-  Target,
   UserRound,
   X,
   Download,
@@ -23,6 +22,7 @@ import { defaultSettings, days, currentDayRiyadh, type Settings } from "@/lib/po
 import { reportDate, type Publication } from "@/lib/portfolio/simple-report";
 import { printSimpleReport } from "@/lib/portfolio/simple-export";
 import { SimpleReport } from "./SimpleReport";
+import { About } from "./About";
 import "./folio.css";
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <section className={`folio-card ${className}`}>{children}</section>;
@@ -669,95 +669,6 @@ function ReportPage({
       <div ref={ref}>
         <SimpleReport publication={p} settings={settings} urls={urls} />
       </div>
-    </>
-  );
-}
-function About({ settings: s }: { settings: Settings }) {
-  return (
-    <>
-      <PageTitle eyebrow="مسيرة مهنية في التعليم" title="عن المعلم" />
-      <section className="folio-about-cover">
-        <span className="about-monogram">ب ع</span>
-        <div>
-          <span className="folio-eyebrow">معلم اللغة الإنجليزية</span>
-          <h2>{s.teacher.name}</h2>
-          <p>{s.teacher.school}</p>
-        </div>
-      </section>
-      <Panel>
-        <h2>نبذة عني</h2>
-        <p className="about-bio">{s.teacher.bio}</p>
-        <div className="about-facts">
-          {[
-            ["التخصص", s.teacher.subject],
-            ["الإدارة", s.teacher.administration],
-            ["المؤهل", s.teacher.qualification],
-            ["الرتبة", s.teacher.rank],
-            ["الخبرة", s.teacher.experience],
-            ["الرخصة المهنية", s.teacher.license],
-          ]
-            .filter(([, v]) => v)
-            .map(([k, v]) => (
-              <div key={k}>
-                <small>{k}</small>
-                <strong>{v}</strong>
-              </div>
-            ))}
-        </div>
-      </Panel>
-      {(s.vision || s.mission) && (
-        <div className="about-two">
-          {s.vision && (
-            <Panel>
-              <Target />
-              <h2>الرؤية</h2>
-              <p>{s.vision}</p>
-            </Panel>
-          )}
-          {s.mission && (
-            <Panel>
-              <BookOpen />
-              <h2>الرسالة</h2>
-              <p>{s.mission}</p>
-            </Panel>
-          )}
-        </div>
-      )}
-      {s.values.length > 0 && (
-        <Panel>
-          <h2>القيم</h2>
-          <div className="about-values">
-            {s.values.map((v) => (
-              <span key={v}>{v}</span>
-            ))}
-          </div>
-        </Panel>
-      )}
-      {s.goals.length > 0 && (
-        <>
-          <Section title="الأهداف المهنية" />
-          {s.goals.map((g) => (
-            <Panel key={g.id}>
-              <h3>{g.title}</h3>
-              <p>{g.description}</p>
-              {g.indicator && <p>{g.indicator}</p>}
-            </Panel>
-          ))}
-        </>
-      )}
-      {s.career.length > 0 && (
-        <>
-          <Section title="السيرة والتطوير المهني" />
-          {s.career.map((x) => (
-            <Panel key={x.id}>
-              <small>{x.date}</small>
-              <h3>{x.title}</h3>
-              <p>{x.institution}</p>
-              <p>{x.description}</p>
-            </Panel>
-          ))}
-        </>
-      )}
     </>
   );
 }

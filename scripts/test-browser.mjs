@@ -12,6 +12,15 @@ const p = await c.newPage();
 const errors = [];
 p.on("pageerror", (e) => errors.push(e.message));
 const s = structuredClone(defaultSettings);
+s.about = {
+  introduction: "مقدمة محفوظة من إعدادات المعلم",
+  ethics: "ملخص الميثاق المحفوظ",
+  policy: "ملخص السياسة المحفوظ",
+  objectives: "هدف الملف الأول\nهدف الملف الثاني",
+};
+s.vision = "رؤية المعلم المحفوظة";
+s.mission = "رسالة المعلم المحفوظة";
+s.values = ["الأمانة", "الإتقان"];
 s.current_period = "p";
 s.periods = [{ id: "p", name: "فترة اختبار", archived: false }];
 s.schedules = [
@@ -215,6 +224,79 @@ ok(
   (await p.locator(".folio-daily").innerText()).includes("انتظار"),
   "Timetable is readable by day on mobile",
 );
+await p.getByRole("button", { name: "فتح القائمة" }).click();
+await p.getByRole("link", { name: "عن المعلم", exact: true }).first().click();
+await p.getByRole("tab", { name: "المقدمة", exact: true }).waitFor();
+ok((await p.getByRole("tab").count()) === 6, "About section has six accessible tabs");
+ok(
+  (await p.getByRole("tabpanel").innerText()).includes(s.about.introduction),
+  "Introduction uses saved owner content",
+);
+await p.getByRole("tab", { name: "الرؤية والرسالة والقيم", exact: true }).click();
+ok(
+  (await p.getByRole("tabpanel").innerText()).includes(s.vision) &&
+    p.url().endsWith("#about/vision"),
+  "Vision tab uses saved content and a direct URL",
+);
+await p.getByRole("tab", { name: "ميثاق أخلاقيات مهنة التعليم", exact: true }).click();
+ok(
+  (await p.getByRole("tabpanel").innerText()).includes(s.about.ethics) &&
+    (await p.getByRole("tabpanel").locator('a[href^="https://drive.uqu.edu.sa/"]').count()) === 1,
+  "Ethics summary has a source document",
+);
+await p
+  .getByRole("tab", { name: "سياسة التعليم في المملكة العربية السعودية", exact: true })
+  .click();
+ok(
+  (await p.getByRole("tabpanel").locator('a[href^="https://www.moe.gov.sa/"]').count()) === 1,
+  "Education policy links to its official source",
+);
+await p.goBack();
+await p.waitForFunction(
+  () => document.querySelector('[role="tab"][aria-selected="true"]')?.id === "about-tab-ethics",
+);
+ok(
+  (await p
+    .getByRole("tab", { name: "ميثاق أخلاقيات مهنة التعليم", exact: true })
+    .getAttribute("aria-selected")) === "true",
+  "Browser back restores the previous tab",
+);
+await p.getByRole("tab", { name: "ميثاق أخلاقيات مهنة التعليم", exact: true }).focus();
+await p.keyboard.press("ArrowLeft");
+ok(
+  (await p
+    .getByRole("tab", { name: "سياسة التعليم في المملكة العربية السعودية", exact: true })
+    .getAttribute("aria-selected")) === "true",
+  "Arrow keys follow RTL tab order",
+);
+await p.getByRole("tab", { name: "السيرة الذاتية", exact: true }).click();
+ok(
+  !(await p.getByRole("tabpanel").innerText()).includes("المؤهل"),
+  "CV omits unavailable qualifications",
+);
+await p.getByRole("tab", { name: "أهداف الملف", exact: true }).click();
+ok(
+  (await p.locator(".about-objectives li").count()) === 2 &&
+    (await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth)),
+  "Objectives and scrollable tabs fit iPhone without page overflow",
+);
+await p.screenshot({ path: "/tmp/portfolio-validation/about-mobile.png", fullPage: true });
+await p.reload();
+await p.getByRole("tabpanel").waitFor();
+ok(
+  (await p.getByRole("tab", { name: "أهداف الملف", exact: true }).getAttribute("aria-selected")) ===
+    "true",
+  "Direct tab URL survives reload",
+);
+await p.emulateMedia({ reducedMotion: "reduce" });
+await p.getByRole("tab", { name: "المقدمة", exact: true }).click();
+ok(
+  await p.locator(".about-panel").evaluate((el) => getComputedStyle(el).animationName === "none"),
+  "Reduced motion preference disables panel animation",
+);
+await p.setViewportSize({ width: 1440, height: 1000 });
+await p.screenshot({ path: "/tmp/portfolio-validation/about-desktop.png", fullPage: true });
+await p.setViewportSize({ width: 390, height: 844 });
 await p.getByRole("button", { name: "فتح القائمة" }).click();
 await p.getByRole("link", { name: "الرئيسية", exact: true }).first().click();
 await p.screenshot({ path: "/tmp/portfolio-validation/simple-home-mobile.png", fullPage: true });

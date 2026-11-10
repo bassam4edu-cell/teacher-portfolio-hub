@@ -99,6 +99,7 @@ export type Settings = {
     verified_on: string;
     note: string;
   };
+  about?: Partial<import("./about-content").AboutContent>;
   vision: string;
   mission: string;
   values: string[];
@@ -418,6 +419,14 @@ export const settingsSchema = z
       verified_on: z.string(),
       note: z.string(),
     }),
+    about: z
+      .object({
+        introduction: z.string().max(12000).optional(),
+        ethics: z.string().max(12000).optional(),
+        policy: z.string().max(12000).optional(),
+        objectives: z.string().max(12000).optional(),
+      })
+      .optional(),
     vision: z.string(),
     mission: z.string(),
     values: z.array(z.string()),

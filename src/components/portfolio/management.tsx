@@ -1,3 +1,4 @@
+import { aboutDefaults } from "@/lib/portfolio/about-content";
 import { useEffect, useRef, useState } from "react";
 import {
   Archive,
@@ -834,6 +835,7 @@ export function SettingsPanel({
         {[
           ["teacher", "بيانات المعلم"],
           ["vision", "الرؤية والتأمل"],
+          ["about", "تبويبات عن المعلم"],
           ["periods", "الأعوام والفترات"],
           ["targets", "مستهدفات التوثيق"],
         ].map(([id, label]) => (
@@ -900,6 +902,35 @@ export function SettingsPanel({
               <p className="muted">
                 المنطقة الزمنية: Asia/Riyadh. لا يلزم رقم هوية أو تاريخ ميلاد أو هاتف شخصي.
               </p>
+            </>
+          )}
+          {tab === "about" && (
+            <>
+              <h2>محتوى تبويبات عن المعلم</h2>
+              <p className="muted">
+                كل نص متاح للزوار. عدّل الرؤية والقيم من «الرؤية والتأمل»، والسيرة من بيانات المعلم
+                والسيرة والدورات.
+              </p>
+              {(["introduction", "ethics", "policy", "objectives"] as const).map((key, i) => (
+                <label key={key}>
+                  {
+                    [
+                      "المقدمة",
+                      "ميثاق أخلاقيات مهنة التعليم — ملخص تعريفي",
+                      "سياسة التعليم — ملخص تعريفي",
+                      "أهداف الملف — هدف في كل سطر",
+                    ][i]
+                  }
+                  <textarea
+                    rows={7}
+                    maxLength={12000}
+                    value={draft.about?.[key] ?? aboutDefaults[key]}
+                    onChange={(e) =>
+                      update("about", { ...aboutDefaults, ...draft.about, [key]: e.target.value })
+                    }
+                  />
+                </label>
+              ))}
             </>
           )}
           {tab === "vision" && (

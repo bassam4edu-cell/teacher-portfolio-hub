@@ -1,0 +1,324 @@
+.folio-about-cover {
+  position: relative;
+  overflow: hidden;
+}
+.about-cover-detail {
+  margin-inline-start: auto;
+  color: #368f7b;
+  opacity: 0.28;
+  transform: rotate(-10deg);
+}
+.about-tabs-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #bedbd4 transparent;
+  margin-top: 30px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #f0f6f5;
+  padding: 6px;
+}
+.about-tabs {
+  display: flex;
+  position: relative;
+  width: max-content;
+  min-width: 100%;
+  isolation: isolate;
+  gap: 4px;
+}
+.folio .about-tabs button {
+  position: relative;
+  flex: 1 0 165px;
+  width: 165px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  border: 0;
+  background: transparent;
+  padding: 13px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.6;
+  border-radius: 10px;
+  color: #5b777e;
+  min-height: 87px;
+  transition: color 0.25s;
+}
+.folio .about-tabs button[aria-selected="true"] {
+  color: white;
+}
+.folio .about-tabs button:hover {
+  background: #e1eeea;
+}
+.folio .about-tabs button[aria-selected="true"]:hover {
+  background: transparent;
+}
+.about-tab-marker {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(120deg, #164e56, #258573);
+  border-radius: 10px;
+  z-index: -1;
+  box-shadow: 0 4px 12px #1c69551c;
+  transition:
+    transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 0.32s;
+}
+.about-panel-shell {
+  transition: height 0.3s ease;
+  overflow: clip;
+  margin-top: 24px;
+}
+.about-panel {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: white;
+  padding: 36px;
+  animation: about-enter 0.3s ease both;
+  outline-offset: -4px;
+}
+.about-panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 27px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e6eeec;
+}
+.about-panel-heading > span {
+  color: #398c7b;
+  background: #eef7f3;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  font-size: 15px;
+}
+.folio .about-panel-heading h2 {
+  font-size: 25px;
+  line-height: 1.5;
+}
+.about-prose {
+  max-width: 870px;
+}
+.folio .about-prose p {
+  font-size: 16px;
+  line-height: 2.2;
+  margin-bottom: 15px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.about-intro-quote {
+  margin: 30px 0 24px;
+  padding: 24px 28px;
+  border-inline-start: 3px solid #41ae86;
+  border-radius: 10px;
+  background: #f3f8f6;
+  color: #28595c;
+  font-size: 20px;
+  line-height: 2;
+}
+.about-intro-sign {
+  font-size: 18px;
+  color: var(--ink);
+}
+.about-intro-sign span {
+  display: block;
+  color: var(--body);
+  font-size: 12px;
+  margin-top: 4px;
+}
+.about-vision-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.about-content-card {
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #e2ece8;
+  background: #fafcfb;
+  margin-bottom: 18px;
+}
+.folio .about-content-card h3 {
+  color: #246859;
+  font-size: 21px;
+  margin-bottom: 10px;
+}
+.folio .about-content-card p {
+  line-height: 2;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.about-summary-label {
+  display: inline-block;
+  font-size: 12px;
+  background: #eef6f3;
+  border-radius: 20px;
+  padding: 4px 13px;
+  margin-bottom: 20px !important;
+  color: #327c68 !important;
+}
+.about-source {
+  display: flex;
+  gap: 15px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  margin-top: 27px;
+  color: #3e8977;
+}
+.about-source > svg {
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.about-source strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+.about-source p {
+  font-size: 12px;
+  margin-top: 5px !important;
+}
+.about-source a {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 13px;
+  color: #247862;
+  margin-top: 10px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+.about-cv-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 30px;
+  margin: 0;
+}
+.about-cv-facts > div {
+  padding: 18px 0;
+  border-bottom: 1px solid #edf1ef;
+}
+.about-cv-facts dt {
+  font-size: 12px;
+  color: #738b91;
+  margin-bottom: 6px;
+}
+.about-cv-facts dd {
+  font-size: 17px;
+  margin: 0;
+  color: #204e58;
+  overflow-wrap: anywhere;
+}
+.about-career-list {
+  margin-top: 26px;
+}
+.about-content-card time {
+  font-size: 12px;
+  color: #6e8986;
+}
+.about-objectives {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 15px;
+}
+.about-objectives li {
+  display: flex;
+  align-items: start;
+  gap: 17px;
+  padding: 18px;
+  border-radius: 12px;
+  background: #f6f9f8;
+}
+.about-objectives li > span {
+  color: #3a907c;
+  font-size: 20px;
+  line-height: 1.6;
+}
+.about-objectives li p {
+  font-size: 16px;
+  line-height: 1.9;
+}
+.about-professional-goal {
+  margin-top: 18px;
+}
+.about-objectives + .about-content-card {
+  margin-top: 24px;
+}
+@keyframes about-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 700px) {
+  .about-cover-detail {
+    display: none;
+  }
+  .about-tabs-scroll {
+    margin-top: 22px;
+  }
+  .folio .about-tabs button {
+    flex-basis: 154px;
+    width: 154px;
+    min-height: 85px;
+  }
+  .about-panel-shell {
+    margin-top: 18px;
+  }
+  .about-panel {
+    padding: 23px 19px;
+  }
+  .folio .about-panel-heading h2 {
+    font-size: 22px;
+  }
+  .about-panel-heading {
+    gap: 11px;
+    margin-bottom: 23px;
+  }
+  .about-prose p {
+    font-size: 15px !important;
+  }
+  .about-intro-quote {
+    padding: 19px;
+    font-size: 18px;
+  }
+  .about-vision-grid,
+  .about-cv-facts {
+    grid-template-columns: 1fr;
+  }
+  .about-content-card {
+    padding: 20px;
+  }
+  .about-objectives li {
+    padding: 15px;
+    gap: 13px;
+  }
+  .about-objectives li p {
+    font-size: 15px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .about-tab-marker,
+  .about-panel-shell {
+    transition: none;
+  }
+  .about-panel {
+    animation: none;
+  }
+  .about-tabs-scroll {
+    scroll-behavior: auto;
+  }
+}
