@@ -468,18 +468,6 @@
   color: #628a92;
   margin-top: 6px;
 }
-.folio .folio-report-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 25px;
-}
-.folio .home-practices {
-  grid-template-columns: 1.12fr 1fr;
-  align-items: start;
-  gap: 28px;
-}
-.folio .home-practices > .folio-report-card:nth-child(2) {
-  margin-top: 55px;
-}
 .folio .folio-report-card {
   border: 1px solid #e3e2df;
   border-radius: 17px;
@@ -494,67 +482,6 @@
   transform: translateY(-4px);
   border-color: #b4b0a9;
   box-shadow: 0 16px 36px #27373a18;
-}
-.folio .frc-photo {
-  height: 275px;
-  background: #e5e4e2;
-  overflow: hidden;
-}
-.folio .frc-photo > img {
-  object-fit: contain;
-  background: #e9e8e6;
-  max-height: 100%;
-  min-height: 0;
-}
-.folio .home-practices > .folio-report-card:first-child .frc-photo {
-  height: 340px;
-}
-.folio .frc-photo > span {
-  background: #f7f7f6f5;
-  color: #3c555a;
-  border: 1px solid #d9d7d3;
-  border-radius: 6px;
-  padding: 5px 10px;
-  bottom: 14px;
-  right: 14px;
-}
-.folio .frc-body {
-  padding: 24px 25px;
-}
-.folio .frc-body > small {
-  font-size: 11px;
-  color: #54777e;
-  margin-bottom: 9px;
-}
-.folio .frc-body h3 {
-  font-size: 24px;
-  line-height: 1.6;
-  color: #2a3b3e;
-  font-weight: 600;
-}
-.folio .frc-date {
-  color: #8b857a;
-  font-size: 11px;
-}
-.folio .frc-summary {
-  font-size: 14px;
-  line-height: 1.9;
-  color: #54787f;
-}
-.folio .frc-count {
-  font-size: 11px;
-  color: #8b857a;
-}
-.folio .frc-actions {
-  border-color: #e8e7e4;
-}
-.folio .frc-actions button {
-  border-radius: 7px;
-  min-height: 43px;
-}
-.folio .frc-actions button:first-child {
-  background: #28393d;
-  border-color: #28393d;
 }
 .folio .folio-criteria {
   display: grid;
@@ -1405,24 +1332,6 @@
     padding: 0;
     gap: 3px;
   }
-  .folio .folio-report-grid,
-  .folio .home-practices {
-    grid-template-columns: 1fr;
-    gap: 23px;
-  }
-  .folio .home-practices > .folio-report-card:nth-child(2) {
-    margin-top: 0;
-  }
-  .folio .frc-photo,
-  .folio .home-practices > .folio-report-card:first-child .frc-photo {
-    height: 245px;
-  }
-  .folio .frc-body {
-    padding: 22px;
-  }
-  .folio .frc-body h3 {
-    font-size: 23px;
-  }
   .folio .folio-criteria {
     grid-template-columns: 1fr;
     gap: 11px;
@@ -2046,42 +1955,6 @@
   box-shadow: 0 12px 25px #394d5512;
   border-color: #aaa493;
 }
-.folio .frc-photo,
-.folio .frc-photo > img {
-  background: #f0f1ec;
-}
-.folio .frc-photo > span {
-  background: #fffffff2;
-  border-color: #c9c4b6;
-  color: #6c756c;
-}
-.folio .frc-body h3 {
-  color: #35535b;
-}
-.folio .frc-body > small {
-  color: #918b7b;
-}
-.folio .frc-date,
-.folio .frc-count {
-  color: #8d9087;
-}
-.folio .frc-summary {
-  color: #63757a;
-}
-.folio .frc-actions {
-  border-color: #d9d6cb;
-}
-.folio .frc-actions button:first-child {
-  background: #35535b;
-  border-color: #35535b;
-}
-.folio .frc-actions button {
-  border-color: #cfcabd;
-  color: #35535b;
-}
-.folio .frc-actions button:first-child:hover {
-  background: #28434b;
-}
 .folio .folio-schedule-teaser,
 .folio .folio-courses-teaser {
   background: #fafaf6;
@@ -2585,11 +2458,8 @@
 }
 /* Keep small metadata readable against the light reference palette. */
 .folio .hero-period,
-.folio .frc-date,
-.folio .frc-count,
 .folio .fc-copy > small,
 .folio .fc-copy > span,
-.folio .frc-body > small,
 .journal-caption small {
   color: #73786f;
 }
@@ -2601,4 +2471,214 @@
   .folio .fc-copy > span {
     font-size: 10px;
   }
+}
+/* Compact, uniform practice cards shared by home and performance elements. */
+.folio .folio-report-grid,
+.folio .home-practices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+.folio .folio-report-grid > .folio-report-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  border: 1px solid #d4d0c4;
+  border-radius: 13px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 3px 10px #394d5508;
+}
+.folio .frc-photo {
+  height: 190px;
+  min-height: 190px;
+  max-height: 190px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #f1f2ed;
+}
+.folio .frc-photo > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+  object-fit: contain;
+  background: #f1f2ed;
+}
+.folio .frc-body {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  padding: 19px 20px 18px;
+  flex: 1;
+  min-width: 0;
+}
+.frc-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  background: #f6f5f0;
+  border: 1px solid #e4e0d6;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 10px;
+  color: #6f746d;
+  line-height: 1.6;
+}
+.frc-category-number {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: #9f998b;
+  color: white;
+  border-radius: 4px;
+  min-width: 23px;
+  height: 22px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.frc-category > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.folio .frc-body h3 {
+  font-size: 20px;
+  line-height: 1.55;
+  font-weight: 700;
+  color: #35535b;
+  margin: 0;
+  min-height: 62px;
+  max-height: 62px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.frc-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eeece5;
+  min-height: 30px;
+}
+.folio .frc-date,
+.folio .frc-count {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #788078;
+  margin: 0;
+  white-space: nowrap;
+}
+.frc-meta svg {
+  color: #9a9588;
+  flex-shrink: 0;
+}
+.frc-meta time {
+  display: block;
+}
+.folio .frc-summary {
+  font-size: 13px;
+  line-height: 1.85;
+  color: #68797b;
+  margin: 0;
+  min-height: 48px;
+  max-height: 48px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.folio .frc-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 82px;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid #e5e1d7;
+  margin-top: auto;
+}
+.folio .frc-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: 42px;
+  padding: 9px 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 6px;
+  border: 1px solid #cfc9bb;
+  color: #35535b;
+  background: #fff;
+}
+.folio .frc-actions button:first-child {
+  background: #35535b;
+  border-color: #35535b;
+  color: #fff;
+  justify-content: space-between;
+  padding-inline: 13px;
+}
+.folio .frc-actions button:first-child:hover {
+  background: #28434b;
+}
+.folio .frc-actions .frc-pdf:hover {
+  background: #f6f5ef;
+}
+@media (max-width: 1050px) {
+  .folio .folio-report-grid,
+  .folio .home-practices {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+}
+@media (max-width: 640px) {
+  .folio .folio-report-grid,
+  .folio .home-practices {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .folio .frc-photo {
+    height: 195px;
+    min-height: 195px;
+    max-height: 195px;
+  }
+  .folio .frc-body {
+    padding: 18px 19px;
+    gap: 12px;
+  }
+  .folio .frc-body h3 {
+    font-size: 20px;
+  }
+  .folio .frc-date,
+  .folio .frc-count {
+    font-size: 11px;
+  }
+  .frc-category {
+    font-size: 11px;
+  }
+}
+.folio .frc-date,
+.folio .frc-count,
+.frc-category {
+  font-size: 11px;
 }

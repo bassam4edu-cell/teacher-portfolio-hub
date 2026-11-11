@@ -15,6 +15,7 @@ import {
   UserRound,
   X,
   Download,
+  Images,
   ArrowRight,
 } from "lucide-react";
 import { db, errorText, loadSimplePortfolio, publicReportAsset, rpc } from "@/lib/portfolio/api";
@@ -699,22 +700,36 @@ function ReportCard({
     <article className="folio-report-card" aria-label={p.title}>
       <button className="frc-photo" onClick={onOpen} aria-label={`عرض تقرير ${p.title}`}>
         {src ? <img src={src} alt={p.title} /> : <FileText size={40} strokeWidth={1} />}
-        <span>العنصر {p.criterion}</span>
       </button>
       <div className="frc-body">
-        <small>{criterionName}</small>
+        <div className="frc-category" title={criterionName}>
+          <span className="frc-category-number">{String(p.criterion).padStart(2, "0")}</span>
+          <span>{p.criterion === 4 ? "استراتيجيات التدريس" : criterionName}</span>
+        </div>
         <h3>{p.title}</h3>
-        <p className="frc-date">
-          تاريخ التنفيذ: <bdi>{reportDate(p.report)}</bdi>
-        </p>
+        <div className="frc-meta">
+          <p className="frc-date" aria-label="تاريخ التنفيذ">
+            <CalendarDays size={14} />
+            <time dateTime={p.report.execution_on}>
+              <bdi>{reportDate(p.report)}</bdi>
+            </time>
+          </p>
+          <span className="frc-count">
+            <Images size={14} /> {p.assets.length} صور
+          </span>
+        </div>
         {p.report.description && <p className="frc-summary">{p.report.description}</p>}
-        <span className="frc-count">{p.assets.length} صور مرفقة</span>
         <div className="frc-actions">
           <button onClick={onOpen}>
-            عرض التقرير كاملًا <ChevronLeft size={16} />
+            عرض التقرير <ChevronLeft size={16} />
           </button>
-          <button onClick={downloadPdf} disabled={exportUrls !== null}>
-            <Download size={16} /> {exportUrls !== null ? "جارٍ التجهيز…" : "تحميل PDF"}
+          <button
+            className="frc-pdf"
+            aria-label="تحميل PDF"
+            onClick={downloadPdf}
+            disabled={exportUrls !== null}
+          >
+            <Download size={16} /> {exportUrls !== null ? "…" : "PDF"}
           </button>
         </div>
         {exportError && (

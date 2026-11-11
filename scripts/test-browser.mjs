@@ -169,7 +169,7 @@ ok(
   "Card information and actions fit the iPhone viewport",
 );
 await p.setViewportSize({ width: 1440, height: 1000 });
-await card.getByRole("button", { name: "عرض التقرير كاملًا", exact: true }).click();
+await card.getByRole("button", { name: "عرض التقرير", exact: true }).click();
 await p.waitForFunction(
   () =>
     document.querySelectorAll(".sr-photos img").length === 2 &&
