@@ -126,8 +126,9 @@ ok(
   "Performance criteria precede recent classroom reports",
 );
 ok(
-  (await p.locator(".folio-criterion").first().innerText()).includes(s.criteria[3].name),
-  "Criteria with reports are shown first",
+  JSON.stringify(await p.locator(".fc-number").allTextContents()) ===
+    JSON.stringify(Array.from({ length: 11 }, (_, i) => String(i + 1).padStart(2, "0"))),
+  "Home criteria stay in numeric order despite reports on criterion four",
 );
 await p.getByRole("button", { name: "استعراض ملف الإنجاز", exact: true }).click();
 ok(
@@ -152,6 +153,11 @@ ok(
   "Skip link focuses content without replacing the current route",
 );
 ok((await p.locator(".folio-criterion").count()) === 11, "All eleven elements are visible");
+ok(
+  JSON.stringify(await p.locator(".fc-number").allTextContents()) ===
+    JSON.stringify(Array.from({ length: 11 }, (_, i) => String(i + 1).padStart(2, "0"))),
+  "Full criteria page keeps the same numeric order",
+);
 ok(
   (
     await p.locator(".folio-criterion").filter({ hasText: s.criteria[3].name }).innerText()

@@ -519,12 +519,7 @@ function Criteria({
   return (
     <div className="folio-criteria">
       {[...settings.criteria]
-        .sort(
-          (a, b) =>
-            Number(reports.some((p) => p.criterion === b.id)) -
-              Number(reports.some((p) => p.criterion === a.id)) || a.id - b.id,
-        )
-        .slice(0, compact ? 6 : 11)
+        .sort((a, b) => a.id - b.id)
         .map((c) => {
           const count = reports.filter((p) => p.criterion === c.id).length;
           return (

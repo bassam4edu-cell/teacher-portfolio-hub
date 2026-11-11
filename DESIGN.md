@@ -156,7 +156,7 @@ Five labeled destinations remain predictable. Active links use the navigation-ac
 
 ### Criteria rows
 
-Use divided rows rather than floating cards. Populated rows receive a quiet fill and a petrol number tile; other number tiles use number-surface. Hover changes the fill without lifting or adding a shadow. Official criterion numbers remain inside rows, and populated criteria appear first.
+Use divided rows rather than floating cards. Populated rows receive a quiet fill and a petrol number tile; other number tiles use number-surface. Hover changes the fill without lifting or adding a shadow. Official criterion numbers remain inside rows, and criteria always retain ascending numeric order (1–11), regardless of publication counts or updates.
 
 ### About tabs
 
