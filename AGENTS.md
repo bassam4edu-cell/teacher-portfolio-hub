@@ -28,3 +28,7 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Teacher report content preferences
+
+Before creating or editing any teacher report, read `docs/REPORT-CONVENTIONS.md` and follow the owner's saved preferences. Titles, objectives, and execution descriptions are strategy-centered and general; original photographs are supporting evidence, not the outline for the prose. Preserve provenance and do not invent execution details or outcomes. Update content through the integration API with version history; do not modify the approved report layout for content edits.
