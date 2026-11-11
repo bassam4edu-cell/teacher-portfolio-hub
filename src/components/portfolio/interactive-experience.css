@@ -271,3 +271,7 @@
   width: 100%;
   flex: 1 1 0%;
 }
+.folio .experience-search input::placeholder {
+  color: #566b6e;
+  opacity: 1;
+}
