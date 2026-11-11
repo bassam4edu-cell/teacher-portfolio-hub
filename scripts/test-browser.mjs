@@ -114,14 +114,36 @@ ok(
   !(await p.locator("body").innerText()).includes("مكتبة الشواهد"),
   "No separate evidence library in public navigation",
 );
+ok(
+  await p
+    .locator("#home-performance")
+    .evaluate((el) =>
+      Boolean(
+        el.compareDocumentPosition(document.querySelector(".home-practices")) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    ),
+  "Performance criteria precede recent classroom reports",
+);
+ok(
+  (await p.locator(".folio-criterion").first().innerText()).includes(s.criteria[3].name),
+  "Criteria with reports are shown first",
+);
+await p.getByRole("button", { name: "استعراض ملف الإنجاز", exact: true }).click();
+ok(
+  await p.locator("#home-performance").evaluate((el) => document.activeElement === el),
+  "Main action moves reading and keyboard focus to criteria",
+);
 await p.getByRole("button", { name: "جميع العناصر", exact: true }).click();
 await p.waitForSelector(".folio-criterion");
 ok((await p.locator(".folio-criterion").count()) === 11, "All eleven elements are visible");
 ok(
-  (await p.locator(".folio-criterion").nth(3).innerText()).includes("1 تقارير"),
+  (
+    await p.locator(".folio-criterion").filter({ hasText: s.criteria[3].name }).innerText()
+  ).includes("1 تقارير"),
   "Report count is calculated under its primary element",
 );
-await p.locator(".folio-criterion").nth(3).click();
+await p.locator(".folio-criterion").filter({ hasText: s.criteria[3].name }).click();
 const card = p.locator(".folio-report-card");
 ok(
   (await card.locator("h3").isVisible()) && (await card.locator("h3").innerText()) === report.title,

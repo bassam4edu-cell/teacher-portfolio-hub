@@ -2682,3 +2682,137 @@
 .frc-category {
   font-size: 11px;
 }
+
+/* Reading flow: identity → introduction → criteria → recent reports → references. */
+.folio[data-view="home"] .folio-hero {
+  display: block;
+  min-height: 0;
+  padding: clamp(36px, 6vw, 72px) clamp(24px, 5vw, 64px);
+}
+.folio[data-view="home"] .folio-hero-copy {
+  max-width: 780px;
+  padding: 0;
+}
+.folio[data-view="home"] .folio-hero h1 {
+  font-size: clamp(36px, 5vw, 64px);
+  margin-block: 16px;
+}
+.folio[data-view="home"] .hero-actions {
+  margin-block-start: 28px;
+}
+.folio[data-view="home"] .folio-intro {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) 3fr;
+  align-items: start;
+  gap: 32px;
+  margin-block: 48px 64px;
+  padding-block: 0;
+}
+.folio[data-view="home"] .folio-intro h2 {
+  font-size: 25px;
+  line-height: 1.6;
+  margin: 0;
+}
+.folio[data-view="home"] .folio-intro p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  margin-block: 0 12px;
+  max-width: 70ch;
+}
+#home-performance {
+  scroll-margin-top: 110px;
+  outline: none;
+  margin-block-end: 64px;
+}
+.folio[data-view="home"] .folio-section-heading {
+  margin-block: 0 24px;
+}
+.folio[data-view="home"] .folio-section-heading h2 {
+  font-size: clamp(25px, 3vw, 32px);
+}
+.folio[data-view="home"] .home-practices {
+  margin-block-end: 64px;
+}
+.folio .home-utilities {
+  gap: 24px;
+  margin-block: 0 48px;
+}
+.folio .home-utilities > section {
+  padding: 24px;
+  min-height: 0;
+  gap: 18px;
+}
+.folio .home-utilities h2 {
+  font-size: 22px;
+  line-height: 1.6;
+  margin: 0 0 6px;
+}
+.folio .home-utilities p {
+  margin: 0;
+}
+.folio .home-utilities button {
+  min-height: 44px;
+}
+.folio .folio-footer {
+  padding-block: 32px;
+  gap: 24px;
+}
+.folio .folio-about-cover {
+  min-height: 0;
+  padding-block: 28px;
+}
+.folio .folio-page-title .folio-eyebrow {
+  display: none;
+}
+.folio a,
+.folio button {
+  text-underline-offset: 4px;
+}
+.folio button:focus-visible,
+.folio a:focus-visible {
+  outline: 2px solid var(--folio-ink, #35535b);
+  outline-offset: 4px;
+}
+@media (max-width: 640px) {
+  .folio[data-view="home"] .folio-intro {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-block: 32px 44px;
+  }
+  #home-performance,
+  .folio[data-view="home"] .home-practices {
+    margin-block-end: 44px;
+  }
+  .folio .home-utilities > section {
+    padding: 20px;
+  }
+  .folio[data-view="home"] .hero-subline {
+    flex-wrap: wrap;
+  }
+}
+.folio[data-view="home"] .folio-hero-copy {
+  max-width: none;
+}
+.folio[data-view="home"] .folio-hero h1 {
+  color: var(--folio-ink, #35535b);
+}
+#home-performance .folio-criteria {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+}
+#home-performance .folio-criterion {
+  min-height: 100px;
+  padding-block: 18px;
+}
+#home-performance .fc-copy h3 {
+  font-size: 18px;
+  line-height: 1.7;
+}
+@media (max-width: 760px) {
+  #home-performance .folio-criteria {
+    grid-template-columns: 1fr;
+  }
+}

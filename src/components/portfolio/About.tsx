@@ -113,7 +113,6 @@ export function About({ settings: s }: { settings: Settings }) {
         <div>
           <span className="folio-eyebrow">المعلم وراء الممارسة</span>
           <h1>عن المعلم</h1>
-          <p>رسالة أؤمن بها، ومسيرة أوثّقها، وتعلّم يتجدد.</p>
         </div>
       </div>
       <section className="folio-about-cover">

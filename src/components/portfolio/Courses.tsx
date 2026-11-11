@@ -110,16 +110,6 @@ export function Courses({ settings, revision }: { settings: Settings; revision: 
           <p>الدورات التدريبية ووثائقها، مرتبة في سجل واحد.</p>
         </div>
       </div>
-      <section className="courses-cover">
-        <div className="courses-cover-icon">
-          <Award size={36} strokeWidth={1.3} />
-        </div>
-        <div>
-          <span>التطوير المهني</span>
-          <h2>كل تعلّم، خطوة للأمام.</h2>
-          <p>سجل الدورات التدريبية للمعلم {settings.teacher.name}</p>
-        </div>
-      </section>
       {error && (
         <div className="courses-error" role="alert">
           <p>{error}</p>

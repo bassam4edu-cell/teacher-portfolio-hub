@@ -10,7 +10,6 @@ import {
   LayoutGrid,
   Menu,
   RefreshCw,
-  School,
   ShieldCheck,
   UserRound,
   X,
@@ -208,70 +207,37 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
         <section className="folio-hero">
           <div className="hero-grid-art" aria-hidden="true" />
           <div className="folio-hero-copy">
-            <span className="hero-kicker">
-              <i /> ملف الإنجاز المهني
-            </span>
             <span className="hero-period">{current?.name}</span>
             <h1>{settings.teacher.name}</h1>
-            <p className="hero-statement">
-              أُعلّم، أتعلّم،
-              <br />
-              <span>وأوثّق الأثر.</span>
-            </p>
             <div className="hero-subline">
               معلم {settings.teacher.subject}
               <span>—</span>
               {settings.teacher.school}
             </div>
             <div className="hero-actions">
-              <button className="folio-primary hero-cta" onClick={() => go("criteria")}>
-                استعرض عناصر الأداء <ArrowUpLeft size={19} />
+              <button
+                className="folio-primary hero-cta"
+                onClick={() => {
+                  const section = document.getElementById("home-performance");
+                  section?.scrollIntoView({
+                    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                      ? "instant"
+                      : "smooth",
+                    block: "start",
+                  });
+                  section?.focus({ preventScroll: true });
+                }}
+              >
+                استعراض ملف الإنجاز <ArrowUpLeft size={19} />
               </button>
               <button className="hero-secondary" onClick={() => go("about")}>
                 عن المعلم <ChevronLeft size={17} />
               </button>
             </div>
           </div>
-          <HeroPractice
-            publication={reports[0]}
-            onOpen={() => reports[0] && go("criteria", reports[0].criterion, reports[0].id)}
-          />
-          <div className="hero-foot">
-            <span>
-              <School size={15} />
-              {settings.teacher.administration}
-            </span>
-            <span>مسيرة تتجدد، وممارسة تُوثّق.</span>
-          </div>
-        </section>
-        <section className="folio-overview" aria-label="ملخص ملف الإنجاز">
-          <div>
-            <span className="overview-icon">
-              <FileText size={21} />
-            </span>
-            <strong>{String(reports.length).padStart(2, "0")}</strong>
-            <span>تقارير من الممارسة</span>
-          </div>
-          <div>
-            <span className="overview-icon">
-              <LayoutGrid size={21} />
-            </span>
-            <strong>{settings.criteria.length}</strong>
-            <span>عنصرًا للأداء المهني</span>
-          </div>
-          <div>
-            <span className="overview-icon">
-              <BookOpen size={21} />
-            </span>
-            <strong>
-              {String(new Set(reports.map((r) => r.criterion)).size).padStart(2, "0")}
-            </strong>
-            <span>عناصر موثّقة بالشواهد</span>
-          </div>
         </section>
         <div className="folio-intro">
-          <span className="folio-eyebrow">عن المعلم</span>
-          <h2>رحلة مهنية، محورها تعلّم الطالب.</h2>
+          <h2>نبذة عن المعلم</h2>
           <div>
             <p>{settings.teacher.bio}</p>
             <button className="folio-link" onClick={() => go("about")}>
@@ -279,9 +245,22 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
             </button>
           </div>
         </div>
+        <section id="home-performance" tabIndex={-1} aria-label="عناصر الأداء الوظيفي">
+          <Section
+            title="عناصر الأداء الوظيفي"
+            subtitle="اختر عنصرًا لاستعراض تقاريره وشواهده."
+            action={() => go("criteria")}
+          />
+          <Criteria
+            settings={settings}
+            reports={reports}
+            onOpen={(id) => go("criteria", id)}
+            compact
+          />
+        </section>
         {reports.length > 0 && (
           <>
-            <Section title="من داخل الصف" subtitle="ممارسات حقيقية، وتفاصيل تستحق أن تُروى." />
+            <Section title="من داخل الصف" subtitle="أحدث التقارير والصور الصفية." />
             <div className="folio-report-grid home-practices">
               {reports.slice(0, 3).map((p) => (
                 <ReportCard
@@ -295,25 +274,13 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
             </div>
           </>
         )}
-        <Section
-          title="عناصر الأداء الوظيفي"
-          subtitle="الممارسة التعليمية، موثقة في مكانها."
-          action={() => go("criteria")}
-        />
-        <Criteria
-          settings={settings}
-          reports={reports}
-          onOpen={(id) => go("criteria", id)}
-          compact
-        />
         <div className="home-utilities">
           <section className="folio-schedule-teaser">
             <div className="teaser-icon">
               <CalendarDays size={30} />
             </div>
             <div>
-              <span className="folio-eyebrow">تنظيم اليوم الدراسي</span>
-              <h2>لكل يوم، إيقاعه.</h2>
+              <h2>الجدول المدرسي</h2>
               <p>الجدول الأسبوعي للحصص والتكليفات.</p>
             </div>
             <button onClick={() => go("schedule")}>
@@ -325,8 +292,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
               <GraduationCap size={30} />
             </div>
             <div>
-              <span className="folio-eyebrow">التطوير المهني</span>
-              <h2>والتعلّم لا يتوقف.</h2>
+              <h2>الدورات والتطوير المهني</h2>
               <p>الدورات التدريبية ووثائقها في سجل واحد.</p>
             </div>
             <button onClick={() => go("courses")}>
@@ -470,9 +436,6 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
           <BookOpen size={24} />
           <div>
             <strong>{settings.teacher.name}</strong>
-            <span>
-              معلم {settings.teacher.subject} · {settings.teacher.school}
-            </span>
           </div>
         </div>
         <div className="footer-links">
@@ -489,89 +452,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
             </a>
           ))}
         </div>
-        <div className="footer-bottom">
-          <span>ملف إنجاز مهني شخصي</span>
-          <span>تعلمٌ مستمر، وأثرٌ يستحق التوثيق.</span>
-        </div>
       </footer>
-    </div>
-  );
-}
-function HeroPractice({
-  publication,
-  onOpen,
-}: {
-  publication?: Publication | undefined;
-  onOpen: () => void;
-}) {
-  const [src, setSrc] = useState("");
-  const asset = publication?.assets[0]?.id;
-  useEffect(() => {
-    let active = true;
-    let url = "";
-    setSrc("");
-    if (asset)
-      publicReportAsset(asset)
-        .then((value) => {
-          url = value;
-          if (active) setSrc(value);
-          else URL.revokeObjectURL(value);
-        })
-        .catch(() => {});
-    return () => {
-      active = false;
-      if (url) URL.revokeObjectURL(url);
-    };
-  }, [asset]);
-  return (
-    <div className="hero-practice">
-      <span className="hero-english" aria-hidden="true">
-        ENGLISH
-      </span>
-      <div className="hero-art-circle" aria-hidden="true" />
-      <div className="hero-journal-back" aria-hidden="true">
-        <span>
-          LEARN.
-          <br />
-          SHARE.
-          <br />
-          GROW.
-        </span>
-      </div>
-      {publication ? (
-        <button
-          className="hero-journal"
-          onClick={onOpen}
-          aria-label={`استعراض ${publication.title}`}
-        >
-          <div className="journal-heading">
-            <span>
-              <i /> من واقع الممارسة
-            </span>
-            <ArrowUpLeft size={19} />
-          </div>
-          <div className="journal-photo">
-            {src ? (
-              <img src={src} alt={publication.title} />
-            ) : (
-              <BookOpen size={48} strokeWidth={1} />
-            )}
-          </div>
-          <div className="journal-caption">
-            <small>شاهد من داخل الصف</small>
-            <strong>{publication.title}</strong>
-          </div>
-        </button>
-      ) : (
-        <div className="hero-journal hero-journal-empty">
-          <BookOpen size={80} strokeWidth={0.8} />
-          <strong>لغة تفتح الآفاق.</strong>
-          <span>تعليم · ممارسة · أثر</span>
-        </div>
-      )}
-      <span className="hero-art-note" aria-hidden="true">
-        a space to learn & grow
-      </span>
     </div>
   );
 }
@@ -587,7 +468,6 @@ function Section({
   return (
     <div className="folio-section-heading">
       <div>
-        <span className="folio-eyebrow">ملف الإنجاز</span>
         <h2>{title}</h2>
         {subtitle && <p>{subtitle}</p>}
       </div>
@@ -612,27 +492,34 @@ function Criteria({
 }) {
   return (
     <div className="folio-criteria">
-      {settings.criteria.slice(0, compact ? 6 : 11).map((c) => {
-        const count = reports.filter((p) => p.criterion === c.id).length;
-        return (
-          <button
-            className="folio-criterion"
-            data-populated={count > 0}
-            key={c.id}
-            onClick={() => onOpen(c.id)}
-          >
-            <span className="fc-number">{String(c.id).padStart(2, "0")}</span>
-            <div className="fc-copy">
-              <small>الوزن {c.weight}%</small>
-              <h3>{c.name}</h3>
-              <span>{count} تقارير</span>
-            </div>
-            <span className="fc-direction">
-              <ArrowUpLeft size={21} />
-            </span>
-          </button>
-        );
-      })}
+      {[...settings.criteria]
+        .sort(
+          (a, b) =>
+            Number(reports.some((p) => p.criterion === b.id)) -
+              Number(reports.some((p) => p.criterion === a.id)) || a.id - b.id,
+        )
+        .slice(0, compact ? 6 : 11)
+        .map((c) => {
+          const count = reports.filter((p) => p.criterion === c.id).length;
+          return (
+            <button
+              className="folio-criterion"
+              data-populated={count > 0}
+              key={c.id}
+              onClick={() => onOpen(c.id)}
+            >
+              <span className="fc-number">{String(c.id).padStart(2, "0")}</span>
+              <div className="fc-copy">
+                {!compact && <small>الوزن {c.weight}%</small>}
+                <h3>{c.name}</h3>
+                <span>{count} تقارير</span>
+              </div>
+              <span className="fc-direction">
+                <ArrowUpLeft size={21} />
+              </span>
+            </button>
+          );
+        })}
     </div>
   );
 }
