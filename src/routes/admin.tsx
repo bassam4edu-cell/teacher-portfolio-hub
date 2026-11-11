@@ -3,7 +3,7 @@ import { Portfolio } from "@/components/portfolio/Portfolio";
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "إدارة ملف الإنجاز — بسام العنزي" },
+      { title: "إدارة ملف الإنجاز — بسام غربي العنزي" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),

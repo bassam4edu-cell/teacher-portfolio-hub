@@ -404,7 +404,8 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
             <BookOpen size={25} strokeWidth={1.5} />
           </span>
           <span>
-            بسام العنزي<small>ملف الإنجاز المهني</small>
+            {settings.teacher.name}
+            <small>ملف الإنجاز المهني</small>
           </span>
         </a>
         <nav className={menu ? "is-open" : ""} aria-label="التنقل الرئيسي">

@@ -144,7 +144,7 @@ const suggestions = [
 ];
 export const defaultSettings: Settings = {
   teacher: {
-    name: "بسام العنزي",
+    name: "بسام غربي العنزي",
     subject: "اللغة الإنجليزية",
     school: "ثانوية أم القرى بالخرج",
     administration: "الإدارة العامة للتعليم بمنطقة الرياض",
