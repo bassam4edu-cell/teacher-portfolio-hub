@@ -21,18 +21,23 @@ export type Publication = {
   assets: PublicAsset[];
   updated_at: string;
 };
+export const reportDefaults = {
+  duration: "حصة دراسية",
+  audience: "طلاب الصف الثالث الثانوي",
+} as const;
+
 export function reportFromEvidence(e: Evidence, s: Settings): SimpleReportData {
   return {
     description: e.data.practice,
     objectives: e.data.objective.split(/\n/).filter(Boolean).slice(0, 5),
     place: e.data.place ?? s.teacher.school,
-    audience: e.data.audience,
+    audience: reportDefaults.audience,
+    duration: reportDefaults.duration,
     field: "تعليم",
     ...(e.data.execution_on ? { execution_on: e.data.execution_on } : {}),
-    ...(e.data.beneficiaries !== undefined ? { beneficiaries: e.data.beneficiaries } : {}),
   };
 }
 export function reportDate(r: SimpleReportData) {
   if (!r.execution_on) return "غير محدد";
-  return r.execution_on + (r.date_estimated ? " (تقديري)" : "");
+  return r.execution_on;
 }

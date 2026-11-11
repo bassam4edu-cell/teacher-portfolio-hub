@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { Settings } from "@/lib/portfolio/model";
-import { reportDate, type Publication } from "@/lib/portfolio/simple-report";
+import { reportDate, reportDefaults, type Publication } from "@/lib/portfolio/simple-report";
 import "./simple-report.css";
 export function SimpleReport({
   publication: p,
@@ -45,21 +45,11 @@ export function SimpleReport({
                 </div>
                 <div className="sr-grid sr-three">
                   <Field title="مكان التنفيذ" value={p.report.place ?? s.teacher.school} />
-                  <Field title="مدة التنفيذ" value={p.report.duration ?? "غير محددة"} />
+                  <Field title="مدة التنفيذ" value={reportDefaults.duration} />
                   <Field title="تاريخ التنفيذ" value={reportDate(p.report)} />
                 </div>
                 <div className="sr-grid sr-two">
-                  <Field
-                    title="المستفيدون / العدد"
-                    value={[
-                      p.report.audience,
-                      p.report.beneficiaries !== undefined
-                        ? String(p.report.beneficiaries)
-                        : "العدد غير محدد",
-                    ]
-                      .filter(Boolean)
-                      .join(" — ")}
-                  />
+                  <Field title="المستفيدون" value={reportDefaults.audience} />
                   <Field title="المجال" value={p.report.field ?? "تعليم"} />
                 </div>
                 <div className="sr-grid sr-two sr-narrative">

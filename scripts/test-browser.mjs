@@ -129,8 +129,8 @@ ok(
 );
 ok(
   (await card.locator(".frc-date").innerText()).includes("2026-10-20") &&
-    (await card.locator(".frc-date").innerText()).includes("تقديري"),
-  "Card displays the execution date and its estimated label",
+    !(await card.locator(".frc-date").innerText()).includes("تقديري"),
+  "Card displays the execution date without an estimated label",
 );
 ok(
   (await card.locator(".frc-summary").innerText()) === report.report.description,
@@ -176,8 +176,18 @@ await p.waitForFunction(
     [...document.querySelectorAll(".sr-photos img")].every((i) => i.complete && i.naturalWidth),
 );
 ok(
-  (await p.locator(".sr-three").innerText()).includes("تقديري"),
-  "Estimated date is labelled in the report",
+  !(await p.locator(".sr-three").innerText()).includes("تقديري"),
+  "Report date omits the estimated label",
+);
+ok(
+  (await p.locator('.sr-box[aria-label="مدة التنفيذ"]').innerText()).includes("حصة دراسية"),
+  "Existing and future report templates use one class period",
+);
+ok(
+  (await p.locator('.sr-box[aria-label="المستفيدون"]').innerText()).includes(
+    "طلاب الصف الثالث الثانوي",
+  ) && !(await p.locator(".simple-report").innerText()).includes("العدد غير محدد"),
+  "Report beneficiaries use the agreed grade without a count placeholder",
 );
 ok((await p.locator(".sr-photos img").count()) === 2, "Both original images are inside the report");
 ok(
