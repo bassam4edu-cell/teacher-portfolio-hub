@@ -32,3 +32,5 @@ use the editor.
 ## Teacher report content preferences
 
 Before creating or editing any teacher report, read `docs/REPORT-CONVENTIONS.md` and follow the owner's saved preferences. Titles, objectives, and execution descriptions are strategy-centered and general; original photographs are supporting evidence, not the outline for the prose. Preserve provenance and do not invent execution details or outcomes. Update content through the integration API with version history; do not modify the approved report layout for content edits.
+
+For future course certificates, follow the owner's identity-only blur preference in `docs/COURSES.md`: retain originals privately and publish a separate display copy with only the identity number blurred. Do not replace the blur with an opaque block or alter other certificate content without direction.
