@@ -26,6 +26,7 @@ import { About } from "./About";
 import { Courses } from "./Courses";
 import { CourseManager } from "./CourseManager";
 import "./folio.css";
+import "./experience.css";
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <section className={`folio-card ${className}`}>{children}</section>;
 }
@@ -204,55 +205,72 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
     content = (
       <>
         <section className="folio-hero">
-          <div className="hero-lines" aria-hidden="true" />
+          <div className="hero-grid-art" aria-hidden="true" />
           <div className="folio-hero-copy">
             <span className="hero-kicker">
-              <i /> ملف الإنجاز المهني · {current?.name ?? "معلم اللغة الإنجليزية"}
+              <i /> ملف الإنجاز المهني
             </span>
-            <h1>
-              تعليمٌ يُلهم،
+            <span className="hero-period">{current?.name}</span>
+            <h1>{settings.teacher.name}</h1>
+            <p className="hero-statement">
+              أُعلّم، أتعلّم،
               <br />
-              <span>وممارسةٌ تُوثَّق.</span>
-            </h1>
-            <p>{settings.teacher.name}</p>
+              <span>وأوثّق الأثر.</span>
+            </p>
             <div className="hero-subline">
-              معلم {settings.teacher.subject} <span>•</span> {settings.teacher.school}
+              معلم {settings.teacher.subject}
+              <span>—</span>
+              {settings.teacher.school}
             </div>
-            <button className="folio-primary hero-cta" onClick={() => go("criteria")}>
-              استعرض عناصر الأداء <ArrowUpLeft size={19} />
-            </button>
-          </div>
-          <div className="hero-visual" aria-hidden="true">
-            <div className="hero-orbit orbit-one" />
-            <div className="hero-orbit orbit-two" />
-            <div className="hero-emblem">
-              <BookOpen strokeWidth={1} />
-              <span>تعلم · ممارسة · أثر</span>
-            </div>
-            <div className="hero-float float-one">
-              <GraduationCap />
-              <span>اللغة الإنجليزية</span>
-            </div>
-            <div className="hero-float float-two">
-              <FileText />
-              <span>شواهد من الممارسة</span>
+            <div className="hero-actions">
+              <button className="folio-primary hero-cta" onClick={() => go("criteria")}>
+                استعرض عناصر الأداء <ArrowUpLeft size={19} />
+              </button>
+              <button className="hero-secondary" onClick={() => go("about")}>
+                عن المعلم <ChevronLeft size={17} />
+              </button>
             </div>
           </div>
+          <HeroPractice
+            publication={reports[0]}
+            onOpen={() => reports[0] && go("criteria", reports[0].criterion, reports[0].id)}
+          />
           <div className="hero-foot">
             <span>
-              <School size={16} />
+              <School size={15} />
               {settings.teacher.administration}
             </span>
-            <span>ملف شخصي مهني</span>
+            <span>مسيرة تتجدد، وممارسة تُوثّق.</span>
+          </div>
+        </section>
+        <section className="folio-overview" aria-label="ملخص ملف الإنجاز">
+          <div>
+            <span className="overview-icon">
+              <FileText size={21} />
+            </span>
+            <strong>{String(reports.length).padStart(2, "0")}</strong>
+            <span>تقارير من الممارسة</span>
+          </div>
+          <div>
+            <span className="overview-icon">
+              <LayoutGrid size={21} />
+            </span>
+            <strong>{settings.criteria.length}</strong>
+            <span>عنصرًا للأداء المهني</span>
+          </div>
+          <div>
+            <span className="overview-icon">
+              <BookOpen size={21} />
+            </span>
+            <strong>
+              {String(new Set(reports.map((r) => r.criterion)).size).padStart(2, "0")}
+            </strong>
+            <span>عناصر موثّقة بالشواهد</span>
           </div>
         </section>
         <div className="folio-intro">
           <span className="folio-eyebrow">عن المعلم</span>
-          <h2>
-            رحلة مهنية،
-            <br />
-            محورها تعلّم الطالب.
-          </h2>
+          <h2>رحلة مهنية، محورها تعلّم الطالب.</h2>
           <div>
             <p>{settings.teacher.bio}</p>
             <button className="folio-link" onClick={() => go("about")}>
@@ -260,21 +278,10 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
             </button>
           </div>
         </div>
-        <Section
-          title="عناصر الأداء الوظيفي"
-          subtitle="الممارسة التعليمية، موثقة في مكانها."
-          action={() => go("criteria")}
-        />
-        <Criteria
-          settings={settings}
-          reports={reports}
-          onOpen={(id) => go("criteria", id)}
-          compact
-        />
         {reports.length > 0 && (
           <>
-            <Section title="أحدث التقارير" subtitle="من داخل الصف إلى ملف الإنجاز." />
-            <div className="folio-report-grid">
+            <Section title="من داخل الصف" subtitle="ممارسات حقيقية، وتفاصيل تستحق أن تُروى." />
+            <div className="folio-report-grid home-practices">
               {reports.slice(0, 3).map((p) => (
                 <ReportCard
                   key={p.id}
@@ -287,18 +294,44 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
             </div>
           </>
         )}
-        <div className="folio-schedule-teaser">
-          <div className="teaser-icon">
-            <CalendarDays size={32} />
-          </div>
-          <div>
-            <span className="folio-eyebrow">تنظيم اليوم الدراسي</span>
-            <h2>الجدول المدرسي</h2>
-            <p>الحصص والتكليفات الأسبوعية في عرض واضح.</p>
-          </div>
-          <button onClick={() => go("schedule")}>
-            استعراض الجدول <ArrowUpLeft size={18} />
-          </button>
+        <Section
+          title="عناصر الأداء الوظيفي"
+          subtitle="الممارسة التعليمية، موثقة في مكانها."
+          action={() => go("criteria")}
+        />
+        <Criteria
+          settings={settings}
+          reports={reports}
+          onOpen={(id) => go("criteria", id)}
+          compact
+        />
+        <div className="home-utilities">
+          <section className="folio-schedule-teaser">
+            <div className="teaser-icon">
+              <CalendarDays size={30} />
+            </div>
+            <div>
+              <span className="folio-eyebrow">تنظيم اليوم الدراسي</span>
+              <h2>لكل يوم، إيقاعه.</h2>
+              <p>الجدول الأسبوعي للحصص والتكليفات.</p>
+            </div>
+            <button onClick={() => go("schedule")}>
+              استعراض الجدول <ArrowUpLeft size={18} />
+            </button>
+          </section>
+          <section className="folio-courses-teaser">
+            <div className="teaser-icon">
+              <GraduationCap size={30} />
+            </div>
+            <div>
+              <span className="folio-eyebrow">التطوير المهني</span>
+              <h2>والتعلّم لا يتوقف.</h2>
+              <p>الدورات التدريبية ووثائقها في سجل واحد.</p>
+            </div>
+            <button onClick={() => go("courses")}>
+              استعراض الدورات <ArrowUpLeft size={18} />
+            </button>
+          </section>
         </div>
       </>
     );
@@ -365,7 +398,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
       </>
     );
   return (
-    <div className="folio" data-revision={revision.current}>
+    <div className="folio" data-view={reportId ? "report" : view} data-revision={revision.current}>
       <header className="folio-header">
         <a
           className="folio-brand"
@@ -406,6 +439,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
           <button
             className="folio-menu"
             aria-label={menu ? "إغلاق القائمة" : "فتح القائمة"}
+            aria-expanded={menu}
             onClick={() => setMenu(!menu)}
           >
             {menu ? <X /> : <Menu />}
@@ -462,6 +496,84 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
     </div>
   );
 }
+function HeroPractice({
+  publication,
+  onOpen,
+}: {
+  publication?: Publication | undefined;
+  onOpen: () => void;
+}) {
+  const [src, setSrc] = useState("");
+  const asset = publication?.assets[0]?.id;
+  useEffect(() => {
+    let active = true;
+    let url = "";
+    setSrc("");
+    if (asset)
+      publicReportAsset(asset)
+        .then((value) => {
+          url = value;
+          if (active) setSrc(value);
+          else URL.revokeObjectURL(value);
+        })
+        .catch(() => {});
+    return () => {
+      active = false;
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [asset]);
+  return (
+    <div className="hero-practice">
+      <span className="hero-english" aria-hidden="true">
+        ENGLISH
+      </span>
+      <div className="hero-art-circle" aria-hidden="true" />
+      <div className="hero-journal-back" aria-hidden="true">
+        <span>
+          LEARN.
+          <br />
+          SHARE.
+          <br />
+          GROW.
+        </span>
+      </div>
+      {publication ? (
+        <button
+          className="hero-journal"
+          onClick={onOpen}
+          aria-label={`استعراض ${publication.title}`}
+        >
+          <div className="journal-heading">
+            <span>
+              <i /> من واقع الممارسة
+            </span>
+            <ArrowUpLeft size={19} />
+          </div>
+          <div className="journal-photo">
+            {src ? (
+              <img src={src} alt={publication.title} />
+            ) : (
+              <BookOpen size={48} strokeWidth={1} />
+            )}
+          </div>
+          <div className="journal-caption">
+            <small>شاهد من داخل الصف</small>
+            <strong>{publication.title}</strong>
+          </div>
+        </button>
+      ) : (
+        <div className="hero-journal hero-journal-empty">
+          <BookOpen size={80} strokeWidth={0.8} />
+          <strong>لغة تفتح الآفاق.</strong>
+          <span>تعليم · ممارسة · أثر</span>
+        </div>
+      )}
+      <span className="hero-art-note" aria-hidden="true">
+        a space to learn & grow
+      </span>
+    </div>
+  );
+}
 function Section({
   title,
   subtitle,
@@ -499,19 +611,27 @@ function Criteria({
 }) {
   return (
     <div className="folio-criteria">
-      {settings.criteria.slice(0, compact ? 6 : 11).map((c) => (
-        <button className="folio-criterion" key={c.id} onClick={() => onOpen(c.id)}>
-          <div className="fc-top">
-            <span>{String(c.id).padStart(2, "0")}</span>
-            <small>{c.weight}%</small>
-          </div>
-          <h3>{c.name}</h3>
-          <div className="fc-bottom">
-            <span>{reports.filter((p) => p.criterion === c.id).length} تقارير</span>
-            <ArrowUpLeft size={20} />
-          </div>
-        </button>
-      ))}
+      {settings.criteria.slice(0, compact ? 6 : 11).map((c) => {
+        const count = reports.filter((p) => p.criterion === c.id).length;
+        return (
+          <button
+            className="folio-criterion"
+            data-populated={count > 0}
+            key={c.id}
+            onClick={() => onOpen(c.id)}
+          >
+            <span className="fc-number">{String(c.id).padStart(2, "0")}</span>
+            <div className="fc-copy">
+              <small>الوزن {c.weight}%</small>
+              <h3>{c.name}</h3>
+              <span>{count} تقارير</span>
+            </div>
+            <span className="fc-direction">
+              <ArrowUpLeft size={21} />
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -738,8 +858,17 @@ function Schedule({ settings: s }: { settings: Settings }) {
           <thead>
             <tr>
               <th>الحصة</th>
-              {days.map((d) => (
-                <th key={d}>{d}</th>
+              {days.map((d, i) => (
+                <th
+                  key={d}
+                  className={
+                    i === ["Sun", "Mon", "Tue", "Wed", "Thu"].indexOf(currentDayRiyadh())
+                      ? "schedule-today"
+                      : ""
+                  }
+                >
+                  {d}
+                </th>
               ))}
             </tr>
           </thead>
