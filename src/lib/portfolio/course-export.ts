@@ -55,7 +55,7 @@ export async function printCourses(
   win.document.close();
   try {
     const totals = courseTotals(courses);
-    const now = new Intl.DateTimeFormat("ar-SA-u-ca-gregory", {
+    const now = new Intl.DateTimeFormat("ar-SA-u-ca-gregory-nu-latn", {
       timeZone: "Asia/Riyadh",
       year: "numeric",
       month: "2-digit",
@@ -80,7 +80,7 @@ export async function printCourses(
       "beforeend",
       `<style>@font-face{font-family:Tajawal;src:url(${fontUrl})} ${css}</style>`,
     );
-    win.document.body.innerHTML = `<div class="course-print-toolbar"><button id="course-print">حفظ PDF / طباعة</button></div><main class="course-print-report"><header><span>ملف الإنجاز المهني</span><h1>تقرير الدورات والتطوير المهني</h1><h2>${esc(settings.teacher.name)}</h2><p>معلم ${esc(settings.teacher.subject)} · ${esc(settings.teacher.school)}</p></header><div class="course-print-summary"><span>${totals.count} دورة</span><span>${totals.hours} ساعة تدريبية موثقة</span>${totals.days ? `<span>${totals.days} يوم تدريبي موثق</span>` : ""}<span>إعداد التقرير: ${esc(now)}</span></div><table><thead><tr><th>م</th><th>عنوان الدورة</th><th>الجهة المقدمة</th><th>التاريخ</th><th>المدة</th></tr></thead><tbody>${courses.map((c, i) => `<tr><td>${i + 1}</td><td>${esc(c.title)}</td><td>${esc(c.provider || "غير محددة")}</td><td>${esc(courseDate(c))}</td><td>${esc(courseDuration(c))}</td></tr>`).join("")}</tbody></table><p class="course-print-note">يشمل إجمالي الساعات الدورات ذات المدة المسجلة بالساعات فقط. لا تُحوّل الأيام إلى ساعات.</p>${includeCertificates && courses.some((c) => !c.document) ? '<p class="course-print-note">تظهر مرفقات الدورات التي تتوفر لها وثائق منشورة فقط.</p>' : ""}<footer>إعداد المعلم: ${esc(settings.teacher.name)}</footer></main>${attachments.join("")}`;
+    win.document.body.innerHTML = `<div class="course-print-toolbar"><button id="course-print">حفظ PDF / طباعة</button></div><main class="course-print-report"><header><span>ملف الإنجاز المهني</span><h1>تقرير الدورات والتطوير المهني</h1><h2>${esc(settings.teacher.name)}</h2><p>معلم ${esc(settings.teacher.subject)} · ${esc(settings.teacher.school)}</p></header><div class="course-print-summary"><span>${totals.count} دورة</span><span>${totals.hours} ساعة تدريبية موثقة</span>${totals.days ? `<span>${totals.days} يوم تدريبي موثق</span>` : ""}<span>إعداد التقرير: ${esc(now)}</span></div><table><thead><tr><th>م</th><th>عنوان الدورة</th><th>الجهة المقدمة</th><th>التاريخ</th><th>المدة</th></tr></thead><tbody>${courses.map((c, i) => `<tr><td>${i + 1}</td><td>${esc(c.title)}</td><td>${esc(c.provider || "غير محددة")}</td><td dir="ltr">${esc(courseDate(c))}</td><td>${esc(courseDuration(c))}</td></tr>`).join("")}</tbody></table><p class="course-print-note">يشمل إجمالي الساعات الدورات ذات المدة المسجلة بالساعات فقط. لا تُحوّل الأيام إلى ساعات.</p>${includeCertificates && courses.some((c) => !c.document) ? '<p class="course-print-note">تظهر مرفقات الدورات التي تتوفر لها وثائق منشورة فقط.</p>' : ""}<footer>إعداد المعلم: ${esc(settings.teacher.name)}</footer></main>${attachments.join("")}`;
     win.document.getElementById("course-print")!.onclick = () => win.print();
     await win.document.fonts.load("16px Tajawal");
     await Promise.all([...win.document.images].map((i) => i.decode()));

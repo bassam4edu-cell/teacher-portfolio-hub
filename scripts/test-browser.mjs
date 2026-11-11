@@ -166,6 +166,7 @@ ok(
 );
 await p.locator(".folio-criterion").filter({ hasText: s.criteria[3].name }).click();
 const card = p.locator(".folio-report-card");
+await card.locator("h3").waitFor({ state: "visible" });
 ok(
   (await card.locator("h3").isVisible()) && (await card.locator("h3").innerText()) === report.title,
   "Card displays the report title",

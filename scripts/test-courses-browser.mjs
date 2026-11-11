@@ -135,6 +135,19 @@ try {
     "Certificate can be viewed and downloaded",
   );
   await viewed.close();
+  ok(
+    (await page.locator(".course-date").first().innerText()).includes("20/10/2026"),
+    "Course dates use numeric day/month/year",
+  );
+  await page.getByLabel("ترتيب الدورات").selectOption("oldest");
+  ok(
+    (await page.locator(".course-card h2").first().innerText()) === "تقنيات التعلم",
+    "Oldest-first ordering updates the reader view",
+  );
+  ok(
+    (await page.locator(".course-card").last().innerText()).includes("التاريخ غير محدد"),
+    "Undated courses remain last in either order",
+  );
   await page.getByRole("checkbox", { name: "إرفاق الشهادات في صفحات تالية" }).check();
   const popupPromise = context.waitForEvent("page");
   await page.getByRole("button", { name: "طباعة تقرير الدورات", exact: true }).click();
@@ -154,6 +167,15 @@ try {
   ok(
     (await popup.locator(".course-certificate").count()) === 3,
     "Every PDF page and image certificate is attached to the report",
+  );
+  ok(
+    (await popup.locator("tbody tr").first().innerText()).includes("تقنيات التعلم") &&
+      (await popup.locator("tbody tr").first().innerText()).includes("10/09/2026"),
+    "Printed table follows selected order and numeric dates",
+  );
+  ok(
+    (await popup.locator(".course-certificate h2").first().innerText()) === "تقنيات التعلم",
+    "Certificate attachments follow the selected order",
   );
   await popup.emulateMedia({ media: "print" });
   await popup.pdf({

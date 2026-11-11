@@ -35,7 +35,11 @@ export function courseDuration(c: Pick<Course, "duration_value" | "duration_unit
     : `${c.duration_value} ${c.duration_unit === "hours" ? "ساعة تدريبية" : "يوم تدريبي"}`;
 }
 export function courseDate(c: Pick<Course, "execution_on" | "date_label">) {
-  return c.date_label || c.execution_on || "التاريخ غير محدد";
+  if (c.execution_on && /^\d{4}-\d{2}-\d{2}$/.test(c.execution_on)) {
+    const [year, month, day] = c.execution_on.split("-");
+    return `${day}/${month}/${year}`;
+  }
+  return c.date_label || "التاريخ غير محدد";
 }
 export function courseTotals(courses: Course[]) {
   return {
@@ -62,5 +66,18 @@ export async function courseDocument(id: string): Promise<Blob> {
 export async function saveCoursePackage(pack: Record<string, unknown>) {
   return rpc<{ id: string; version: number }>("portfolio_course_import", {
     p_package: { schema_version: 1, request_id: crypto.randomUUID(), ...pack },
+  });
+}
+
+export function sortCourses(courses: Course[], order: "newest" | "oldest") {
+  return [...courses].sort((a, b) => {
+    if (!a.execution_on && b.execution_on) return 1;
+    if (a.execution_on && !b.execution_on) return -1;
+    const date = (a.execution_on ?? "").localeCompare(b.execution_on ?? "");
+    return (
+      (order === "oldest" ? date : -date) ||
+      a.title.localeCompare(b.title, "ar") ||
+      a.id.localeCompare(b.id)
+    );
   });
 }

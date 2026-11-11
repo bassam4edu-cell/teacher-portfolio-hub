@@ -11,6 +11,7 @@ import {
 import type { Settings } from "@/lib/portfolio/model";
 import {
   courseDate,
+  sortCourses,
   courseDuration,
   courseDocument,
   courseTotals,
@@ -26,6 +27,7 @@ export function Courses({ settings, revision }: { settings: Settings; revision: 
   const [error, setError] = useState("");
   const [include, setInclude] = useState(false);
   const [busy, setBusy] = useState("");
+  const [order, setOrder] = useState<"newest" | "oldest">("newest");
   const [retry, setRetry] = useState(0);
   useEffect(() => {
     let active = true;
@@ -47,6 +49,7 @@ export function Courses({ settings, revision }: { settings: Settings; revision: 
     };
   }, [revision, retry]);
   const totals = courseTotals(courses);
+  const orderedCourses = sortCourses(courses, order);
   async function document(course: Course) {
     if (!course.document) return;
     const win = window.open("", "_blank");
@@ -147,6 +150,20 @@ export function Courses({ settings, revision }: { settings: Settings; revision: 
           </div>
           {courses.length > 0 ? (
             <>
+              <div className="courses-order-bar">
+                <label htmlFor="course-order">
+                  ترتيب الدورات
+                  <select
+                    id="course-order"
+                    value={order}
+                    onChange={(e) => setOrder(e.target.value as "newest" | "oldest")}
+                  >
+                    <option value="newest">الأحدث أولًا</option>
+                    <option value="oldest">الأقدم أولًا</option>
+                  </select>
+                </label>
+                <span>التواريخ ميلادية · يوم/شهر/سنة</span>
+              </div>
               <div className="courses-toolbar">
                 <label>
                   <input
@@ -159,7 +176,7 @@ export function Courses({ settings, revision }: { settings: Settings; revision: 
                 <button
                   className="folio-primary"
                   disabled={!!busy}
-                  onClick={() => print(courses, include, "all")}
+                  onClick={() => print(orderedCourses, include, "all")}
                 >
                   <Download size={17} />
                   {busy === "all" ? "جارٍ تجهيز التقرير…" : "طباعة تقرير الدورات"}
@@ -170,7 +187,7 @@ export function Courses({ settings, revision }: { settings: Settings; revision: 
                 {totals.unknown > 0 ? ` ${totals.unknown} دورة لم تحدد مدتها.` : ""}
               </p>
               <div className="courses-grid">
-                {courses.map((course) => (
+                {orderedCourses.map((course) => (
                   <article className="course-card" key={course.id}>
                     <div className="course-card-heading">
                       <span className="course-card-icon">
@@ -185,7 +202,7 @@ export function Courses({ settings, revision }: { settings: Settings; revision: 
                     {course.provider && <p className="course-provider">{course.provider}</p>}
                     <p className="course-date">
                       <CalendarDays size={15} />
-                      {courseDate(course)}
+                      <bdi dir={course.execution_on ? "ltr" : "auto"}>{courseDate(course)}</bdi>
                     </p>
                     <div className="course-card-actions">
                       {course.document ? (
