@@ -28,6 +28,8 @@ import { CourseManager } from "./CourseManager";
 import "./folio.css";
 import "./experience.css";
 import "./reading-design.css";
+import "./interactive-experience.css";
+import { ReadingControls, ReportSearch, ReportGallery } from "./InteractiveExperience";
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <section className={`folio-card ${className}`}>{children}</section>;
 }
@@ -165,10 +167,19 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
     };
   }, [refresh]);
   function go(next: View, c?: number, id?: string) {
-    setView(next);
-    setCriterion(c ?? null);
-    setReportId(id ?? "");
-    setMenu(false);
+    const update = () =>
+      flushSync(() => {
+        setView(next);
+        setCriterion(c ?? null);
+        setReportId(id ?? "");
+        setMenu(false);
+      });
+    if (
+      document.startViewTransition &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      document.startViewTransition(update);
+    } else update();
     location.hash = next + (c ? "/" + c : "") + (id ? "/report/" + id : "");
     window.scrollTo({
       top: 0,
@@ -356,6 +367,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
         <PageTitle eyebrow="شواهد الممارسة المهنية" title="عناصر الأداء الوظيفي">
           كل تقرير تحت العنصر الذي يوثّقه، مع صوره ونسخة للطباعة.
         </PageTitle>
+        <ReportSearch reports={reports} onOpen={(p) => go("criteria", p.criterion, p.id)} />
         <Criteria settings={settings} reports={reports} onOpen={(id) => go("criteria", id)} />
         <p className="folio-reference">
           العناصر والأوزان وفق نموذج تقييم المعلم في دليل وزارة التعليم.{" "}
@@ -441,6 +453,37 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
         </div>
       </header>
       <main className="folio-main" id="portfolio-content" tabIndex={-1}>
+        {view !== "home" && (
+          <nav className="reading-breadcrumb" aria-label="مسار التصفح">
+            <a
+              href="#home"
+              onClick={(e) => {
+                e.preventDefault();
+                go("home");
+              }}
+            >
+              الرئيسية
+            </a>
+            <ChevronLeft size={14} />
+            {criterion ? (
+              <>
+                <a
+                  href="#criteria"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    go("criteria");
+                  }}
+                >
+                  عناصر الأداء
+                </a>
+                <ChevronLeft size={14} />
+                <span>{reportId ? "التقرير" : chosen?.name}</span>
+              </>
+            ) : (
+              <span>{navigation.find((n) => n.id === view)?.label}</span>
+            )}
+          </nav>
+        )}
         {error && (
           <div className="folio-error" role="alert">
             تعذر تحميل آخر تحديث.{" "}
@@ -458,6 +501,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
           content
         )}
       </main>
+      <ReadingControls />
       <footer className="folio-footer">
         <div className="footer-identity">
           <BookOpen size={24} />
@@ -710,6 +754,7 @@ function ReportPage({
           <Download size={17} /> تحميل PDF
         </button>
       </div>
+      <ReportGallery publication={p} urls={urls} />
       {error && (
         <p role="alert" className="folio-error">
           {error}

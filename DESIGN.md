@@ -152,6 +152,8 @@ Cover primary actions are white on petrol, with a 48px minimum height and bold 1
 
 ### Navigation
 
+The interactive layer adds a sticky compact header, visible breadcrumbs, a back-to-top control, report search, and a native modal image gallery. Original photos remain contained and downloadable. Shared page transitions use the browser View Transitions API with a direct fallback. The cover has one geometric unfolding sequence, with reduced motion disabling choreography. Implementation: `InteractiveExperience.tsx` and `interactive-experience.css`.
+
 Five labeled destinations remain predictable. Active links use the navigation-active surface, petrol text, and bold weight; `aria-current` exposes the active destination. A skip link becomes visible on focus and reaches focusable main content. The compact header treatment begins at 1050px.
 
 ### Criteria rows
