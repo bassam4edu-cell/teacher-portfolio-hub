@@ -136,6 +136,21 @@ ok(
 );
 await p.getByRole("button", { name: "جميع العناصر", exact: true }).click();
 await p.waitForSelector(".folio-criterion");
+ok(
+  (await p
+    .getByRole("navigation", { name: "التنقل الرئيسي" })
+    .getByRole("link", { name: "عناصر الأداء", exact: true })
+    .getAttribute("aria-current")) === "page",
+  "Navigation exposes the active page",
+);
+const criterionRoute = await p.evaluate(() => location.hash);
+await p.locator(".folio-skip").focus();
+await p.locator(".folio-skip").press("Enter");
+ok(
+  (await p.evaluate(() => location.hash)) === criterionRoute &&
+    (await p.locator(".folio-main").evaluate((el) => document.activeElement === el)),
+  "Skip link focuses content without replacing the current route",
+);
 ok((await p.locator(".folio-criterion").count()) === 11, "All eleven elements are visible");
 ok(
   (

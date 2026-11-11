@@ -27,6 +27,7 @@ import { Courses } from "./Courses";
 import { CourseManager } from "./CourseManager";
 import "./folio.css";
 import "./experience.css";
+import "./reading-design.css";
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <section className={`folio-card ${className}`}>{children}</section>;
 }
@@ -169,7 +170,15 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
     setReportId(id ?? "");
     setMenu(false);
     location.hash = next + (c ? "/" + c : "") + (id ? "/report/" + id : "");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({
+      top: 0,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : "smooth",
+    });
+    requestAnimationFrame(() =>
+      document.querySelector<HTMLElement>(".folio-main")?.focus({ preventScroll: true }),
+    );
   }
   const current = settings.periods.find((p) => p.id === settings.current_period);
   const reports = publications.filter((p) => p.period_id === settings.current_period);
@@ -207,13 +216,9 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
         <section className="folio-hero">
           <div className="hero-grid-art" aria-hidden="true" />
           <div className="folio-hero-copy">
-            <span className="hero-period">{current?.name}</span>
             <h1>{settings.teacher.name}</h1>
-            <div className="hero-subline">
-              معلم {settings.teacher.subject}
-              <span>—</span>
-              {settings.teacher.school}
-            </div>
+            <p className="hero-document-title">ملف الإنجاز المهني</p>
+            <p className="hero-summary">{settings.teacher.bio}</p>
             <div className="hero-actions">
               <button
                 className="folio-primary hero-cta"
@@ -235,16 +240,24 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
               </button>
             </div>
           </div>
+          <aside className="hero-record" aria-label="بيانات الملف">
+            <BookOpen size={44} strokeWidth={1.2} aria-hidden="true" />
+            <dl>
+              <div>
+                <dt>التخصص</dt>
+                <dd>{settings.teacher.subject}</dd>
+              </div>
+              <div>
+                <dt>المدرسة</dt>
+                <dd>{settings.teacher.school}</dd>
+              </div>
+              <div>
+                <dt>الفترة الدراسية</dt>
+                <dd>{current?.name}</dd>
+              </div>
+            </dl>
+          </aside>
         </section>
-        <div className="folio-intro">
-          <h2>نبذة عن المعلم</h2>
-          <div>
-            <p>{settings.teacher.bio}</p>
-            <button className="folio-link" onClick={() => go("about")}>
-              تعرّف على المعلم <ChevronLeft size={16} />
-            </button>
-          </div>
-        </div>
         <section id="home-performance" tabIndex={-1} aria-label="عناصر الأداء الوظيفي">
           <Section
             title="عناصر الأداء الوظيفي"
@@ -366,6 +379,18 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
     );
   return (
     <div className="folio" data-view={reportId ? "report" : view} data-revision={revision.current}>
+      <a
+        className="folio-skip"
+        href="#portfolio-content"
+        onClick={(event) => {
+          event.preventDefault();
+          const main = document.getElementById("portfolio-content");
+          main?.focus({ preventScroll: true });
+          main?.scrollIntoView({ block: "start", behavior: "instant" });
+        }}
+      >
+        تجاوز إلى المحتوى
+      </a>
       <header className="folio-header">
         <a
           className="folio-brand"
@@ -388,6 +413,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
               href={"#" + n.id}
               key={n.id}
               className={view === n.id ? "active" : ""}
+              aria-current={view === n.id ? "page" : undefined}
               onClick={(e) => {
                 e.preventDefault();
                 go(n.id);
@@ -413,7 +439,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
           </button>
         </div>
       </header>
-      <main className="folio-main">
+      <main className="folio-main" id="portfolio-content" tabIndex={-1}>
         {error && (
           <div className="folio-error" role="alert">
             تعذر تحميل آخر تحديث.{" "}
@@ -730,7 +756,12 @@ function Schedule({ settings: s }: { settings: Settings }) {
       </div>
       <div className="folio-days">
         {days.map((d, i) => (
-          <button className={day === i ? "active" : ""} key={d} onClick={() => setDay(i)}>
+          <button
+            className={day === i ? "active" : ""}
+            aria-pressed={day === i}
+            key={d}
+            onClick={() => setDay(i)}
+          >
             {d}
           </button>
         ))}

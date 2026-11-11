@@ -120,9 +120,10 @@ export function About({ settings: s }: { settings: Settings }) {
           ب ع
         </span>
         <div>
-          <span className="folio-eyebrow">معلم {s.teacher.subject}</span>
           <h2>{s.teacher.name}</h2>
-          <p>{s.teacher.school}</p>
+          <p>
+            معلم {s.teacher.subject} · {s.teacher.school}
+          </p>
         </div>
         <span className="about-cover-detail" aria-hidden="true">
           <BookOpen size={76} strokeWidth={0.8} />
@@ -141,7 +142,7 @@ export function About({ settings: s }: { settings: Settings }) {
               id={`about-tab-${tab.id}`}
               role="tab"
               aria-selected={active === tab.id}
-              aria-controls={`about-panel-${tab.id}`}
+              aria-controls={active === tab.id ? `about-panel-${tab.id}` : undefined}
               tabIndex={active === tab.id ? 0 : -1}
               onClick={() => select(tab.id)}
               onKeyDown={(e) => keyboard(e, i)}
