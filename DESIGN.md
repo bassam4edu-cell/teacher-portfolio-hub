@@ -1,189 +1,188 @@
 ---
-name: Teacher portfolio public reading system
-description: Arabic professional portfolio with petrol identity and a quiet reading layout
+name: Teacher portfolio library reference identity
+description: Arabic professional portfolio with warm paper, bronze calligraphy, and horizontal academic cards
 colors:
-  reading-ink: "#284850"
-  reading-body: "#485e62"
-  reading-muted: "#596767"
-  reading-paper: "#f7f7f3"
-  reading-line: "#dce1dc"
-  white: "#ffffff"
-  cover-copy: "#e0eae6"
-  navigation-active: "#eaf0ed"
-  row-populated: "#f0f4f1"
-  row-hover: "#e9efeb"
-  number-surface: "#eaede7"
-  tab-surface: "#f3f5f1"
-  tab-hover: "#eaf0e9"
-  focus: "#577b70"
-  stone-border: "#d4d0c4"
-  report-action: "#35535b"
+  reference-paper: "#FAF9F6"
+  reference-bronze: "#9A8B7A"
+  reference-teal: "#2F4846"
+  reference-line: "#D8D2C7"
+  reading-body: "#625F58"
+  reading-muted: "#7A756C"
+  white: "#FFFFFF"
+  navigation-active: "#F0ECE4"
+  pill-surface: "#F7F5F0"
+  pill-ink: "#796858"
+  pill-line: "#C5B9A8"
+  card-line: "#D5CFC4"
+  action-hover: "#263B3A"
 typography:
   display:
-    fontFamily: "Markazi Text, Tajawal, serif"
-    fontSize: "clamp(36px, 4.5vw, 58px)"
-    fontWeight: 500
-    lineHeight: 1.35
-    letterSpacing: "0"
+    fontFamily: "ReferenceRuqaa, ReferenceAmiri, serif"
+    fontSize: "clamp(38px, 5.5vw, 74px)"
+    fontWeight: 400
+    lineHeight: 1.8
   headline:
-    fontFamily: "Markazi Text, Tajawal, serif"
-    fontSize: "clamp(25px, 3vw, 32px)"
-    fontWeight: 500
-    lineHeight: 1.55
-  title:
-    fontFamily: "Tajawal, Arial, sans-serif"
-    fontSize: "18px"
+    fontFamily: "ReferenceKufi, Tajawal, sans-serif"
+    fontSize: "clamp(30px, 4vw, 46px)"
     fontWeight: 700
-    lineHeight: 1.6
+    lineHeight: 1.7
+  title:
+    fontFamily: "ReferenceSans, Tajawal, sans-serif"
+    fontSize: "19px"
+    fontWeight: 700
+    lineHeight: 1.7
   body:
-    fontFamily: "Tajawal, Arial, sans-serif"
-    fontSize: "17px"
-    lineHeight: 2
+    fontFamily: "ReferenceSans, Tajawal, sans-serif"
+    fontSize: "15px"
+    lineHeight: 1.9
   label:
-    fontFamily: "Tajawal, Arial, sans-serif"
-    fontSize: "14px"
-    lineHeight: 1.6
+    fontFamily: "ReferenceSans, Tajawal, sans-serif"
+    fontSize: "12px"
+    lineHeight: 1.7
 rounded:
-  control: "6px"
-  hero-action: "7px"
-  course: "10px"
-  cover: "12px"
-  report: "13px"
-  hero: "16px"
+  card: "14px"
+  number: "10px"
+  evidence: "12px"
+  pill: "999px"
 spacing:
   step-8: "8px"
-  step-16: "16px"
+  step-12: "12px"
+  step-18: "18px"
   step-20: "20px"
+  step-22: "22px"
   step-24: "24px"
   step-28: "28px"
   step-32: "32px"
-  step-44: "44px"
-  step-48: "48px"
 components:
-  button-cover:
+  criterion-card:
     backgroundColor: "{colors.white}"
-    textColor: "{colors.reading-ink}"
-    rounded: "{rounded.hero-action}"
-    height: "48px"
-  tab:
-    backgroundColor: "{colors.tab-surface}"
+    textColor: "{colors.reference-teal}"
+    rounded: "{rounded.card}"
+    padding: "20px 28px"
+  filter:
     textColor: "{colors.reading-body}"
-    rounded: "{rounded.control}"
-    padding: "12px 16px"
-    height: "54px"
-  tab-selected:
-    backgroundColor: "{colors.reading-ink}"
+    rounded: "{rounded.pill}"
+    padding: "9px 18px"
+  filter-selected:
+    backgroundColor: "{colors.reference-teal}"
     textColor: "{colors.white}"
-  criterion:
-    padding: "20px 8px"
-  course-card:
-    rounded: "{rounded.course}"
-    padding: "28px"
+  evidence:
+    backgroundColor: "{colors.white}"
+    rounded: "{rounded.evidence}"
 ---
 
-# Design System: Teacher portfolio public reading system
+# Design System: Teacher portfolio library reference identity
 
 ## Overview
 
-**Creative North Star: "The public reading portfolio"**
+**Creative North Star: "The pinned library reference"**
 
-The established petrol and stone identity supports an Arabic, right-to-left professional portfolio. A dark cover introduces the teacher; quiet divided rows and readable text let the actual work carry the page.
+The pinned library reference identity gives the Arabic professional portfolio a warm paper ground, bronze calligraphy, and deep teal reading ink. A centered introduction leads into horizontal academic cards; the actual published work supplies the evidence.
 
-This document describes the public reading surfaces and their current CSS cascade. The approved report document, SimpleReport, and standalone print templates retain their separate designs. Markazi Text supplies editorial headings; Tajawal supplies reading and interface text.
+This system describes the public portfolio, implemented by ReferenceIdentity.tsx and reference-identity.css. The approved report document, SimpleReport, and standalone print templates retain their separate designs.
 
 **Key Characteristics:**
-- Petrol identity with restrained stone and paper surfaces.
-- RTL reading order and logical spacing.
-- Flat criteria rows, with imagery reserved for actual reports.
-- Visible navigation and clear keyboard states.
+- Warm paper, bronze, deep teal, and fine stone dividers.
+- Arabic RTL with locally served Arabic typefaces.
+- Horizontal academic cards with stable official numbering.
+- Published evidence, accessible controls, and restrained motion.
 
 ## Colors
 
-Muted petrol anchors identity and reading; stone neutrals separate content without competing with it. Frontmatter records the normative values extracted from the current implementation.
+Warm mineral neutrals frame deep teal reading ink. Frontmatter is the normative palette.
 
 ### Primary
 
-- **Reading petrol** (`reading-ink`): the home cover, headings, selected tabs, populated criterion numbers, and footer.
-- **Report petrol** (`report-action`): inherited report-card actions retain their existing slightly lighter petrol.
-- **Sage focus** (`focus`): keyboard outlines on public links and buttons; cover buttons use white outlines.
+- **Reference teal** anchors headings, academic icons, selected filters, primary actions, and the footer.
+- **Reference bronze** supplies calligraphy, the ribbon, projecting number tabs, and restrained accents.
 
 ### Neutral
 
-- **Reading body** and **Reading muted**: prose and supporting metadata respectively.
-- **Reading paper**, **White**, and **Reading line**: quiet surfaces, cover contrast, and dividers.
-- **Cover copy**: secondary text on petrol.
-- **Navigation active**, **Row populated**, **Row hover**, **Number surface**, **Tab surface**, and **Tab hover**: restrained green-grey state fills.
-- **Stone border**: inherited report-card edge.
+- **Reference paper** is the public page ground; **White** forms the card and evidence surfaces.
+- **Reference line** separates content. **Card line** outlines criterion cards.
+- **Reading body** and **Reading muted** support prose and metadata.
+- **Navigation active** provides the active destination surface.
+- **Pill surface**, **Pill ink**, and **Pill line** keep criterion metadata distinct without competing with headings.
+- **Action hover** darkens the primary action on interaction.
 
 ## Typography
 
-**Display Font:** locally served Markazi Text, with Tajawal and serif fallbacks.
-**Body Font:** Tajawal, with Arial and sans-serif fallbacks.
+**Display Font:** ReferenceRuqaa (Aref Ruqaa), with ReferenceAmiri (Amiri) and serif fallbacks.
+**Headline Font:** ReferenceKufi (Reem Kufi), with Tajawal and sans-serif fallbacks.
+**Body Font:** ReferenceSans (IBM Plex Sans Arabic), with Tajawal and sans-serif fallbacks.
 
-Markazi Text provides the established Arabic editorial character; Tajawal keeps longer passages and controls practical and legible. The frontmatter hierarchy records current home and About roles, not a universal replacement for every inherited heading.
+All four reference fonts are served locally from `public/fonts/reference` with `font-display: swap`. Ruqaa provides the bronze calligraphic statement, Kufi identifies the teacher and page sections, and Plex supplies practical Arabic reading and controls. The report view retains its approved document typography.
 
-- **Display:** teacher name; on phones the home name is 38px.
-- **Headline:** home section headings; page titles separately scale from 28px to 40px.
-- **Title:** criterion labels; report-card titles use 20px with two-line space reserved.
-- **Body:** About prose is limited to 74ch; mobile prose uses 16px and a 1.95 line-height. The cover summary uses 16px, a 1.95 line-height, and 62ch maximum measure.
-- **Label:** tab labels and actions; metadata generally uses 12–14px. Preserve existing Arabic casing and avoid artificial tracking.
+- **Display:** calligraphic introduction; mobile size is 40px.
+- **Headline:** teacher name; section and page headings also use Kufi with their existing size hierarchy.
+- **Title:** criterion labels; mobile labels reduce to 16px. Drawer headings use 28px and a 1.65 line-height.
+- **Body:** centered home summary, limited to 74ch; drawer prose uses 16px and a 1.9 line-height.
+- **Label:** metadata and pills; filter labels use 13px, reducing to 12px on mobile. Preserve natural Arabic casing and spacing.
 
 ## Layout
 
-The main container is 1184px including 28px inline gutters. The header has its own 1240px maximum width. Home cover columns use a 1.7:1 ratio and a 48px gap; the metadata column is separated by an inline rule. The cover has 44px internal padding and 48px space after it.
+The main container has a maximum width of 1180px. The home introduction is centered on paper with 40px 60px 32px padding, paired geometric corner motifs, a bronze ribbon, centered actions, and a wrapping metadata record beneath a fine divider.
 
-Criteria form two columns with a 32px column gap and horizontal row dividers. Rows use a 44px number, flexible copy, and a 24px direction column. At 760px and below, criteria and cover become single-column, main gutters reduce to 20px, and the record divider becomes horizontal. At 380px and below, main gutters reduce to 16px and the cover action can fill the width.
+Criteria form a single vertical list with an 18px gap. Each horizontal card has four columns: a projecting number tab, academic icon, flexible title and metadata pill, and a separated evidence-count/action region. Desktop columns are 54px 62px minmax(0, 1fr) 176px, with 22px gaps, 20px 28px padding, and a 122px minimum height. Reserve inline space for the projecting tabs.
 
-All six About destinations remain visible: three columns on desktop, two at 760px and below. Main sections use a recurring 24/32/48px rhythm, with more space before a section than between its heading and text. Report cards reserve consistent title and action regions while containing images without cropping them.
+At 760px and below, cards use three columns (32px 38px minmax(0, 1fr)), 10px gaps, 18px 16px padding, and a 150px minimum height. Evidence metadata moves beneath the title into a wrapping row with a top divider. The introduction and corner motifs shrink; the verification zone becomes one column. The evidence drawer is at most 610px wide and fills the viewport height.
+
+All six About destinations remain visible, with their existing responsive layout and RTL keyboard behavior. Report images retain their full aspect ratio.
 
 ## Elevation & Depth
 
-Criteria, About panels, and course cards are flat at rest. Tonal fills, white space, and fine dividers establish hierarchy. Report cards retain subtle inherited shadows: `0 3px 10px #394d5508` at rest and `0 12px 25px #394d5512` on hover. Avoid carrying report-card elevation into the divided criterion list.
+White cards sit lightly above warm paper; bronze edges and fine dividers provide most hierarchy. Criterion cards use `0 2px 5px #2f484607` at rest and `0 8px 20px #2f484610` on hover. Hover adds a subtle surface sweep, a 4px leftward shift, a slight number-tab scale, and a small icon rise.
+
+Calligraphy reveals once, corner motifs fade in, and cards enter when observed with a capped stagger. Reduced motion disables these animations, card transitions, and hover transforms. The drawer uses a dark teal backdrop and a brief left-edge entrance.
 
 ## Shapes
 
-Controls use gently curved corners, while criteria rows have square edges and a bottom rule. The home cover has the largest radius; report cards clip their image region within their rounded shell. Course cards and the About identity cover use quieter intermediate radii. Keep the book symbol and the existing geometric corner asset as established identity details.
+Horizontal cards have softly rounded shells, projecting bronze number tabs, outlined pill metadata, and line-based academic book icons. The bronze ribbon has pointed ends and diamond details. Keep the established book symbol and mirrored geometric corner asset. Evidence previews use contained images in rounded white shells.
 
 ## Components
 
 ### Buttons
 
-Cover primary actions are white on petrol, with a 48px minimum height and bold 15px text; their hover surface is `#e8efeb`. Secondary cover actions are transparent with white text. Standard controls retain compact padding and at least 44px touch height. Public links and buttons use a 2px focus outline offset by 4px; cover buttons use white for contrast.
+Primary home actions use white text on teal with a darker hover. Secondary actions use teal text, a transparent surface, and a stone border. Preserve inherited minimum touch sizes, visible focus outlines, and accessible names for icon-only controls.
 
 ### Navigation
 
-The interactive layer adds a sticky compact header, visible breadcrumbs, a back-to-top control, report search, and a native modal image gallery. Original photos remain contained and downloadable. Shared page transitions use the browser View Transitions API with a direct fallback. The cover has one geometric unfolding sequence, with reduced motion disabling choreography. Implementation: `InteractiveExperience.tsx` and `interactive-experience.css`.
+The compact sticky header uses a translucent paper surface and a quiet active fill. Five labeled destinations retain `aria-current`; the skip link reaches focusable main content. Breadcrumbs, back-to-top, report search, original-image downloads, and the native modal image gallery remain functional. Browser View Transitions retain a direct fallback. The compact header begins at 1050px.
 
-Five labeled destinations remain predictable. Active links use the navigation-active surface, petrol text, and bold weight; `aria-current` exposes the active destination. A skip link becomes visible on focus and reaches focusable main content. The compact header treatment begins at 1050px.
+### Filters
 
-### Criteria rows
+Four wrapping pill buttons offer all criteria, teaching evidence, technology initiatives, and English teaching artifacts. Selected filters use teal with white text and expose `aria-pressed`. Filtering uses actual public reports and keeps official criterion IDs stable. Empty classifications show an honest empty state.
 
-Use divided rows rather than floating cards. Populated rows receive a quiet fill and a petrol number tile; other number tiles use number-surface. Hover changes the fill without lifting or adding a shadow. Official criterion numbers remain inside rows, and criteria always retain ascending numeric order (1–11), regardless of publication counts or updates.
+### Criterion cards
 
-### About tabs
+Cards are full-width buttons with stable official criterion numbers (1–11), an academic icon, criterion title, weight or practice label, actual report count, and a directional action. Populated and empty cards share the same white surface and bronze tab. Opening a card shows its evidence drawer; filtering never renumbers or reorders the official sequence.
 
-All six tabs are visible. Each tab has a 54px minimum height, a quiet surface, and a selected state with white on petrol and bold text. Unselected hover adds a restrained border and lighter green-grey surface. Expose tab selection and panel relationships, use roving keyboard focus, and preserve RTL arrow-key behavior.
+### Evidence drawer
 
-### Report cards and category tags
+Use a native modal `dialog`, with an accessible label, explicit close control, browser Escape handling, and modal focus behavior. Show the saved criterion description, weight, actual published-report count, and real report previews. Evidence links close the drawer and open the report; a separate action opens the criterion page. Show an honest empty state when no reports exist. Preview images use `object-fit: contain`.
 
-Image-led cards use white shells, a stone edge, reserved title space, and a two-action footer. Images use `object-fit: contain` to retain their original aspect ratio. Category tags combine a quiet label surface with a small petrol number tile. The report document opened by a card remains outside this system.
+### About tabs and course cards
 
-### Course cards
+Preserve all six About tabs, selection and panel relationships, roving focus, and RTL arrow-key behavior. Course totals derive from saved records, and print controls remain accessible. These supporting surfaces inherit the reference palette without changing report templates.
 
-Use reading-line borders, course radii, and 28px padding with no resting shadow. Course totals stay compact and print controls remain accessible. Course content and counts come from actual saved records.
+### Verification and sharing
+
+The lower information zone shows the saved current period and factual evidence context, explicitly identifying the portfolio as personal rather than an official ministry platform. QR image, destination link, visible address, and copy action use the actual portfolio URL. Clipboard feedback uses a status region. Drawer, filters, and verification zone are hidden in print.
 
 ## Do's and Don'ts
 
 ### Do:
 
 - Do preserve Arabic RTL and logical inline spacing.
-- Do keep official criterion numbers stable and derive counts from saved publications.
-- Do preserve the original aspect ratio of report images.
-- Do keep all six About tabs visible and support RTL keyboard navigation.
-- Do respect reduced motion and retain visible keyboard focus.
+- Do keep official criteria 1–11 in ascending numeric order and derive evidence counts from actual public reports.
+- Do preserve report images with object-fit: contain and retain original downloads.
+- Do retain all six About destinations, tab relationships, and RTL keyboard navigation.
+- Do respect reduced motion, native dialog keyboard behavior, and visible keyboard focus.
+- Do keep the QR code, its link, and clipboard action pointed at the actual portfolio URL.
 
 ### Don't:
 
-- Don't apply this public reading system to SimpleReport or standalone print documents.
-- Don't fabricate achievements, reports, or promotional claims.
+- Don't apply this identity as a redesign of SimpleReport or standalone print documents.
+- Don't fabricate achievements, reports, endorsements, official platform status, or contact information.
 - Don't replace the established book symbol and geometric corner asset with unrelated ornament.
+- Don't renumber criteria when filtering or sort them by publication counts.

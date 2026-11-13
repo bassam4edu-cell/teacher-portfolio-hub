@@ -130,6 +130,22 @@ ok(
     JSON.stringify(Array.from({ length: 11 }, (_, i) => String(i + 1).padStart(2, "0"))),
   "Home criteria stay in numeric order despite reports on criterion four",
 );
+await p.getByRole("button", { name: "المبادرات التقنية", exact: true }).click();
+await p.waitForFunction(() => document.querySelectorAll(".fc-number").length === 0);
+ok(
+  await p.getByText("لم تُضف شواهد منشورة ضمن هذا التصنيف بعد.", { exact: true }).isVisible(),
+  "Technology filter shows a truthful empty state for fixture without technology reports",
+);
+await p.getByRole("button", { name: "جميع المعايير", exact: true }).click();
+await p.waitForFunction(() => document.querySelectorAll(".fc-number").length === 11);
+await p.locator(".folio-criterion").filter({ hasText: s.criteria[3].name }).click();
+await p.locator(".reference-drawer").waitFor({ state: "visible" });
+ok(
+  (await p.locator(".reference-evidence").count()) === 1,
+  "Criterion drawer shows its actual reports",
+);
+await p.keyboard.press("Escape");
+ok(!(await p.locator(".reference-drawer").isVisible()), "Evidence drawer closes with Escape");
 await p.getByRole("button", { name: "استعراض ملف الإنجاز", exact: true }).click();
 ok(
   await p.locator("#home-performance").evaluate((el) => document.activeElement === el),
@@ -165,6 +181,7 @@ ok(
   "Report count is calculated under its primary element",
 );
 await p.locator(".folio-criterion").filter({ hasText: s.criteria[3].name }).click();
+await p.getByRole("button", { name: "فتح صفحة العنصر", exact: true }).click();
 const card = p.locator(".folio-report-card");
 await card.locator("h3").waitFor({ state: "visible" });
 ok(

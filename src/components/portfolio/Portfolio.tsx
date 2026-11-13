@@ -29,6 +29,8 @@ import "./folio.css";
 import "./experience.css";
 import "./reading-design.css";
 import "./interactive-experience.css";
+import "./reference-identity.css";
+import { ReferenceCriteria, VerificationZone } from "./ReferenceIdentity";
 import { ReadingControls, ReportSearch, ReportGallery } from "./InteractiveExperience";
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <section className={`folio-card ${className}`}>{children}</section>;
@@ -174,12 +176,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
         setReportId(id ?? "");
         setMenu(false);
       });
-    if (
-      document.startViewTransition &&
-      !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      document.startViewTransition(update);
-    } else update();
+    update();
     location.hash = next + (c ? "/" + c : "") + (id ? "/report/" + id : "");
     window.scrollTo({
       top: 0,
@@ -227,7 +224,21 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
         <section className="folio-hero">
           <div className="hero-grid-art" aria-hidden="true" />
           <div className="folio-hero-copy">
+            <p className="reference-institution">
+              المملكة العربية السعودية · وزارة التعليم
+              <br />
+              {settings.teacher.administration}
+            </p>
+            <p className="reference-calligraphy">
+              مَلَفُّ الإِنْجَازِ المِهْنِيِّ وَالتَّعْلِيمِيِّ
+            </p>
+            <div className="reference-ribbon">
+              <i />
+              <span>ضمن أعمال وممارسات</span>
+              <i />
+            </div>
             <h1>{settings.teacher.name}</h1>
+            <p className="reference-specialty">معلم اللغــــة الإنجليزيــــة — المرحلة الثانوية</p>
             <p className="hero-document-title">ملف الإنجاز المهني</p>
             <p className="hero-summary">{settings.teacher.bio}</p>
             <div className="hero-actions">
@@ -275,7 +286,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
             subtitle="اختر عنصرًا لاستعراض تقاريره وشواهده."
             action={() => go("criteria")}
           />
-          <Criteria
+          <ReferenceCriteria
             settings={settings}
             reports={reports}
             onOpen={(id) => go("criteria", id)}
@@ -368,7 +379,11 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
           كل تقرير تحت العنصر الذي يوثّقه، مع صوره ونسخة للطباعة.
         </PageTitle>
         <ReportSearch reports={reports} onOpen={(p) => go("criteria", p.criterion, p.id)} />
-        <Criteria settings={settings} reports={reports} onOpen={(id) => go("criteria", id)} />
+        <ReferenceCriteria
+          settings={settings}
+          reports={reports}
+          onOpen={(id) => go("criteria", id)}
+        />
         <p className="folio-reference">
           العناصر والأوزان وفق نموذج تقييم المعلم في دليل وزارة التعليم.{" "}
           <a href={settings.standard.document_url} target="_blank" rel="noreferrer">
@@ -501,6 +516,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
           content
         )}
       </main>
+      <VerificationZone settings={settings} />
       <ReadingControls />
       <footer className="folio-footer">
         <div className="footer-identity">
@@ -547,45 +563,6 @@ function Section({
           جميع العناصر <ChevronLeft size={16} />
         </button>
       )}
-    </div>
-  );
-}
-function Criteria({
-  settings,
-  reports,
-  onOpen,
-  compact = false,
-}: {
-  settings: Settings;
-  reports: Publication[];
-  onOpen: (id: number) => void;
-  compact?: boolean;
-}) {
-  return (
-    <div className="folio-criteria">
-      {[...settings.criteria]
-        .sort((a, b) => a.id - b.id)
-        .map((c) => {
-          const count = reports.filter((p) => p.criterion === c.id).length;
-          return (
-            <button
-              className="folio-criterion"
-              data-populated={count > 0}
-              key={c.id}
-              onClick={() => onOpen(c.id)}
-            >
-              <span className="fc-number">{String(c.id).padStart(2, "0")}</span>
-              <div className="fc-copy">
-                {!compact && <small>الوزن {c.weight}%</small>}
-                <h3>{c.name}</h3>
-                <span>{count} تقارير</span>
-              </div>
-              <span className="fc-direction">
-                <ArrowUpLeft size={21} />
-              </span>
-            </button>
-          );
-        })}
     </div>
   );
 }

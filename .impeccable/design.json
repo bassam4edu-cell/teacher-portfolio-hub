@@ -1,266 +1,289 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-11T08:17:26.048946+00:00",
-  "title": "Design System: Teacher portfolio public reading system",
+  "generatedAt": "2026-11-12T00:00:00Z",
+  "title": "Design System: Teacher portfolio library reference identity",
+  "components": [
+    {
+      "name": "Primary action",
+      "kind": "button",
+      "description": "Primary action from the pinned library reference identity.",
+      "html": "<button class=\"ds-primary\">عناصر الأداء</button>",
+      "css": ".ds-primary{font-family:ReferenceSans,Tajawal,sans-serif;background:#2f4846;color:white;border:1px solid #2f4846;border-radius:7px;min-height:48px;padding:10px 18px;font-weight:700}.ds-primary:hover{background:#263b3a}.ds-primary:focus-visible{outline:2px solid #2f4846;outline-offset:4px}"
+    },
+    {
+      "name": "Secondary action",
+      "kind": "button",
+      "description": "Secondary action from the pinned library reference identity.",
+      "html": "<button class=\"ds-secondary\">عن المعلم</button>",
+      "css": ".ds-secondary{font-family:ReferenceSans,Tajawal,sans-serif;background:transparent;color:#2f4846;border:1px solid #d8d2c7;border-radius:7px;min-height:48px;padding:10px 20px}.ds-secondary:hover{background:#f0ece4}.ds-secondary:focus-visible{outline:2px solid #2f4846;outline-offset:4px}"
+    },
+    {
+      "name": "Public navigation",
+      "kind": "nav",
+      "description": "Public navigation from the pinned library reference identity.",
+      "html": "<nav class=\"ds-nav\" dir=\"rtl\"><a href=\"#\" aria-current=\"page\">الرئيسية</a><a href=\"#about\">عن المعلم</a></nav>",
+      "css": ".ds-nav{display:flex;gap:4px;background:#faf9f6}.ds-nav a{font-family:ReferenceSans,Tajawal,sans-serif;color:#625f58;padding:12px 15px;border-radius:6px;text-decoration:none}.ds-nav a[aria-current]{background:#f0ece4;color:#2f4846;font-weight:700}.ds-nav a:hover{background:#f0ece4}.ds-nav a:focus-visible{outline:2px solid #2f4846;outline-offset:4px}"
+    },
+    {
+      "name": "Evidence filters",
+      "kind": "chip",
+      "description": "Evidence filters from the pinned library reference identity.",
+      "html": "<div class=\"ds-filters\" dir=\"rtl\"><button aria-pressed=\"true\">جميع المعايير</button><button aria-pressed=\"false\">الشواهد التعليمية</button></div>",
+      "css": ".ds-filters{display:flex;flex-wrap:wrap;gap:8px}.ds-filters button{font-family:ReferenceSans,Tajawal,sans-serif;background:transparent;border:1px solid #d8d2c7;border-radius:999px;padding:9px 18px;font-size:13px;color:#625f58;transition:background .25s,color .25s}.ds-filters button[aria-pressed=\"true\"]{background:#2f4846;color:white;border-color:#2f4846}.ds-filters button:hover{border-color:#9a8b7a}.ds-filters button:focus-visible{outline:2px solid #2f4846;outline-offset:4px}",
+      "refersTo": "filter"
+    },
+    {
+      "name": "Criterion metadata",
+      "kind": "chip",
+      "description": "Criterion metadata from the pinned library reference identity.",
+      "html": "<span class=\"ds-pill\" dir=\"rtl\">عنصر الأداء 1</span>",
+      "css": ".ds-pill{font-family:ReferenceSans,Tajawal,sans-serif;display:inline-flex;border-radius:999px;border:1px solid #c5b9a8;background:#f7f5f0;color:#796858;font-size:12px;line-height:1.7;padding:2px 14px}"
+    },
+    {
+      "name": "Horizontal criterion card",
+      "kind": "card",
+      "description": "Horizontal criterion card from the pinned library reference identity.",
+      "html": "<button class=\"ds-card\" dir=\"rtl\"><span class=\"ds-number\">01</span><span class=\"ds-copy\">أداء الواجبات الوظيفية</span><span class=\"ds-meta\">0 تقارير · عرض الشواهد</span></button>",
+      "css": ".ds-card{font-family:ReferenceSans,Tajawal,sans-serif;display:grid;grid-template-columns:54px minmax(0,1fr) 176px;gap:22px;align-items:center;border:1px solid #d5cfc4;border-radius:14px;background:white;box-shadow:0 2px 5px #2f484607;min-height:122px;padding:20px 28px;color:#2f4846;width:100%;text-align:start;transition:transform .3s,border-color .3s,box-shadow .3s}.ds-number{display:grid;place-items:center;width:56px;height:60px;margin-inline-start:-43px;border-radius:10px;background:#9a8b7a;color:white;font-size:24px}.ds-copy{font-size:19px;font-weight:700;line-height:1.7}.ds-meta{border-inline-start:1px solid #e2ddd3;padding-inline-start:24px;color:#7a756c;font-size:12px}.ds-card:hover{transform:translateX(-4px);border-color:#9a8b7a;box-shadow:0 8px 20px #2f484610}.ds-card:focus-visible{outline:2px solid #2f4846;outline-offset:4px}@media(prefers-reduced-motion:reduce){.ds-card{transition:none}.ds-card:hover{transform:none}}",
+      "refersTo": "criterion-card"
+    }
+  ],
   "extensions": {
     "colorMeta": {
-      "reading-ink": {
-        "role": "primary",
-        "displayName": "Reading Ink",
+      "reference-paper": {
+        "role": "neutral",
+        "displayName": "Reference Paper",
         "tonalRamp": [
-          "oklch(15% 0.015 210)",
-          "oklch(27% 0.025 210)",
-          "oklch(39% 0.035 210)",
-          "oklch(51% 0.04 210)",
-          "oklch(63% 0.035 210)",
-          "oklch(75% 0.025 210)",
-          "oklch(87% 0.015 210)",
-          "oklch(95% 0.005 210)"
+          "oklch(15% .01 80)",
+          "oklch(27% .02 80)",
+          "oklch(39% .03 80)",
+          "oklch(51% .035 80)",
+          "oklch(63% .03 80)",
+          "oklch(75% .02 80)",
+          "oklch(87% .01 80)",
+          "oklch(95% .004 80)"
+        ]
+      },
+      "reference-bronze": {
+        "role": "primary",
+        "displayName": "Reference Bronze",
+        "tonalRamp": [
+          "oklch(15% .01 70)",
+          "oklch(27% .02 70)",
+          "oklch(39% .03 70)",
+          "oklch(51% .035 70)",
+          "oklch(63% .03 70)",
+          "oklch(75% .02 70)",
+          "oklch(87% .01 70)",
+          "oklch(95% .004 70)"
+        ]
+      },
+      "reference-teal": {
+        "role": "primary",
+        "displayName": "Reference Teal",
+        "tonalRamp": [
+          "oklch(15% .01 175)",
+          "oklch(27% .02 175)",
+          "oklch(39% .03 175)",
+          "oklch(51% .035 175)",
+          "oklch(63% .03 175)",
+          "oklch(75% .02 175)",
+          "oklch(87% .01 175)",
+          "oklch(95% .004 175)"
+        ]
+      },
+      "reference-line": {
+        "role": "neutral",
+        "displayName": "Reference Line",
+        "tonalRamp": [
+          "oklch(15% .01 80)",
+          "oklch(27% .02 80)",
+          "oklch(39% .03 80)",
+          "oklch(51% .035 80)",
+          "oklch(63% .03 80)",
+          "oklch(75% .02 80)",
+          "oklch(87% .01 80)",
+          "oklch(95% .004 80)"
         ]
       },
       "reading-body": {
         "role": "neutral",
         "displayName": "Reading Body",
         "tonalRamp": [
-          "oklch(15% 0.015 210)",
-          "oklch(27% 0.025 210)",
-          "oklch(39% 0.035 210)",
-          "oklch(51% 0.04 210)",
-          "oklch(63% 0.035 210)",
-          "oklch(75% 0.025 210)",
-          "oklch(87% 0.015 210)",
-          "oklch(95% 0.005 210)"
+          "oklch(15% .01 80)",
+          "oklch(27% .02 80)",
+          "oklch(39% .03 80)",
+          "oklch(51% .035 80)",
+          "oklch(63% .03 80)",
+          "oklch(75% .02 80)",
+          "oklch(87% .01 80)",
+          "oklch(95% .004 80)"
         ]
       },
       "reading-muted": {
         "role": "neutral",
         "displayName": "Reading Muted",
         "tonalRamp": [
-          "oklch(15% 0.015 145)",
-          "oklch(27% 0.025 145)",
-          "oklch(39% 0.035 145)",
-          "oklch(51% 0.04 145)",
-          "oklch(63% 0.035 145)",
-          "oklch(75% 0.025 145)",
-          "oklch(87% 0.015 145)",
-          "oklch(95% 0.005 145)"
-        ]
-      },
-      "reading-paper": {
-        "role": "neutral",
-        "displayName": "Reading Paper",
-        "tonalRamp": [
-          "oklch(15% 0.015 145)",
-          "oklch(27% 0.025 145)",
-          "oklch(39% 0.035 145)",
-          "oklch(51% 0.04 145)",
-          "oklch(63% 0.035 145)",
-          "oklch(75% 0.025 145)",
-          "oklch(87% 0.015 145)",
-          "oklch(95% 0.005 145)"
-        ]
-      },
-      "reading-line": {
-        "role": "neutral",
-        "displayName": "Reading Line",
-        "tonalRamp": [
-          "oklch(15% 0.015 145)",
-          "oklch(27% 0.025 145)",
-          "oklch(39% 0.035 145)",
-          "oklch(51% 0.04 145)",
-          "oklch(63% 0.035 145)",
-          "oklch(75% 0.025 145)",
-          "oklch(87% 0.015 145)",
-          "oklch(95% 0.005 145)"
+          "oklch(15% .01 80)",
+          "oklch(27% .02 80)",
+          "oklch(39% .03 80)",
+          "oklch(51% .035 80)",
+          "oklch(63% .03 80)",
+          "oklch(75% .02 80)",
+          "oklch(87% .01 80)",
+          "oklch(95% .004 80)"
         ]
       },
       "white": {
         "role": "neutral",
         "displayName": "White",
         "tonalRamp": [
-          "oklch(15% 0.015 145)",
-          "oklch(27% 0.025 145)",
-          "oklch(39% 0.035 145)",
-          "oklch(51% 0.04 145)",
-          "oklch(63% 0.035 145)",
-          "oklch(75% 0.025 145)",
-          "oklch(87% 0.015 145)",
-          "oklch(95% 0.005 145)"
-        ]
-      },
-      "cover-copy": {
-        "role": "neutral",
-        "displayName": "Cover Copy",
-        "tonalRamp": [
-          "oklch(15% 0.015 145)",
-          "oklch(27% 0.025 145)",
-          "oklch(39% 0.035 145)",
-          "oklch(51% 0.04 145)",
-          "oklch(63% 0.035 145)",
-          "oklch(75% 0.025 145)",
-          "oklch(87% 0.015 145)",
-          "oklch(95% 0.005 145)"
+          "oklch(15% .01 80)",
+          "oklch(27% .02 80)",
+          "oklch(39% .03 80)",
+          "oklch(51% .035 80)",
+          "oklch(63% .03 80)",
+          "oklch(75% .02 80)",
+          "oklch(87% .01 80)",
+          "oklch(95% .004 80)"
         ]
       },
       "navigation-active": {
         "role": "neutral",
         "displayName": "Navigation Active",
         "tonalRamp": [
-          "oklch(15% 0.015 145)",
-          "oklch(27% 0.025 145)",
-          "oklch(39% 0.035 145)",
-          "oklch(51% 0.04 145)",
-          "oklch(63% 0.035 145)",
-          "oklch(75% 0.025 145)",
-          "oklch(87% 0.015 145)",
-          "oklch(95% 0.005 145)"
+          "oklch(15% .01 80)",
+          "oklch(27% .02 80)",
+          "oklch(39% .03 80)",
+          "oklch(51% .035 80)",
+          "oklch(63% .03 80)",
+          "oklch(75% .02 80)",
+          "oklch(87% .01 80)",
+          "oklch(95% .004 80)"
         ]
       },
-      "row-populated": {
+      "pill-surface": {
         "role": "neutral",
-        "displayName": "Row Populated",
+        "displayName": "Pill Surface",
         "tonalRamp": [
-          "oklch(15% 0.015 145)",
-          "oklch(27% 0.025 145)",
-          "oklch(39% 0.035 145)",
-          "oklch(51% 0.04 145)",
-          "oklch(63% 0.035 145)",
-          "oklch(75% 0.025 145)",
-          "oklch(87% 0.015 145)",
-          "oklch(95% 0.005 145)"
+          "oklch(15% .01 80)",
+          "oklch(27% .02 80)",
+          "oklch(39% .03 80)",
+          "oklch(51% .035 80)",
+          "oklch(63% .03 80)",
+          "oklch(75% .02 80)",
+          "oklch(87% .01 80)",
+          "oklch(95% .004 80)"
         ]
       },
-      "row-hover": {
+      "pill-ink": {
         "role": "neutral",
-        "displayName": "Row Hover",
+        "displayName": "Pill Ink",
         "tonalRamp": [
-          "oklch(15% 0.015 145)",
-          "oklch(27% 0.025 145)",
-          "oklch(39% 0.035 145)",
-          "oklch(51% 0.04 145)",
-          "oklch(63% 0.035 145)",
-          "oklch(75% 0.025 145)",
-          "oklch(87% 0.015 145)",
-          "oklch(95% 0.005 145)"
+          "oklch(15% .01 70)",
+          "oklch(27% .02 70)",
+          "oklch(39% .03 70)",
+          "oklch(51% .035 70)",
+          "oklch(63% .03 70)",
+          "oklch(75% .02 70)",
+          "oklch(87% .01 70)",
+          "oklch(95% .004 70)"
         ]
       },
-      "number-surface": {
+      "pill-line": {
         "role": "neutral",
-        "displayName": "Number Surface",
+        "displayName": "Pill Line",
         "tonalRamp": [
-          "oklch(15% 0.015 145)",
-          "oklch(27% 0.025 145)",
-          "oklch(39% 0.035 145)",
-          "oklch(51% 0.04 145)",
-          "oklch(63% 0.035 145)",
-          "oklch(75% 0.025 145)",
-          "oklch(87% 0.015 145)",
-          "oklch(95% 0.005 145)"
+          "oklch(15% .01 70)",
+          "oklch(27% .02 70)",
+          "oklch(39% .03 70)",
+          "oklch(51% .035 70)",
+          "oklch(63% .03 70)",
+          "oklch(75% .02 70)",
+          "oklch(87% .01 70)",
+          "oklch(95% .004 70)"
         ]
       },
-      "tab-surface": {
+      "card-line": {
         "role": "neutral",
-        "displayName": "Tab Surface",
+        "displayName": "Card Line",
         "tonalRamp": [
-          "oklch(15% 0.015 145)",
-          "oklch(27% 0.025 145)",
-          "oklch(39% 0.035 145)",
-          "oklch(51% 0.04 145)",
-          "oklch(63% 0.035 145)",
-          "oklch(75% 0.025 145)",
-          "oklch(87% 0.015 145)",
-          "oklch(95% 0.005 145)"
+          "oklch(15% .01 80)",
+          "oklch(27% .02 80)",
+          "oklch(39% .03 80)",
+          "oklch(51% .035 80)",
+          "oklch(63% .03 80)",
+          "oklch(75% .02 80)",
+          "oklch(87% .01 80)",
+          "oklch(95% .004 80)"
         ]
       },
-      "tab-hover": {
-        "role": "neutral",
-        "displayName": "Tab Hover",
-        "tonalRamp": [
-          "oklch(15% 0.015 145)",
-          "oklch(27% 0.025 145)",
-          "oklch(39% 0.035 145)",
-          "oklch(51% 0.04 145)",
-          "oklch(63% 0.035 145)",
-          "oklch(75% 0.025 145)",
-          "oklch(87% 0.015 145)",
-          "oklch(95% 0.005 145)"
-        ]
-      },
-      "focus": {
+      "action-hover": {
         "role": "primary",
-        "displayName": "Focus",
+        "displayName": "Action Hover",
         "tonalRamp": [
-          "oklch(15% 0.015 145)",
-          "oklch(27% 0.025 145)",
-          "oklch(39% 0.035 145)",
-          "oklch(51% 0.04 145)",
-          "oklch(63% 0.035 145)",
-          "oklch(75% 0.025 145)",
-          "oklch(87% 0.015 145)",
-          "oklch(95% 0.005 145)"
-        ]
-      },
-      "stone-border": {
-        "role": "neutral",
-        "displayName": "Stone Border",
-        "tonalRamp": [
-          "oklch(15% 0.015 145)",
-          "oklch(27% 0.025 145)",
-          "oklch(39% 0.035 145)",
-          "oklch(51% 0.04 145)",
-          "oklch(63% 0.035 145)",
-          "oklch(75% 0.025 145)",
-          "oklch(87% 0.015 145)",
-          "oklch(95% 0.005 145)"
-        ]
-      },
-      "report-action": {
-        "role": "primary",
-        "displayName": "Report Action",
-        "tonalRamp": [
-          "oklch(15% 0.015 210)",
-          "oklch(27% 0.025 210)",
-          "oklch(39% 0.035 210)",
-          "oklch(51% 0.04 210)",
-          "oklch(63% 0.035 210)",
-          "oklch(75% 0.025 210)",
-          "oklch(87% 0.015 210)",
-          "oklch(95% 0.005 210)"
+          "oklch(15% .01 175)",
+          "oklch(27% .02 175)",
+          "oklch(39% .03 175)",
+          "oklch(51% .035 175)",
+          "oklch(63% .03 175)",
+          "oklch(75% .02 175)",
+          "oklch(87% .01 175)",
+          "oklch(95% .004 175)"
         ]
       }
     },
     "typographyMeta": {
       "display": {
-        "displayName": "Teacher name",
-        "purpose": "Home cover identity."
+        "displayName": "Bronze calligraphy",
+        "purpose": "ReferenceRuqaa introduction, with ReferenceAmiri fallback."
+      },
+      "headline": {
+        "displayName": "Kufi identity",
+        "purpose": "Teacher name and public section headings."
       },
       "body": {
-        "displayName": "Reading prose",
-        "purpose": "Long-form About text."
+        "displayName": "Arabic reading text",
+        "purpose": "Locally served IBM Plex Sans Arabic for public prose and controls."
       }
     },
     "shadows": [
       {
-        "name": "report-rest",
-        "value": "0 3px 10px #394d5508",
-        "purpose": "Subtle report-card separation."
+        "name": "criterion-rest",
+        "value": "0 2px 5px #2f484607",
+        "purpose": "Light separation above warm paper."
       },
       {
-        "name": "report-hover",
-        "value": "0 12px 25px #394d5512",
-        "purpose": "Report-card hover only."
+        "name": "criterion-hover",
+        "value": "0 8px 20px #2f484610",
+        "purpose": "Criterion-card interaction."
       }
     ],
     "motion": [
       {
-        "name": "control-transition",
-        "value": "background 0.2s, transform 0.2s",
-        "purpose": "Inherited button feedback; criteria suppress transform."
+        "name": "card-transition",
+        "value": "0.3s cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Criterion shift and feedback."
+      },
+      {
+        "name": "calligraphy-reveal",
+        "value": "1.2s cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "One-time calligraphy reveal."
+      },
+      {
+        "name": "card-entrance",
+        "value": "0.65s with 80ms stagger capped at 400ms",
+        "purpose": "Observed card entrances."
+      },
+      {
+        "name": "drawer-entrance",
+        "value": "0.4s cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Native dialog entrance from left edge."
       },
       {
         "name": "reduced-motion",
         "value": "none",
-        "purpose": "Disable public animations and transitions when reduced motion is requested."
+        "purpose": "Disable reference animations, card transitions, and hover transforms."
       }
     ],
     "breakpoints": [
@@ -269,84 +292,34 @@
         "value": "1050px"
       },
       {
-        "name": "reading-mobile",
+        "name": "reference-mobile",
         "value": "760px"
-      },
-      {
-        "name": "small-phone",
-        "value": "380px"
       }
     ]
   },
-  "components": [
-    {
-      "name": "Cover primary action",
-      "kind": "button",
-      "description": "Cover primary action from the public reading surface.",
-      "html": "<div class=\"ds-cover\"><button class=\"ds-cover-action\">عناصر الأداء</button></div>",
-      "css": ".ds-cover{background:var(--reading-ink,#284850);padding:24px;direction:rtl}.ds-cover-action{font-family:Tajawal,Arial,sans-serif;font-size:14px;line-height:1.6;background:#fff;color:var(--reading-ink,#284850);border:1px solid white;border-radius:7px;padding:10px 18px;min-height:48px;font-size:15px;font-weight:700;transition:background .2s}.ds-cover-action:hover{background:#e8efeb}.ds-cover-action:focus-visible{outline:2px solid white;outline-offset:4px}",
-      "refersTo": "button-cover"
-    },
-    {
-      "name": "Public navigation",
-      "kind": "nav",
-      "description": "Public navigation from the public reading surface.",
-      "html": "<nav class=\"ds-nav\" dir=\"rtl\"><a href=\"#\" aria-current=\"page\">الرئيسية</a><a href=\"#about\">عن المعلم</a></nav>",
-      "css": ".ds-nav{display:flex;gap:4px}.ds-nav a{font-family:Tajawal,Arial,sans-serif;font-size:14px;line-height:1.6;padding:12px 15px;min-height:44px;color:var(--reading-body,#485e62);border-radius:6px;text-decoration:none}.ds-nav a[aria-current]{background:#eaf0ed;color:var(--reading-ink,#284850);font-weight:700}.ds-nav a:hover{background:#e9efeb}.ds-nav a:focus-visible{outline:2px solid var(--reading-ink,#284850);outline-offset:4px}"
-    },
-    {
-      "name": "About tab",
-      "kind": "button",
-      "description": "About tab from the public reading surface.",
-      "html": "<button class=\"ds-tab\" role=\"tab\" aria-selected=\"true\" dir=\"rtl\">المقدمة</button>",
-      "css": ".ds-tab{font-family:Tajawal,Arial,sans-serif;font-size:14px;line-height:1.6;padding:12px 16px;min-height:54px;background:#f3f5f1;color:var(--reading-body,#485e62);border:1px solid transparent;border-radius:6px;transition:background .2s}.ds-tab[aria-selected=true]{background:var(--reading-ink,#284850);color:white;font-weight:700}.ds-tab:hover:not([aria-selected=true]){border-color:#9baea4;background:#eaf0e9}.ds-tab:focus-visible{outline:2px solid var(--reading-ink,#284850);outline-offset:4px}",
-      "refersTo": "tab"
-    },
-    {
-      "name": "Criterion row",
-      "kind": "custom",
-      "description": "Criterion row from the public reading surface.",
-      "html": "<button class=\"ds-criterion\" dir=\"rtl\"><span class=\"ds-number\">١</span><span>عناصر الأداء</span><span aria-hidden=\"true\">‹</span></button>",
-      "css": ".ds-criterion{font-family:Tajawal,Arial,sans-serif;font-size:14px;line-height:1.6;display:grid;grid-template-columns:44px minmax(0,1fr) 24px;align-items:center;gap:16px;min-height:112px;padding:20px 8px;width:100%;border:0;border-bottom:1px solid var(--reading-line,#dce1dc);border-radius:0;background:#f0f4f1;color:var(--reading-ink,#284850);text-align:start;box-shadow:none}.ds-number{display:grid;place-items:center;width:44px;height:44px;background:var(--reading-ink,#284850);color:white;border-radius:6px;font-size:20px}.ds-criterion:hover{background:#e9efeb}.ds-criterion:focus-visible{outline:2px solid var(--reading-ink,#284850);outline-offset:4px}",
-      "refersTo": "criterion"
-    },
-    {
-      "name": "Category tag",
-      "kind": "chip",
-      "description": "Category tag from the public reading surface.",
-      "html": "<span class=\"ds-category\" dir=\"rtl\"><span class=\"ds-category-number\">١</span>عناصر الأداء</span>",
-      "css": ".ds-category{font-family:Tajawal,Arial,sans-serif;font-size:14px;line-height:1.6;display:inline-flex;align-items:center;gap:8px;background:#f0f2ee;color:var(--reading-body,#485e62);border:0;border-radius:6px;padding:4px 8px;font-size:12px}.ds-category-number{display:grid;place-items:center;min-width:23px;height:22px;border-radius:4px;background:var(--reading-ink,#284850);color:white;font-size:11px;font-weight:700}"
-    },
-    {
-      "name": "Course card",
-      "kind": "card",
-      "description": "Course card from the public reading surface.",
-      "html": "<article class=\"ds-course\" dir=\"rtl\"><h2>الدورات</h2><p>التطوير المهني</p></article>",
-      "css": ".ds-course{font-family:Tajawal,Arial,sans-serif;font-size:14px;line-height:1.6;padding:28px;border:1px solid var(--reading-line,#dce1dc);border-radius:10px;box-shadow:none;background:#fff;color:var(--reading-body,#485e62)}.ds-course h2{color:var(--reading-ink,#284850);font-family:\"Markazi Text\",Tajawal,serif;font-weight:500;margin:0 0 12px}.ds-course p{margin:0}",
-      "refersTo": "course-card"
-    }
-  ],
   "narrative": {
-    "northStar": "The public reading portfolio",
-    "overview": "The established petrol and stone identity supports an Arabic, right-to-left professional portfolio. A dark cover introduces the teacher; quiet divided rows and readable text let the actual work carry the page.\n\nThis document describes the public reading surfaces and their current CSS cascade. The approved report document, SimpleReport, and standalone print templates retain their separate designs. Markazi Text supplies editorial headings; Tajawal supplies reading and interface text.",
+    "northStar": "The pinned library reference",
+    "overview": "The pinned library reference identity gives the Arabic professional portfolio a warm paper ground, bronze calligraphy, and deep teal reading ink. A centered introduction leads into horizontal academic cards; the actual published work supplies the evidence.\n\nThis system describes the public portfolio, implemented by ReferenceIdentity.tsx and reference-identity.css. The approved report document, SimpleReport, and standalone print templates retain their separate designs.",
     "keyCharacteristics": [
-      "Petrol identity with restrained stone and paper surfaces.",
-      "RTL reading order and logical spacing.",
-      "Flat criteria rows, with imagery reserved for actual reports.",
-      "Visible navigation and clear keyboard states."
+      "Warm paper, bronze, deep teal, and fine stone dividers.",
+      "Arabic RTL with locally served Arabic typefaces.",
+      "Horizontal academic cards with stable official numbering.",
+      "Published evidence, accessible controls, and restrained motion."
     ],
     "rules": [],
     "dos": [
       "Do preserve Arabic RTL and logical inline spacing.",
-      "Do keep official criterion numbers stable and derive counts from saved publications.",
-      "Do preserve the original aspect ratio of report images.",
-      "Do keep all six About tabs visible and support RTL keyboard navigation.",
-      "Do respect reduced motion and retain visible keyboard focus."
+      "Do keep official criteria 1–11 in ascending numeric order and derive evidence counts from actual public reports.",
+      "Do preserve report images with object-fit: contain and retain original downloads.",
+      "Do retain all six About destinations, tab relationships, and RTL keyboard navigation.",
+      "Do respect reduced motion, native dialog keyboard behavior, and visible keyboard focus.",
+      "Do keep the QR code, its link, and clipboard action pointed at the actual portfolio URL."
     ],
     "donts": [
-      "Don't apply this public reading system to SimpleReport or standalone print documents.",
-      "Don't fabricate achievements, reports, or promotional claims.",
-      "Don't replace the established book symbol and geometric corner asset with unrelated ornament."
+      "Don't apply this identity as a redesign of SimpleReport or standalone print documents.",
+      "Don't fabricate achievements, reports, endorsements, official platform status, or contact information.",
+      "Don't replace the established book symbol and geometric corner asset with unrelated ornament.",
+      "Don't renumber criteria when filtering or sort them by publication counts."
     ]
   }
 }
