@@ -1,0 +1,241 @@
+/* Phase 2: layout only. Existing content, forms and hash routes are untouched. */
+.folio:not([data-view="report"]) .folio-main {
+  width: min(100%, var(--folio-content-width));
+  padding: 16px clamp(20px, 4vw, 44px) 56px;
+  margin-inline: auto;
+}
+.folio:not([data-view="report"]) .folio-header {
+  max-width: 1280px;
+  padding-inline: clamp(20px, 4vw, 40px);
+  gap: 24px;
+}
+.folio:not([data-view="report"]) .folio-page-title {
+  padding-block: 28px 24px;
+  margin-block: 16px 32px;
+}
+.folio:not([data-view="report"]) .folio-section-heading {
+  margin-block: 40px 24px;
+  padding-block-start: 28px;
+  gap: 24px;
+}
+.folio[data-view="home"] .folio-hero {
+  padding: 36px clamp(0px, 3vw, 36px) 24px;
+  margin-block-end: 48px;
+}
+.folio:not([data-view="report"]) .reference-criteria,
+#home-performance .reference-criteria {
+  gap: 16px;
+  padding-inline-end: 12px;
+}
+.folio:not([data-view="report"]) .reference-criteria .reference-card {
+  grid-template-columns: 48px 62px minmax(0, 1fr) 156px;
+  gap: 20px;
+  min-height: 124px;
+  padding: 24px;
+  border-radius: var(--folio-radius-card);
+}
+.folio:not([data-view="report"]) .reference-card .fc-copy {
+  max-width: 65ch;
+}
+.folio:not([data-view="report"]) .home-practices {
+  gap: 24px;
+}
+.folio:not([data-view="report"]) .home-utilities {
+  gap: 32px;
+  padding-block: 28px;
+  margin-block: 56px 24px;
+}
+.folio:not([data-view="report"]) .folio-about-cover {
+  padding: 28px;
+  gap: 24px;
+}
+.folio:not([data-view="report"]) .about-tabs {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.folio:not([data-view="report"]) .about-tabs button {
+  padding: 14px 18px;
+  min-height: 64px;
+  align-items: center;
+}
+.folio:not([data-view="report"]) .about-panel {
+  padding-block: 32px;
+}
+.folio:not([data-view="report"]) .about-prose {
+  max-width: var(--folio-reading-width);
+  margin-inline: auto;
+  font-size: 17px;
+  line-height: 2.1;
+}
+.folio:not([data-view="report"]) .about-intro-quote {
+  max-width: var(--folio-reading-width);
+  margin: 32px auto;
+  padding: 28px;
+}
+.folio:not([data-view="report"]) .cv-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  align-items: start;
+  gap: 32px;
+}
+.folio:not([data-view="report"]) .cv-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: sticky;
+  top: 110px;
+  padding: 28px;
+  gap: 20px;
+}
+.folio:not([data-view="report"]) .cv-sections {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  min-width: 0;
+}
+.folio:not([data-view="report"]) .cv-section {
+  padding: 24px;
+  min-width: 0;
+}
+.folio:not([data-view="report"]) .about-vision-grid {
+  gap: 24px;
+}
+.folio:not([data-view="report"]) .about-value-grid {
+  gap: 16px;
+}
+.folio:not([data-view="report"]) .courses-stats {
+  display: flex;
+  gap: 24px 40px;
+  padding: 24px;
+}
+.folio:not([data-view="report"]) .courses-stats > div {
+  flex: 1;
+  min-width: 100px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.folio:not([data-view="report"]) .courses-order-bar {
+  margin-block: 28px;
+}
+.folio:not([data-view="report"]) .courses-toolbar {
+  gap: 24px;
+  padding-block: 20px;
+  border-block: 1px solid var(--folio-rule);
+}
+.folio:not([data-view="report"]) .courses-page .courses-grid {
+  gap: 24px;
+  margin-block-start: 28px;
+}
+.folio:not([data-view="report"]) .courses-page .course-card {
+  padding: 28px;
+  border-radius: var(--folio-radius-card);
+}
+.folio:not([data-view="report"]) .reference-verification {
+  max-width: 1180px;
+  padding: 32px clamp(24px, 4vw, 44px);
+  gap: 32px;
+}
+.folio:not([data-view="report"]) .folio-week {
+  overflow: auto;
+  border-radius: var(--folio-radius-card);
+}
+.folio:not([data-view="report"]) .folio-week th,
+.folio:not([data-view="report"]) .folio-week td {
+  padding: 16px 12px;
+}
+.folio:not([data-view="report"]) .reference-drawer {
+  padding: 28px;
+  scrollbar-gutter: stable;
+}
+@media (max-width: 900px) {
+  .folio:not([data-view="report"]) .cv-layout {
+    grid-template-columns: 1fr;
+  }
+  .folio:not([data-view="report"]) .cv-profile {
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .folio:not([data-view="report"]) .reference-criteria .reference-card {
+    grid-template-columns: 44px 48px minmax(0, 1fr) 128px;
+    gap: 14px;
+  }
+  .folio:not([data-view="report"]) .reference-card .academic-icon {
+    width: 48px;
+    height: 48px;
+  }
+}
+@media (max-width: 760px) {
+  .folio:not([data-view="report"]) .folio-main {
+    padding: 12px 20px 36px;
+  }
+  .folio:not([data-view="report"]) .folio-section-heading {
+    margin-block: 32px 20px;
+    gap: 16px;
+  }
+  .folio[data-view="home"] .folio-hero {
+    padding: 24px 0;
+    margin-block-end: 32px;
+  }
+  .folio:not([data-view="report"]) .reference-criteria .reference-card {
+    grid-template-columns: 32px 38px minmax(0, 1fr);
+    padding: 20px 16px;
+    gap: 10px;
+  }
+  .folio:not([data-view="report"]) .reference-card .academic-icon {
+    width: 38px;
+    height: 42px;
+  }
+  .folio:not([data-view="report"]) .about-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .folio:not([data-view="report"]) .about-tabs button {
+    padding: 12px;
+    min-height: 68px;
+    font-size: 13px;
+  }
+  .folio:not([data-view="report"]) .about-prose {
+    font-size: 16px;
+  }
+  .folio:not([data-view="report"]) .about-intro-quote {
+    padding: 22px;
+  }
+  .folio:not([data-view="report"]) .cv-section {
+    padding: 22px;
+  }
+  .folio:not([data-view="report"]) .courses-page .course-card {
+    padding: 24px;
+  }
+  .folio:not([data-view="report"]) .reference-verification {
+    gap: 28px;
+    padding-inline: 24px;
+  }
+  .folio:not([data-view="report"]) .reference-drawer {
+    padding: 24px;
+  }
+  .folio:not([data-view="report"]) .home-utilities {
+    margin-block: 36px 20px;
+  }
+}
+@media (max-width: 380px) {
+  .folio:not([data-view="report"]) .folio-main {
+    padding-inline: 16px;
+  }
+  .folio:not([data-view="report"]) .courses-stats {
+    gap: 16px;
+    padding: 20px;
+  }
+}
+@media print {
+  .folio:not([data-view="report"]) .cv-layout {
+    display: block;
+  }
+  .folio:not([data-view="report"]) .cv-profile {
+    position: static;
+  }
+  .folio:not([data-view="report"]) .folio-header {
+    position: static;
+  }
+}

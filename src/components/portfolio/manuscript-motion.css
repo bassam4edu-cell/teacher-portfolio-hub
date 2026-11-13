@@ -1,0 +1,270 @@
+/* Phase 4: progressive motion. No blocking intro and no hidden content by default. */
+.folio .manuscript-cursor {
+  display: none;
+}
+.folio:not([data-view="report"]) .reference-calligraphy {
+  position: relative;
+  animation: none;
+  clip-path: none;
+  font-size: inherit;
+  line-height: 1;
+  max-width: 880px;
+  margin: 20px auto 24px;
+  color: var(--folio-taupe);
+}
+.folio .manuscript-title-text {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.folio .manuscript-title-art {
+  display: block;
+}
+.folio .manuscript-title-art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 190px;
+  overflow: visible;
+}
+.folio .manuscript-title-art path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  fill: currentColor;
+  paint-order: stroke fill;
+  animation: manuscript-ink 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.folio[data-view="home"] .reference-ribbon i {
+  animation: manuscript-breathe 6s ease-in-out infinite;
+}
+.folio[data-manuscript-motion="ready"] .reference-card[data-entered="true"] {
+  animation: none;
+}
+.folio:not([data-view="report"]) .course-card-icon {
+  animation: manuscript-stamp 0.55s ease-out both;
+}
+.folio .courses-stats strong[data-counter] {
+  position: relative;
+}
+.folio .courses-stats strong[data-counter]::after {
+  content: attr(data-counter);
+  position: absolute;
+  inset: 0;
+  background: var(--folio-paper);
+  color: inherit;
+  pointer-events: none;
+}
+.folio:not([data-view="report"]) .reference-card::after,
+.folio:not([data-view="report"]) .course-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgb(156 139 121 / 8%);
+  transform: translate3d(var(--spot-x, 20px), var(--spot-y, 20px), 0);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.folio:not([data-view="report"]) .reference-card:hover::after,
+.folio:not([data-view="report"]) .course-card:hover::after {
+  opacity: 1;
+}
+.folio:not([data-view="report"]) .course-card {
+  position: relative;
+}
+.folio .reference-card::before {
+  transition: opacity 0.3s;
+  background-position: 50% 0;
+}
+.folio .reference-card:hover::before {
+  background-position: 50% 0;
+}
+.folio .about-panel {
+  animation: manuscript-page 0.35s ease-out both;
+}
+.folio .reference-evidence img,
+.folio .course-card-actions button {
+  transition: opacity 0.2s;
+}
+.folio .reference-evidence:hover img {
+  opacity: 0.94;
+}
+@keyframes manuscript-ink {
+  from {
+    stroke-dashoffset: 1;
+    fill-opacity: 0.4;
+  }
+  to {
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+  }
+}
+@keyframes manuscript-breathe {
+  0%,
+  100% {
+    transform: rotate(45deg) scale(1);
+  }
+  50% {
+    transform: rotate(45deg) scale(0.9);
+  }
+}
+@keyframes manuscript-stamp {
+  from {
+    transform: scale(1.08);
+    opacity: 0.6;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes manuscript-page {
+  from {
+    opacity: 0.75;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (min-width: 1050px) and (pointer: fine) {
+  .folio[data-manuscript-motion="ready"] .manuscript-cursor {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--folio-taupe-deep);
+    box-shadow: 0 0 0 5px rgb(156 139 121 / 12%);
+    z-index: 80;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .folio .manuscript-cursor[data-visible="true"] {
+    opacity: 0.65;
+  }
+  .folio[data-view="report"] .manuscript-cursor {
+    display: none !important;
+  }
+  .folio:not([data-view="report"]) .folio-section-heading::before {
+    animation: manuscript-rosette 120s linear infinite;
+  }
+}
+@keyframes manuscript-rosette {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 760px) {
+  .folio:not([data-view="report"]) .reference-calligraphy {
+    margin-block: 24px;
+  }
+  .folio .manuscript-title-art svg {
+    min-height: 110px;
+    max-height: 150px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .folio .manuscript-title-art path,
+  .folio[data-view="home"] .reference-ribbon i,
+  .folio .course-card-icon,
+  .folio .about-panel,
+  .folio .folio-section-heading::before {
+    animation: none !important;
+  }
+  .folio .manuscript-title-art path {
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+  }
+  .folio .manuscript-cursor {
+    display: none !important;
+  }
+  .folio .reference-card::after,
+  .folio .course-card::after {
+    display: none;
+  }
+  .folio .reference-evidence img,
+  .folio .course-card-actions button {
+    transition: none;
+  }
+}
+@media print {
+  .folio .manuscript-cursor,
+  .folio .reference-card::after,
+  .folio .course-card::after {
+    display: none !important;
+  }
+  .folio .manuscript-title-art path,
+  .folio .reference-ribbon i,
+  .folio .about-panel,
+  .folio .course-card-icon,
+  .folio .folio-section-heading::before {
+    animation: none !important;
+  }
+  .folio .courses-stats strong::after {
+    display: none;
+  }
+  .folio .manuscript-title-art path {
+    fill-opacity: 1;
+    stroke-dashoffset: 0;
+  }
+}
+.folio .experience-gallery[open] {
+  animation: manuscript-lightbox 0.3s var(--folio-ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+.folio .experience-gallery[open]::backdrop {
+  animation: manuscript-backdrop 0.25s ease-out both;
+}
+.folio:not([data-view="report"]) .about-vision-grid .about-content-card {
+  transform-origin: top;
+}
+.folio:not([data-view="report"]) .about-vision-grid .about-content-card::after {
+  content: "";
+  position: absolute;
+  inset-inline: 18px;
+  top: -3px;
+  height: 4px;
+  background: var(--folio-paper);
+  border: 1px solid var(--folio-sand);
+  border-radius: 50%;
+  pointer-events: none;
+}
+@keyframes manuscript-lightbox {
+  from {
+    opacity: 0.7;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes manuscript-backdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .folio .experience-gallery[open],
+  .folio .experience-gallery[open]::backdrop {
+    animation: none;
+  }
+}
+@media print {
+  .folio .experience-gallery {
+    display: none !important;
+  }
+}

@@ -1,0 +1,278 @@
+/* Phase 3: manuscript surfaces. Decorative marks carry no approval semantics. */
+.folio:not([data-view="report"]) {
+  background-image: url("/brand/paper-grain.svg");
+  background-size: 160px 160px;
+}
+.folio:not([data-view="report"]) .folio-section-heading {
+  position: relative;
+  border-top: 0;
+  padding-inline-start: 58px;
+  padding-block: 22px;
+  isolation: isolate;
+}
+.folio:not([data-view="report"]) .folio-section-heading::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 20px;
+  width: 40px;
+  height: 40px;
+  background: url("/brand/manuscript-rosette.svg") center/contain no-repeat;
+  pointer-events: none;
+}
+.folio:not([data-view="report"]) .folio-section-heading::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--folio-sand);
+  transform: scaleX(var(--ink-rule-progress, 1));
+  transform-origin: right;
+  pointer-events: none;
+}
+.folio:not([data-view="report"]) .folio-section-heading h2 {
+  font-size: clamp(25px, 3vw, 36px);
+  line-height: 1.7;
+}
+.folio:not([data-view="report"]) .reference-card {
+  background-color: var(--folio-white);
+  border-color: var(--folio-sand);
+  box-shadow: var(--folio-shadow-rest);
+}
+.folio:not([data-view="report"]) .reference-card:hover {
+  border-color: var(--folio-taupe);
+  box-shadow: var(--folio-shadow-hover);
+}
+.folio:not([data-view="report"]) .reference-card .fc-number {
+  font-variant-numeric: tabular-nums;
+}
+.folio:not([data-view="report"]) .folio-about-cover {
+  position: relative;
+  background-color: var(--folio-paper);
+  border: 1px solid var(--folio-sand);
+  border-radius: var(--folio-radius-panel);
+}
+.folio:not([data-view="report"]) .about-monogram {
+  background: var(--folio-taupe-deep);
+  color: white;
+  border-radius: 12px;
+  font-family: var(--folio-font-display);
+}
+.folio:not([data-view="report"]) .about-tabs button {
+  background: var(--folio-paper);
+  border-color: var(--folio-sand);
+  color: var(--folio-slate);
+  border-radius: var(--folio-radius-small);
+}
+.folio:not([data-view="report"]) .about-tabs button[aria-selected="true"] {
+  background: var(--folio-slate);
+  border-color: var(--folio-slate);
+  color: white;
+}
+.folio:not([data-view="report"]) .about-panel-heading {
+  border-bottom-color: var(--folio-sand);
+}
+.folio:not([data-view="report"]) .about-panel-heading h2 {
+  font-family: var(--folio-font-heading);
+  color: var(--folio-slate);
+}
+.folio:not([data-view="report"]) .about-content-card,
+.folio:not([data-view="report"]) .about-intro-quote {
+  background: var(--folio-paper);
+  border: 1px solid var(--folio-sand);
+  border-radius: var(--folio-radius-panel);
+  box-shadow: none;
+  position: relative;
+}
+.folio:not([data-view="report"]) .about-content-card {
+  padding: 28px;
+}
+.folio:not([data-view="report"]) .about-content-card::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid var(--folio-rule);
+  border-radius: 18px;
+  pointer-events: none;
+}
+.folio:not([data-view="report"]) .about-content-card h3 {
+  font-family: var(--folio-font-heading);
+  color: var(--folio-slate);
+}
+.folio:not([data-view="report"]) .about-value-card {
+  background: var(--folio-white);
+  border-color: var(--folio-sand);
+  border-radius: var(--folio-radius-card);
+  box-shadow: none;
+}
+.folio:not([data-view="report"]) .about-value-number {
+  color: var(--folio-taupe-deep);
+  background: var(--folio-paper);
+}
+.folio:not([data-view="report"]) .about-source {
+  background: var(--folio-paper);
+  border-color: var(--folio-sand);
+  color: var(--folio-body);
+}
+.folio:not([data-view="report"]) .cv-profile {
+  background: var(--folio-paper);
+  color: var(--folio-slate);
+  border: 1px solid var(--folio-sand);
+  border-radius: var(--folio-radius-panel);
+}
+.folio:not([data-view="report"]) .cv-profile h3 {
+  color: var(--folio-slate);
+  font-family: var(--folio-font-heading);
+}
+.folio:not([data-view="report"]) .cv-section {
+  background: var(--folio-white);
+  border: 1px solid var(--folio-sand);
+  border-radius: var(--folio-radius-card);
+  box-shadow: none;
+}
+.folio:not([data-view="report"]) .cv-section-heading {
+  color: var(--folio-slate);
+  border-color: var(--folio-rule);
+}
+.folio:not([data-view="report"]) .cv-timeline {
+  position: relative;
+}
+.folio:not([data-view="report"]) .cv-timeline::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 3px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--folio-taupe);
+  transform: scaleY(var(--timeline-progress, 1));
+  transform-origin: top;
+  pointer-events: none;
+}
+.folio:not([data-view="report"]) .cv-institution,
+.folio:not([data-view="report"]) .cv-school,
+.folio:not([data-view="report"]) .cv-date {
+  color: var(--folio-muted);
+}
+.folio:not([data-view="report"]) .courses-stats {
+  background: var(--folio-paper);
+  border: 1px solid var(--folio-sand);
+  border-radius: var(--folio-radius-panel);
+}
+.folio:not([data-view="report"]) .courses-stats strong {
+  color: var(--folio-slate);
+  font-variant-numeric: tabular-nums;
+}
+.folio:not([data-view="report"]) .courses-page .course-card {
+  background: var(--folio-white);
+  border-color: var(--folio-sand);
+  box-shadow: var(--folio-shadow-rest);
+}
+.folio:not([data-view="report"]) .course-card-icon {
+  background: transparent;
+  color: var(--folio-taupe-deep);
+  border: 1px solid var(--folio-sand);
+  border-radius: 50%;
+  position: relative;
+}
+.folio:not([data-view="report"]) .course-card-icon::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 1px solid var(--folio-sand);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.folio:not([data-view="report"]) .courses-page .course-card-duration {
+  background: var(--folio-paper);
+  color: var(--folio-taupe-deep);
+}
+.folio:not([data-view="report"]) .courses-page .course-card-actions button:first-child,
+.folio:not([data-view="report"]) .courses-toolbar .folio-primary {
+  background: var(--folio-slate);
+  border-color: var(--folio-slate);
+  color: white;
+}
+.folio:not([data-view="report"]) .folio-days {
+  background: var(--folio-paper);
+  border-color: var(--folio-sand);
+}
+.folio:not([data-view="report"]) .folio-days button {
+  color: var(--folio-slate);
+}
+.folio:not([data-view="report"]) .folio-days button.active,
+.folio:not([data-view="report"]) .folio-schedule-meta,
+.folio:not([data-view="report"]) .folio-lesson > span {
+  background: var(--folio-slate);
+  color: white;
+}
+.folio:not([data-view="report"]) .folio-lesson {
+  border-color: var(--folio-sand);
+  background: var(--folio-white);
+  border-radius: var(--folio-radius-card);
+}
+.folio:not([data-view="report"]) .folio-lesson h3 {
+  color: var(--folio-slate);
+}
+.folio:not([data-view="report"]) .frc-meta,
+.folio:not([data-view="report"]) .frc-summary {
+  color: var(--folio-body);
+}
+.folio:not([data-view="report"]) .folio-report-card {
+  border-color: var(--folio-sand);
+  border-radius: var(--folio-radius-card);
+  background: var(--folio-white);
+}
+.folio:not([data-view="report"]) .frc-actions button:first-child {
+  background: var(--folio-slate);
+  border-color: var(--folio-slate);
+}
+.folio:not([data-view="report"]) .reference-drawer {
+  background: var(--folio-ivory);
+  border-color: var(--folio-sand);
+  color: var(--folio-slate);
+}
+.folio:not([data-view="report"]) .reference-drawer .folio-primary {
+  background: var(--folio-slate);
+  border-color: var(--folio-slate);
+  color: white;
+}
+.folio:not([data-view="report"]) .reference-pill,
+.folio:not([data-view="report"]) .reference-card .fc-copy > .reference-pill {
+  color: var(--folio-taupe-deep);
+  background: var(--folio-paper);
+}
+.folio:not([data-view="report"]) .reference-verification h2 {
+  color: var(--folio-slate);
+}
+.folio:not([data-view="report"]) .folio-footer {
+  background: var(--folio-slate);
+}
+.folio:not([data-view="report"]) .home-utilities .teaser-icon {
+  color: var(--folio-taupe-deep);
+  background: var(--folio-paper);
+}
+@media (max-width: 760px) {
+  .folio:not([data-view="report"]) .folio-section-heading {
+    padding-inline-start: 44px;
+  }
+  .folio:not([data-view="report"]) .folio-section-heading::before {
+    width: 30px;
+    height: 30px;
+    top: 26px;
+  }
+  .folio:not([data-view="report"]) .about-content-card {
+    padding: 24px;
+  }
+}
+@media print {
+  .folio:not([data-view="report"]) {
+    background-image: none;
+  }
+  .folio:not([data-view="report"]) .folio-section-heading::before,
+  .folio:not([data-view="report"]) .about-content-card::before,
+  .folio:not([data-view="report"]) .course-card-icon::after {
+    display: none;
+  }
+}

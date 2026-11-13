@@ -31,6 +31,11 @@ import "./reading-design.css";
 import "./interactive-experience.css";
 import "./design-tokens.css";
 import "./reference-identity.css";
+import "./manuscript-layout.css";
+import "./manuscript-surfaces.css";
+import "./manuscript-motion.css";
+import { ManuscriptMotion } from "./ManuscriptMotion";
+import manuscriptTitle from "./assets/manuscript-title.svg?raw";
 import { ReferenceCriteria, VerificationZone } from "./ReferenceIdentity";
 import { ReadingControls, ReportSearch, ReportGallery } from "./InteractiveExperience";
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
@@ -230,8 +235,18 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
               <br />
               {settings.teacher.administration}
             </p>
-            <p className="reference-calligraphy">
-              مَلَفُّ الإِنْجَازِ المِهْنِيِّ وَالتَّعْلِيمِيِّ
+            <p
+              className="reference-calligraphy"
+              aria-label="مَلَفُّ الإِنْجَازِ المِهْنِيِّ وَالتَّعْلِيمِيِّ"
+            >
+              <span className="manuscript-title-text">
+                مَلَفُّ الإِنْجَازِ المِهْنِيِّ وَالتَّعْلِيمِيِّ
+              </span>
+              <span
+                className="manuscript-title-art"
+                aria-hidden="true"
+                dangerouslySetInnerHTML={{ __html: manuscriptTitle }}
+              />
             </p>
             <div className="reference-ribbon">
               <i />
@@ -518,6 +533,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
         )}
       </main>
       <VerificationZone settings={settings} />
+      <ManuscriptMotion pageKey={`${view}/${criterion ?? ""}/${reportId}`} />
       <ReadingControls />
       <footer className="folio-footer">
         <div className="footer-identity">

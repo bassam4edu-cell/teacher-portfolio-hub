@@ -186,3 +186,9 @@ The lower information zone shows the saved current period and factual evidence c
 - Don't fabricate achievements, reports, endorsements, official platform status, or contact information.
 - Don't replace the established book symbol and geometric corner asset with unrelated ornament.
 - Don't renumber criteria when filtering or sort them by publication counts.
+
+## Manuscript visual layer — November 2026
+
+The current public surface uses `design-tokens.css` as the palette authority: ivory #FBF9F6, paper #F3EEE6, sand #D9D2C7, decorative taupe #9C8B79, readable dark taupe #6E5F50 and slate #3E4C59. Earlier reference samples above remain historical component examples; public stylesheet overrides use the current tokens. Report templates retain their approved identity.
+
+`manuscript-layout.css` establishes RTL rhythm and responsive grids; `manuscript-surfaces.css` adds paper grain and geometric hairlines; `manuscript-motion.css` and `ManuscriptMotion.tsx` provide progressive motion. The signature title is connected Ruqaa SVG outlines, with the unchanged Arabic source accessible to assistive technology. Desktop smooth scrolling is optional enhancement; mobile and reduced-motion preferences keep native scrolling. No splash screen blocks the portfolio. Decorative geometry never indicates official approval. See `docs/REDESIGN-PHASES.md` for scope and validation.
