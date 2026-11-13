@@ -20,38 +20,38 @@
   font-display: swap;
 }
 .folio {
-  --reference-bronze: #9a8b7a;
-  --reference-teal: #2f4846;
-  --reading-ink: #2f4846;
-  --reading-body: #625f58;
-  --reading-muted: #7a756c;
-  --reading-line: #d8d2c7;
-  background: #faf9f6;
-  color: #2f4846;
+  --reference-bronze: var(--folio-taupe, #9a8b7a);
+  --reference-teal: var(--folio-slate, #2f4846);
+  --reading-ink: var(--folio-slate, #2f4846);
+  --reading-body: var(--folio-body, #625f58);
+  --reading-muted: var(--folio-muted, #7a756c);
+  --reading-line: var(--folio-sand, #d8d2c7);
+  background: var(--folio-ivory, #faf9f6);
+  color: var(--folio-slate, #2f4846);
 }
 .folio:not([data-view="report"]) {
   font-family: ReferenceSans, Tajawal, sans-serif;
 }
 .folio .folio-main {
-  max-width: 1180px;
+  max-width: var(--folio-content-width, 1180px);
 }
 .folio .folio-header {
   background: #faf9f6f5;
-  border-color: #e5e0d5;
+  border-color: var(--folio-rule, #e5e0d5);
 }
 .folio .folio-brand-icon,
 .folio .reading-top {
-  background: #2f4846;
+  background: var(--folio-slate, #2f4846);
 }
 .folio .folio-header nav a.active {
-  background: #f0ece4;
-  color: #2f4846;
+  background: var(--folio-paper, #f0ece4);
+  color: var(--folio-slate, #2f4846);
 }
 .folio[data-view="home"] .folio-hero {
   display: block;
   text-align: center;
   background: transparent;
-  color: #2f4846;
+  color: var(--folio-slate, #2f4846);
   border: 0;
   border-radius: 0;
   padding: 40px 60px 32px;
@@ -87,7 +87,7 @@
   animation: none;
 }
 .folio .reference-institution {
-  color: #2f4846;
+  color: var(--folio-slate, #2f4846);
   font-size: 14px;
   line-height: 1.9;
   margin: 0 auto 12px;
@@ -97,11 +97,11 @@
   font-size: clamp(38px, 5.5vw, 74px);
   font-weight: 400;
   line-height: 1.8;
-  color: #9a8b7a;
+  color: var(--folio-taupe, #9a8b7a);
   margin: 0 auto 12px;
   max-width: 100%;
   text-wrap: balance;
-  animation: reference-ink 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: reference-ink 1.2s var(--folio-ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
 }
 .folio .reference-ribbon {
   display: flex;
@@ -116,17 +116,17 @@
   content: "";
   height: 1px;
   flex: 1;
-  background: #9a8b7a;
+  background: var(--folio-taupe, #9a8b7a);
 }
 .folio .reference-ribbon i {
   width: 15px;
   height: 15px;
-  background: #9a8b7a;
+  background: var(--folio-taupe, #9a8b7a);
   transform: rotate(45deg);
   flex-shrink: 0;
 }
 .folio .reference-ribbon > span {
-  background: #9a8b7a;
+  background: var(--folio-taupe, #9a8b7a);
   color: white;
   padding: 6px 24px;
   font-size: 15px;
@@ -134,7 +134,7 @@
 }
 .folio[data-view="home"] .folio-hero h1 {
   font-family: ReferenceKufi, Tajawal, sans-serif;
-  color: #2f4846;
+  color: var(--folio-slate, #2f4846);
   font-size: clamp(30px, 4vw, 46px);
   font-weight: 700;
   line-height: 1.7;
@@ -143,7 +143,7 @@
 .folio .reference-specialty {
   font-size: 20px;
   font-weight: 600;
-  color: #2f4846;
+  color: var(--folio-slate, #2f4846);
   margin: 4px 0 14px;
 }
 .folio[data-view="home"] .hero-document-title {
@@ -151,7 +151,7 @@
 }
 .folio[data-view="home"] .hero-summary {
   font-size: 15px;
-  color: #625f58;
+  color: var(--folio-body, #625f58);
   max-width: 74ch;
   margin: 0 auto;
   line-height: 1.9;
@@ -162,22 +162,22 @@
 }
 .folio .hero-actions .hero-cta {
   color: white;
-  background: #2f4846;
-  border-color: #2f4846;
+  background: var(--folio-slate, #2f4846);
+  border-color: var(--folio-slate, #2f4846);
 }
 .folio .hero-actions .hero-cta:hover {
   color: white;
-  background: #263b3a;
+  background: var(--folio-slate-deep, #263b3a);
 }
 .folio .hero-actions .hero-secondary {
-  color: #2f4846;
+  color: var(--folio-slate, #2f4846);
   background: transparent;
-  border-color: #d8d2c7;
+  border-color: var(--folio-sand, #d8d2c7);
   padding-inline: 20px;
 }
 .folio .hero-record {
   border: 0;
-  border-top: 1px solid #e5e0d5;
+  border-top: 1px solid var(--folio-rule, #e5e0d5);
   max-width: 760px;
   margin: 28px auto 0;
   padding: 20px 0 0;
@@ -194,19 +194,19 @@
 }
 .folio .hero-record dt {
   font-size: 12px;
-  color: #7a756c;
+  color: var(--folio-muted, #7a756c);
 }
 .folio .hero-record dd {
   font-size: 14px;
-  color: #2f4846;
+  color: var(--folio-slate, #2f4846);
 }
 .folio .folio-section-heading {
-  border-top-color: #d8d2c7;
+  border-top-color: var(--folio-sand, #d8d2c7);
 }
 .folio .folio-section-heading h2,
 .folio .folio-page-title h1 {
   font-family: ReferenceKufi, Tajawal, sans-serif;
-  color: #2f4846;
+  color: var(--folio-slate, #2f4846);
 }
 .folio .reference-filters {
   display: flex;
@@ -216,19 +216,19 @@
 }
 .folio .reference-filters button {
   background: transparent;
-  border: 1px solid #d8d2c7;
+  border: 1px solid var(--folio-sand, #d8d2c7);
   border-radius: 999px;
   padding: 9px 18px;
   font-size: 13px;
-  color: #625f58;
+  color: var(--folio-body, #625f58);
   transition:
     background 0.25s,
     color 0.25s;
 }
 .folio .reference-filters button[aria-pressed="true"] {
-  background: #2f4846;
+  background: var(--folio-slate, #2f4846);
   color: white;
-  border-color: #2f4846;
+  border-color: var(--folio-slate, #2f4846);
 }
 .folio .reference-criteria,
 #home-performance .reference-criteria {
@@ -245,15 +245,15 @@
   align-items: center;
   position: relative;
   isolation: isolate;
-  border: 1px solid #d5cfc4;
-  border-radius: 14px;
+  border: 1px solid var(--folio-sand, #d5cfc4);
+  border-radius: var(--folio-radius-card, 16px);
   background: white;
   box-shadow: 0 2px 5px #2f484607;
   min-height: 122px;
   padding: 20px 28px;
   overflow: visible;
   transition:
-    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.3s var(--folio-ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
     border-color 0.3s,
     box-shadow 0.3s;
 }
@@ -263,7 +263,12 @@
   inset: 0;
   border-radius: inherit;
   z-index: -1;
-  background: linear-gradient(100deg, transparent 10%, #f7f5f0 50%, transparent 85%);
+  background: linear-gradient(
+    100deg,
+    transparent 10%,
+    var(--folio-paper, #f7f5f0) 50%,
+    transparent 85%
+  );
   background-size: 250% 100%;
   background-position: 100% 0;
   opacity: 0;
@@ -273,7 +278,7 @@
 }
 .folio .reference-card:hover {
   transform: translateX(-4px);
-  border-color: #9a8b7a;
+  border-color: var(--folio-taupe, #9a8b7a);
   box-shadow: 0 8px 20px #2f484610;
   background: white;
 }
@@ -290,7 +295,7 @@
   margin-inline-start: -43px;
   margin-right: 0;
   border-radius: 10px;
-  background: #9a8b7a;
+  background: var(--folio-taupe, #9a8b7a);
   color: white;
   font-family: ReferenceSans, sans-serif;
   font-size: 24px;
@@ -299,17 +304,17 @@
     background 0.3s;
 }
 .folio .reference-card[data-populated="true"] .fc-number {
-  background: #9a8b7a;
+  background: var(--folio-taupe, #9a8b7a);
   color: white;
 }
 .folio .reference-card:hover .fc-number {
   transform: scale(1.06);
-  background: #2f4846;
+  background: var(--folio-slate, #2f4846);
 }
 .folio .academic-icon {
   width: 60px;
   height: 60px;
-  color: #2f4846;
+  color: var(--folio-slate, #2f4846);
   transition: transform 0.35s;
 }
 .folio .reference-card:hover .academic-icon {
@@ -328,23 +333,23 @@
   font-size: 19px;
   line-height: 1.7;
   font-weight: 700;
-  color: #2f4846;
+  color: var(--folio-slate, #2f4846);
 }
 .folio .reference-pill,
 .folio .reference-card .fc-copy > .reference-pill {
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
-  border: 1px solid #c5b9a8;
-  background: #f7f5f0;
-  color: #796858;
+  border: 1px solid var(--folio-sand, #c5b9a8);
+  background: var(--folio-paper, #f7f5f0);
+  color: var(--folio-taupe-deep, #796858);
   font-size: 12px;
   line-height: 1.7;
   padding: 2px 14px;
   min-width: 0;
 }
 .folio .fc-meta {
-  border-inline-start: 1px solid #e2ddd3;
+  border-inline-start: 1px solid var(--folio-rule, #e2ddd3);
   min-height: 76px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 24px;
@@ -352,12 +357,12 @@
   gap: 2px 12px;
   padding-inline-start: 24px;
   text-align: start;
-  color: #7a756c;
+  color: var(--folio-muted, #7a756c);
 }
 .folio .fc-meta > svg {
   grid-column: 2;
   grid-row: 1/4;
-  color: #9a8b7a;
+  color: var(--folio-taupe, #9a8b7a);
   align-self: center;
 }
 .folio .fc-meta > span {
@@ -365,19 +370,19 @@
 }
 .folio .fc-meta > strong {
   font-size: 14px;
-  color: #2f4846;
+  color: var(--folio-slate, #2f4846);
   font-weight: 500;
 }
 .folio .fc-meta > small {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #796858;
+  color: var(--folio-taupe-deep, #796858);
   font-size: 12px;
 }
 .folio .reference-card[data-entered="true"] {
-  animation: reference-card-enter 0.65s var(--card-delay, 0ms) cubic-bezier(0.22, 1, 0.36, 1)
-    backwards;
+  animation: reference-card-enter 0.65s var(--card-delay, 0ms)
+    var(--folio-ease-out, cubic-bezier(0.22, 1, 0.36, 1)) backwards;
 }
 .folio .reference-drawer {
   position: fixed;
@@ -387,12 +392,12 @@
   max-width: 100vw;
   height: 100dvh;
   max-height: 100dvh;
-  background: #faf9f6;
+  background: var(--folio-ivory, #faf9f6);
   border: 0;
-  border-inline-start: 1px solid #d8d2c7;
+  border-inline-start: 1px solid var(--folio-sand, #d8d2c7);
   padding: 32px;
-  color: #2f4846;
-  animation: reference-drawer-enter 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  color: var(--folio-slate, #2f4846);
+  animation: reference-drawer-enter 0.4s var(--folio-ease-out, cubic-bezier(0.22, 1, 0.36, 1));
 }
 .folio .reference-drawer::backdrop {
   background: #263b3aa6;
@@ -419,24 +424,24 @@
 }
 .folio .reference-drawer-count {
   padding-block: 16px;
-  border-block: 1px solid #d8d2c7;
+  border-block: 1px solid var(--folio-sand, #d8d2c7);
   margin-block: 24px;
 }
 .folio .reference-evidence {
   display: block;
-  border: 1px solid #d8d2c7;
+  border: 1px solid var(--folio-sand, #d8d2c7);
   border-radius: 12px;
   overflow: hidden;
   background: white;
   margin-bottom: 20px;
-  color: #2f4846;
+  color: var(--folio-slate, #2f4846);
   text-decoration: none;
 }
 .folio .reference-evidence > img {
   width: 100%;
   height: 220px;
   object-fit: contain;
-  background: #f7f5f0;
+  background: var(--folio-paper, #f7f5f0);
   display: block;
 }
 .folio .reference-evidence > svg {
@@ -455,7 +460,7 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #7a756c;
+  color: var(--folio-muted, #7a756c);
 }
 .folio .reference-verification {
   max-width: 1124px;
@@ -467,10 +472,10 @@
   position: relative;
   align-items: center;
   text-align: center;
-  color: #2f4846;
+  color: var(--folio-slate, #2f4846);
 }
 .folio .reference-verification > div > svg {
-  color: #9a8b7a;
+  color: var(--folio-taupe, #9a8b7a);
   width: 30px;
   height: 30px;
   margin-bottom: 8px;
@@ -490,7 +495,7 @@
 }
 .folio .reference-verification span {
   font-size: 12px;
-  color: #7a756c;
+  color: var(--folio-muted, #7a756c);
   line-height: 1.8;
 }
 .folio .reference-share img {
@@ -498,7 +503,7 @@
   height: 138px;
   display: block;
   margin: auto;
-  border: 1px solid #d8d2c7;
+  border: 1px solid var(--folio-sand, #d8d2c7);
   padding: 8px;
   background: white;
 }
@@ -514,12 +519,12 @@
   align-items: center;
   gap: 8px;
   padding-top: 20px;
-  border-top: 1px solid #d8d2c7;
+  border-top: 1px solid var(--folio-sand, #d8d2c7);
   font-size: 14px;
-  color: #2f4846;
+  color: var(--folio-slate, #2f4846);
 }
 .folio .folio-footer {
-  background: #2f4846;
+  background: var(--folio-slate, #2f4846);
   margin-top: 28px;
   color: white;
 }
@@ -625,7 +630,7 @@
   .folio .reference-card .fc-meta {
     grid-column: 2/-1;
     border: 0;
-    border-top: 1px solid #e5e0d5;
+    border-top: 1px solid var(--folio-rule, #e5e0d5);
     padding: 12px 0 0;
     min-height: 0;
     display: flex;
@@ -692,7 +697,7 @@
   transform: none;
 }
 .folio .reading-top:hover {
-  background: #263b3a;
+  background: var(--folio-slate-deep, #263b3a);
 }
 @media (max-width: 380px) {
   .folio .reference-ribbon {
@@ -705,4 +710,28 @@
     width: 12px;
     height: 12px;
   }
+}
+
+/* Phase one: token adoption only; structure and event handlers remain unchanged. */
+.folio:not([data-view="report"]) .folio-header {
+  background: var(--folio-ivory);
+}
+.folio:not([data-view="report"]) .reference-calligraphy {
+  font-family: var(--folio-font-display);
+}
+.folio:not([data-view="report"]) .folio-section-heading h2 {
+  font-family: var(--folio-font-heading);
+}
+.folio:not([data-view="report"]) .reference-card {
+  box-shadow: var(--folio-shadow-rest);
+}
+.folio:not([data-view="report"]) .reference-card:hover {
+  box-shadow: var(--folio-shadow-hover);
+}
+.folio:not([data-view="report"]) a:focus-visible,
+.folio:not([data-view="report"]) button:focus-visible,
+.folio:not([data-view="report"]) select:focus-visible,
+.folio:not([data-view="report"]) input:focus-visible {
+  outline: 2px solid var(--folio-focus);
+  outline-offset: 4px;
 }
