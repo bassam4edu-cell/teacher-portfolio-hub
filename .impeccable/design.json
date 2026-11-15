@@ -81,6 +81,18 @@
       "motion": "220–250ms hover/focus feedback; reduced-motion static",
       "scope": "Criterion grids on home and criteria index; navy header/background only on criteria index. Approved report documents unchanged.",
       "homeSurface": "Transparent on the existing light home canvas; no navy panel or arabesque; dark readable filter labels and pale green active state. Standalone criteria index stays navy."
+    },
+    "fullPortfolioPrint": {
+      "source": "src/components/portfolio/portfolio-print.css",
+      "mode": "Read",
+      "format": "A4 portrait 794×1123 screen / 210×297mm print",
+      "palette": "Navy #15445a, ministry green #07a869, sand #c1b489; white inside pages",
+      "typography": "Embedded self-hosted Tajawal, no network font dependency in the generated document",
+      "structure": "Main cover; dynamic contents; About cover and separate content sections; schedule cover/content; all 11 ordered criteria with reports/image previews; courses cover/complete chronological ledger",
+      "pagination": "Measured blocks; intact cards; word-boundary splits only for oversized prose; actual page numbers and totals",
+      "data": "Fresh public snapshot and public display documents only; no private originals/contact or database mutation",
+      "output": "Direct A4 PDF with clickable links and native print/selectable-text PDF; sequential 2x rendering",
+      "scope": "Header print action only; existing single-report and course exports unchanged"
     }
   },
   "narrative": {

@@ -98,6 +98,26 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
   const [reportId, setReportId] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [printBusy, setPrintBusy] = useState(false);
+  const [printError, setPrintError] = useState("");
+  async function printPortfolio() {
+    const win = window.open("", "_blank");
+    if (!win) {
+      setPrintError("اسمح بفتح نافذة التقرير الختامي ثم أعد المحاولة.");
+      return;
+    }
+    win.document.body.textContent = "جارٍ تجهيز ملف الإنجاز الكامل…";
+    setPrintBusy(true);
+    setPrintError("");
+    try {
+      const { generatePortfolioReport } = await import("@/lib/portfolio/portfolio-export");
+      await generatePortfolioReport(win);
+    } catch (err) {
+      setPrintError(errorText(err));
+    } finally {
+      setPrintBusy(false);
+    }
+  }
   const [menu, setMenu] = useState(false);
   const [ownerPage, setOwnerPage] = useState(initialView === "settings");
   const revision = useRef(-1);
@@ -500,8 +520,10 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
         <div className="folio-header-end">
           <button
             className="gov-print-link"
-            onClick={() => window.print()}
-            aria-label="طباعة الصفحة"
+            onClick={printPortfolio}
+            disabled={printBusy || loading}
+            aria-label={printBusy ? "جارٍ تجهيز التقرير الختامي" : "توليد التقرير الختامي الكامل"}
+            title="توليد التقرير الختامي الكامل"
           >
             <Printer size={19} />
           </button>
@@ -534,6 +556,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
         </div>
       </header>
       <main className="folio-main" id="portfolio-content" tabIndex={-1}>
+        {printError && <p role="alert">تعذر تجهيز التقرير الختامي: {printError}</p>}
         {view !== "home" && (
           <nav className="reading-breadcrumb" aria-label="مسار التصفح">
             <a

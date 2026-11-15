@@ -16,7 +16,8 @@
     "test:browser": "node scripts/test-browser.mjs && node scripts/test-courses-browser.mjs",
     "package:evidence": "node scripts/build-package.mjs",
     "typecheck": "tsc --noEmit",
-    "test:report-share": "node scripts/test-report-sharing.mjs"
+    "test:report-share": "node scripts/test-report-sharing.mjs",
+    "test:portfolio-print": "node scripts/test-portfolio-print.mjs"
   },
   "overrides": {
     "rolldown": "1.2.1"
