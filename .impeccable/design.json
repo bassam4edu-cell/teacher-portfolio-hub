@@ -88,12 +88,17 @@
       "format": "A4 portrait 794×1123 screen / 210×297mm print",
       "palette": "Navy #15445a, ministry green #07a869, sand #c1b489; white inside pages",
       "typography": "Embedded self-hosted Tajawal, no network font dependency in the generated document",
-      "structure": "Main cover; dynamic contents; About cover and separate content sections; schedule cover/content; all 11 ordered criteria with reports/image previews; courses cover/complete chronological ledger",
+      "structure": "Main cover + dynamic contents; graphic one-page current About subsections; schedule; 11 individual criterion covers each followed immediately by approved SimpleReport pages; oldest-first course ledger with QR replacing thumbnails",
       "pagination": "Measured blocks; intact cards; word-boundary splits only for oversized prose; actual page numbers and totals",
       "data": "Fresh public snapshot and public display documents only; no private originals/contact or database mutation",
       "output": "Direct A4 PDF with clickable links and native print/selectable-text PDF; sequential 2x rendering",
       "scope": "Header print action only; existing single-report and course exports unchanged",
-      "preparation": "Responsive progress screen, animated document icon and ring, monotonic 0–100 weighted task completion; real resource/image/certificate/section/decode events. 100 only after document ready; short success check then automatic reveal. Error retry reuses window and owner busy state. Reduced motion static."
+      "preparation": "Responsive progress screen, animated document icon and ring, monotonic 0–100 weighted task completion; real resource/image/certificate/section/decode events. 100 only after document ready; short success check then automatic reveal. Error retry reuses window and owner busy state. Reduced motion static.",
+      "reportHeaders": "Outer A4 header: logo + criterion number/name, no QR. Inner SimpleReport header: exactly one linked report QR. Approved field boxes/photos/signatures/bottom strip retained.",
+      "sizing": "Scoped proportional CSS lengths, no transform-based print cropping. Whole short reports stay one page; oversized reports continue losslessly.",
+      "certificates": "Locally generated QR to /#courses/certificate/DOCUMENT_ID; viewer reads only published display files through unchanged API after public-course membership check; no certificate reads in print preparation",
+      "speed": "2 concurrent public photo tasks; bounded 64-entry SHA-keyed public derived-preview cache; local QR reuse; always fresh metadata",
+      "about": "One page per actual subsection; two-column CV sidebar/timeline, paired purposes/value grid, numbered goals/principles; lossless continuation for future oversized content"
     }
   },
   "narrative": {

@@ -101,14 +101,14 @@ a:focus-visible {
   min-height: 0;
   padding: 20px 0 12px;
 }
-.fp-body h2 {
+.fp-body > h2 {
   font-size: 29px;
   line-height: 1.55;
   margin: 0 0 22px;
   font-weight: 700;
   color: #15445a;
 }
-.fp-body h2:after {
+.fp-body > h2:after {
   content: "";
   display: block;
   width: 62px;

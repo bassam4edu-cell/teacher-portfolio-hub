@@ -27,6 +27,7 @@ import { defaultSettings, days, currentDayRiyadh, type Settings } from "@/lib/po
 import { reportDate, type Publication } from "@/lib/portfolio/simple-report";
 import { printSimpleReport } from "@/lib/portfolio/simple-export";
 import { SimpleReport } from "./SimpleReport";
+import { CourseCertificate } from "./CourseCertificate";
 import { About } from "./About";
 import { Courses } from "./Courses";
 import { CourseManager } from "./CourseManager";
@@ -96,6 +97,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
   const [view, setView] = useState<View>("home");
   const [criterion, setCriterion] = useState<number | null>(null);
   const [reportId, setReportId] = useState("");
+  const [certificateId, setCertificateId] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [printBusy, setPrintBusy] = useState(false);
@@ -154,6 +156,9 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
             : raw === "library"
               ? "criteria"
               : "home",
+      );
+      setCertificateId(
+        raw === "courses" && segments[1] === "certificate" ? (segments[2] ?? "") : "",
       );
       setCriterion(raw === "criteria" && segments[1] ? Number(segments[1]) : null);
       setReportId(
@@ -462,7 +467,11 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
     );
   else if (view === "about") content = <About settings={settings} />;
   else if (view === "courses")
-    content = <Courses settings={settings} revision={revision.current} />;
+    content = certificateId ? (
+      <CourseCertificate id={certificateId} />
+    ) : (
+      <Courses settings={settings} revision={revision.current} />
+    );
   else
     content = (
       <>

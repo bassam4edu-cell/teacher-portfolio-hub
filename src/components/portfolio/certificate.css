@@ -1,0 +1,80 @@
+.certificate-view {
+  max-width: 1000px;
+  margin: auto;
+  color: var(--gov-navy);
+}
+.certificate-view header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 24px 0;
+}
+.certificate-view h1 {
+  font-size: clamp(24px, 4vw, 34px);
+  line-height: 1.6;
+  margin: 0;
+}
+.certificate-view p {
+  color: var(--gov-muted);
+  line-height: 1.8;
+}
+.certificate-back,
+.certificate-download,
+.certificate-view button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font: inherit;
+}
+.certificate-download,
+.certificate-view button {
+  background: #007d55;
+  color: #fff;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 9px;
+  text-decoration: none;
+}
+.certificate-view iframe {
+  display: block;
+  width: 100%;
+  height: 75vh;
+  min-height: 500px;
+  border: 1px solid #dce7eb;
+  border-radius: 12px;
+  background: #fff;
+}
+.certificate-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: auto;
+}
+.certificate-fallback {
+  font-size: 14px;
+}
+.certificate-view a:focus-visible,
+.certificate-view button:focus-visible {
+  outline: 3px solid #3d7eb9;
+  outline-offset: 4px;
+}
+@media (max-width: 600px) {
+  .certificate-view header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .certificate-view iframe {
+    min-height: 420px;
+    height: 70vh;
+  }
+}
+@media print {
+  .certificate-back,
+  .certificate-download,
+  .certificate-fallback {
+    display: none;
+  }
+}

@@ -1,5 +1,5 @@
 import { loadSimplePortfolio, publicReportAsset, errorText } from "./api";
-import { loadCourses, courseDocument } from "./courses";
+import { loadCourses } from "./courses";
 import type { Settings } from "./model";
 import {
   portfolioSections,
@@ -9,11 +9,20 @@ import {
   type DocumentMedia,
 } from "./portfolio-document";
 import { createPrintProgress } from "./print-progress";
+import { cachedPublicPreview, mapPrintTasks } from "./print-cache";
+import { printQr, publicCertificateLink, publicReportLink } from "./print-qr";
+import {
+  approvedPrintCss,
+  approvedReportNodes,
+  approvedReportPieces,
+} from "./approved-report-print";
+import designCss from "@/components/portfolio/portfolio-print-design.css?raw";
 import css from "@/components/portfolio/portfolio-print.css?raw";
 const e = escapePrint;
 
 /** Pre-opened by the click handler so mobile browsers preserve the user gesture. */
 export async function generatePortfolioReport(win: Window, onBusyChange?: (busy: boolean) => void) {
+  const started = performance.now();
   onBusyChange?.(true);
   const doc = win.document;
   doc.open();
@@ -57,6 +66,7 @@ export async function generatePortfolioReport(win: Window, onBusyChange?: (busy:
         /url\(["']?\/brand\/cover-arabesque\.svg["']?\)/g,
         `url("${embedded.get(paths[3]!)}")`,
       );
+    style.textContent += approvedPrintCss() + designCss;
     doc.head.append(style);
     let readsDone = 0;
     const readDone = () => progress.update(8 + ++readsDone * 4, "قراءة بيانات الملف والدورات…", 0);
@@ -71,52 +81,74 @@ export async function generatePortfolioReport(win: Window, onBusyChange?: (busy:
       }),
     ]);
     const s = data.settings,
-      media: DocumentMedia = { reports: {}, courses: {} };
+      media: DocumentMedia = {
+        reports: {},
+        courses: {},
+        reportCodes: {},
+        brand: Object.fromEntries(embedded),
+      };
     let failures = 0;
     // Read public display files only: private originals and database permissions stay untouched.
     const assets = [
       ...new Map(data.publications.flatMap((r) => r.assets).map((a) => [a.id, a])).values(),
     ].filter((a) => a.mime.startsWith("image/"));
-    for (const [i, a] of assets.entries()) {
-      progress.update(
-        16 + (i * 24) / assets.length,
-        `تجهيز صورة الشاهد ${i + 1} من ${assets.length}…`,
-        1,
-      );
-      let url = "";
-      try {
-        url = await publicReportAsset(a.id);
-        media.reports[a.id] = await imagePreview(url, 1200);
-      } catch {
-        failures++;
-      } finally {
-        if (url) URL.revokeObjectURL(url);
-      }
-      progress.update(
-        16 + ((i + 1) * 24) / assets.length,
-        `اكتمل تجهيز ${i + 1} من ${assets.length} صور شواهد`,
-        1,
-      );
-    }
-    progress.update(40, "تجهيز شهادات الدورات…", 2);
-    const documented = courses.filter((course) => course.document);
-    for (const [i, c] of documented.entries()) {
-      progress.update(
-        40 + (i * 40) / documented.length,
-        `تجهيز الشهادة ${i + 1} من ${documented.length}…`,
-        2,
-      );
-      try {
-        media.courses[c.id] = await certificatePreview(await courseDocument(c.document!.id));
-      } catch {
-        failures++;
-      }
-      progress.update(
-        40 + ((i + 1) * 40) / documented.length,
-        `اكتمل تجهيز ${i + 1} من ${documented.length} شهادة`,
-        2,
-      );
-    }
+    let processedImages = 0,
+      cacheHits = 0;
+    await mapPrintTasks(
+      assets,
+      async (a) => {
+        try {
+          const result = await cachedPublicPreview(
+            `image-v2:1200:${a.id}:${a.sha256}`,
+            async () => {
+              const url = await publicReportAsset(a.id);
+              try {
+                return await imagePreview(url, 1200);
+              } finally {
+                URL.revokeObjectURL(url);
+              }
+            },
+          );
+          media.reports[a.id] = result.value;
+          if (result.hit) cacheHits++;
+        } catch {
+          failures++;
+        }
+        progress.update(
+          16 + (24 * ++processedImages) / assets.length,
+          `تجهيز صور الشواهد ${processedImages} من ${assets.length}…`,
+          1,
+        );
+      },
+      2,
+    );
+    progress.update(40, "تجهيز رموز الشهادات والتقارير…", 2);
+    const documented = courses.filter((c) => c.document);
+    let preparedCodes = 0;
+    const codeTasks = [
+      ...documented.map((c) => async () => {
+        media.courses[c.id] = await printQr(
+          publicCertificateLink(window.location.origin, c.document!.id),
+        );
+      }),
+      ...data.publications.map((r) => async () => {
+        media.reportCodes![r.id] = await printQr(
+          publicReportLink(window.location.origin, r.criterion, r.id),
+        );
+      }),
+    ];
+    await mapPrintTasks(
+      codeTasks,
+      async (task) => {
+        await task();
+        progress.update(
+          40 + (40 * ++preparedCodes) / codeTasks.length,
+          `تجهيز رمز ${preparedCodes} من ${codeTasks.length}…`,
+          2,
+        );
+      },
+      3,
+    );
     progress.update(80, "تنسيق صفحات A4 والفهرس…", 3);
     const toolbar = doc.createElement("div");
     toolbar.className = "fp-toolbar";
@@ -145,9 +177,16 @@ export async function generatePortfolioReport(win: Window, onBusyChange?: (busy:
       media,
       window.location.origin,
     );
-    await paginatePortfolio(doc, host, s, sections, (done, total) => {
-      progress.update(84 + (10 * done) / total, `تنسيق القسم ${done} من ${total}…`, 3);
-    });
+    await paginatePortfolio(
+      doc,
+      host,
+      s,
+      sections,
+      (done, total) => {
+        progress.update(84 + (10 * done) / total, `تنسيق القسم ${done} من ${total}…`, 3);
+      },
+      media,
+    );
     for (const img of doc.images) {
       const data = embedded.get(img.getAttribute("src") ?? "");
       if (data) img.src = data;
@@ -185,6 +224,8 @@ export async function generatePortfolioReport(win: Window, onBusyChange?: (busy:
         download.disabled = false;
       }
     };
+    doc.documentElement.dataset["prepareMs"] = String(Math.round(performance.now() - started));
+    doc.documentElement.dataset["imageCacheHits"] = String(cacheHits);
     await progress.finish(pages.length, warning);
     doc.body.append(toolbar, host);
     staging.remove();
@@ -215,14 +256,22 @@ function makePage(
   title: string,
   cover = false,
   id?: string,
+  section?: DocumentSection,
 ) {
   const page = doc.createElement("article");
   page.className = `fp-page${cover ? " fp-cover fp-section-cover" : ""}`;
   if (id) page.id = id;
-  if (cover) {
+  const criterion = section?.criterion;
+  const header = `<header class="fp-header"><img src="/brand/moe-color.png" alt="وزارة التعليم">${criterion ? `<span class="fp-criterion-heading"><b>${String(criterion.id).padStart(2, "0")}</b><span>${e(criterion.name)}</span></span>` : `<span>ملف الإنجاز المهني — ${e(s.teacher.name)}</span>`}</header>`;
+  if (cover && criterion) {
+    page.className = "fp-page fp-criterion-cover";
+    page.innerHTML =
+      header +
+      `<div class="fp-cover-main"><span class="fp-criterion-index">${String(criterion.id).padStart(2, "0")}</span><h1>${e(criterion.name)}</h1><span class="fp-cover-rule"></span><p>${e(section?.subtitle ?? "")}</p><div class="fp-criterion-counts">${e(section?.summary ?? "")}</div></div>`;
+  } else if (cover) {
     page.innerHTML = `<img class="fp-cover-logo" src="/brand/moe-white.svg" alt="وزارة التعليم"><div class="fp-cover-identity">المملكة العربية السعودية — وزارة التعليم<br>${e(s.teacher.administration)}</div><div class="fp-cover-main"><h1>${e(title)}</h1><span class="fp-cover-rule"></span></div>`;
   } else {
-    page.innerHTML = `<header class="fp-header"><img src="/brand/moe-color.png" alt="وزارة التعليم"><span>ملف الإنجاز المهني — ${e(s.teacher.name)}</span></header><div class="fp-body"><h2>${e(title)}</h2></div>`;
+    page.innerHTML = header + `<div class="fp-body"><h2>${e(title)}</h2></div>`;
   }
   const footer = doc.createElement("footer");
   footer.className = "fp-footer";
@@ -250,6 +299,7 @@ export async function paginatePortfolio(
   s: Settings,
   sections: DocumentSection[],
   onSection?: (done: number, total: number) => void,
+  media?: DocumentMedia,
 ) {
   const cover = makePage(doc, host, s, "ملف الإنجاز المهني والتعليمي", true, "fp-cover");
   cover.classList.remove("fp-section-cover");
@@ -275,9 +325,13 @@ export async function paginatePortfolio(
     })),
   };
   for (const [sectionIndex, section] of [toc, ...sections].entries()) {
-    let page = makePage(doc, host, s, section.title, section.cover, `fp-${section.id}`);
+    let page = makePage(doc, host, s, section.title, section.cover, `fp-${section.id}`, section);
     starts.set(section.id, page);
     if (section.cover) {
+      if (section.criterion) {
+        onSection?.(sectionIndex + 1, sections.length + 1);
+        continue;
+      }
       page
         .querySelector(".fp-cover-main")!
         .insertAdjacentHTML("beforeend", `<p>${e(section.subtitle ?? "")}</p>`);
@@ -290,12 +344,31 @@ export async function paginatePortfolio(
       onSection?.(sectionIndex + 1, sections.length + 1);
       continue;
     }
+    if (section.publication && media) {
+      await renderApprovedSection(doc, host, s, section, page, media);
+      onSection?.(sectionIndex + 1, sections.length + 1);
+      continue;
+    }
     let body = page.querySelector<HTMLElement>(".fp-body")!;
+    let blocks = section.blocks;
+    if (section.layout === "about") {
+      page.classList.add("fp-about-page");
+      const graphic = blockNode(doc, section.blocks[0]!);
+      body.append(graphic);
+      if (!fits(body)) page.classList.add("fp-about-compact");
+      if (fits(body)) {
+        onSection?.(sectionIndex + 1, sections.length + 1);
+        continue;
+      }
+      graphic.remove();
+      page.classList.remove("fp-about-compact");
+      blocks = section.fallbackBlocks ?? section.blocks;
+    }
     const next = () => {
-      page = makePage(doc, host, s, section.title + " — تابع");
+      page = makePage(doc, host, s, section.title + " — تابع", false, undefined, section);
       body = page.querySelector<HTMLElement>(".fp-body")!;
     };
-    for (const block of section.blocks) {
+    for (const block of blocks) {
       let node = blockNode(doc, block);
       body.append(node);
       await Promise.all([...node.querySelectorAll("img")].map((img) => img.decode()));
@@ -352,6 +425,96 @@ export async function paginatePortfolio(
   });
   return pages;
 }
+async function renderApprovedSection(
+  doc: Document,
+  host: HTMLElement,
+  s: Settings,
+  section: DocumentSection,
+  firstPage: HTMLElement,
+  media: DocumentMedia,
+) {
+  const publication = section.publication!;
+  const qr = media.reportCodes?.[publication.id];
+  if (!qr) throw Error("تعذر تجهيز رمز التقرير.");
+  const sheets = approvedReportNodes(
+    doc,
+    publication,
+    s,
+    media.reports,
+    qr,
+    publicReportLink(window.location.origin, publication.criterion, publication.id),
+  );
+  let page = firstPage,
+    number = 0;
+  const prepare = (target: HTMLElement) => {
+    target.classList.add("fp-report-sheet");
+    target.querySelector(".fp-body h2")?.remove();
+    return target.querySelector<HTMLElement>(".fp-body")!;
+  };
+  let body = prepare(page);
+  const next = () => {
+    page = makePage(doc, host, s, section.title, false, undefined, section);
+    body = prepare(page);
+  };
+  const add = (sheet: HTMLElement) => {
+    const shell = doc.createElement("div");
+    shell.className = "fp-approved-shell";
+    shell.append(sheet);
+    body.append(shell);
+    for (const img of sheet.querySelectorAll("img")) {
+      const branded = media.brand?.[img.getAttribute("src") ?? ""];
+      if (branded) img.src = branded;
+    }
+    return shell;
+  };
+  const fit = (shell: HTMLElement) => {
+    const sheet = shell.firstElementChild as HTMLElement;
+    sheet.style.setProperty("--fp-report-scale", "1");
+    sheet.style.width = "794px";
+    const height = sheet.getBoundingClientRect().height;
+    const style = doc.defaultView!.getComputedStyle(body),
+      available =
+        body.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+    const scale = Math.min(1, body.clientWidth / 794, (available - 4) / height);
+    if (scale < 0.78) return false;
+    sheet.style.setProperty("--fp-report-scale", String(scale));
+    sheet.style.width = `${794 * scale}px`;
+    shell.style.width = `${794 * scale}px`;
+    shell.style.height = "auto";
+    return true;
+  };
+  for (const source of sheets) {
+    if (number++) next();
+    let shell = add(source);
+    await Promise.all([...source.querySelectorAll("img")].map((img) => img.decode()));
+    if (fit(shell)) continue;
+    // The normal approved report remains intact; only truly oversized content is continued.
+    const pieces = approvedReportPieces(doc, source);
+    shell.remove();
+    const makeShell = () => {
+      const clone = source.cloneNode(true) as HTMLElement;
+      clone.querySelector(".sr-content")!.replaceChildren();
+      if (page !== firstPage) clone.classList.add("fp-report-continuation");
+      return add(clone);
+    };
+    shell = makeShell();
+    for (const piece of pieces) {
+      let content = shell.querySelector(".sr-content")!;
+      content.append(piece);
+      if (fit(shell)) continue;
+      piece.remove();
+      if (!content.children.length)
+        throw Error("جزء من التقرير أكبر من صفحة A4. لم يُقتطع المحتوى.");
+      fit(shell);
+      next();
+      shell = makeShell();
+      content = shell.querySelector(".sr-content")!;
+      content.append(piece);
+      if (!fit(shell)) throw Error("تعذر احتواء جزء التقرير في صفحة A4.");
+    }
+  }
+}
+
 async function embeddedAsset(path: string): Promise<string> {
   const response = await fetch(path);
   if (!response.ok) throw Error("تعذر تحميل أحد موارد تصميم التقرير.");
@@ -377,33 +540,6 @@ async function imagePreview(url: string, width: number) {
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.drawImage(image, 0, 0, canvas.width, canvas.height);
   return canvas.toDataURL("image/jpeg", 0.9);
-}
-async function certificatePreview(blob: Blob) {
-  if (blob.type !== "application/pdf") {
-    const url = URL.createObjectURL(blob);
-    try {
-      return await imagePreview(url, 600);
-    } finally {
-      URL.revokeObjectURL(url);
-    }
-  }
-  const pdfjs = await import("pdfjs-dist");
-  const worker = await import("pdfjs-dist/build/pdf.worker.min.mjs?url");
-  pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
-  const task = pdfjs.getDocument({ data: new Uint8Array(await blob.arrayBuffer()) });
-  try {
-    const pdf = await task.promise;
-    const page = await pdf.getPage(1);
-    const base = page.getViewport({ scale: 1 });
-    const viewport = page.getViewport({ scale: Math.min(1.5, 600 / base.width) });
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.ceil(viewport.width);
-    canvas.height = Math.ceil(viewport.height);
-    await page.render({ canvas, viewport }).promise;
-    return canvas.toDataURL("image/jpeg", 0.85);
-  } finally {
-    await task.destroy();
-  }
 }
 export async function downloadPortfolioPdf(
   win: Window,
