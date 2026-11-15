@@ -134,7 +134,6 @@ export function ReferenceCriteria({
             <button
               className="folio-criterion reference-card"
               key={c.id}
-              data-populated={count > 0}
               style={{ "--card-delay": `${Math.min(i, 5) * 80}ms` } as CSSProperties}
               onClick={() => {
                 setSelected(c.id);
@@ -152,9 +151,10 @@ export function ReferenceCriteria({
                 </span>
               </div>
               <span className="fc-meta">
-                <FileText size={20} />
-                <span>الشواهــــد</span>
-                <strong>{count} تقارير</strong>
+                <span className="fc-report-count">
+                  <FileText size={17} aria-hidden="true" />
+                  <strong>{count} تقارير</strong>
+                </span>
                 <small>
                   عرض الشواهد <ArrowUpLeft size={15} />
                 </small>

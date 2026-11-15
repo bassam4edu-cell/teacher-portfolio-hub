@@ -237,12 +237,6 @@
   border-color: #d7e9f1;
   font-variant-numeric: tabular-nums;
 }
-.folio .reference-card[data-populated="true"] .fc-number {
-  background: var(--gov-green);
-  border-color: var(--gov-green);
-  color: #06232f;
-  font-weight: 700;
-}
 .folio .reference-card:hover {
   transform: translateY(-2px);
   border-color: #a4d9ca;
@@ -250,8 +244,6 @@
 }
 .folio .reference-card:hover .fc-number {
   transform: none;
-  background: var(--gov-green);
-  color: var(--gov-navy);
 }
 .folio .reference-card:hover .academic-icon {
   transform: none;
@@ -580,5 +572,148 @@
   .folio .owner-box {
     padding: 20px;
     margin: 16px auto;
+  }
+}
+
+/* Horizontal criteria: consistent appearance regardless of report count. */
+.folio .reference-criteria .reference-card,
+#home-performance .reference-criteria .reference-card {
+  display: grid;
+  direction: rtl;
+  grid-template-columns: 52px 52px minmax(0, 1fr) 164px;
+  justify-items: stretch;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  padding: 22px 24px;
+  text-align: right;
+  border-bottom-width: 2px;
+}
+.folio .reference-card .fc-number {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 52px;
+  margin: 0;
+  background: #eaf5fb;
+  color: var(--gov-navy);
+  border: 1px solid #d7e9f1;
+  font-size: 22px;
+  font-weight: 600;
+}
+.folio .reference-card .academic-icon {
+  width: 52px;
+  height: 52px;
+  justify-self: start;
+}
+.folio .reference-card .fc-copy {
+  justify-self: stretch;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: right;
+  gap: 7px;
+}
+.folio .reference-card .fc-copy h3,
+#home-performance .reference-card .fc-copy h3 {
+  width: 100%;
+  margin: 0;
+  text-align: right;
+  line-height: 1.75;
+}
+.folio .reference-card .fc-copy > .reference-pill {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  align-self: flex-start;
+  text-align: right;
+  padding: 2px 10px;
+  line-height: 1.8;
+}
+.folio .reference-card .fc-meta {
+  justify-self: end;
+  width: 164px;
+  min-height: 62px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+  padding: 0;
+  padding-inline-start: 22px;
+  border: 0;
+  border-inline-start: 1px solid var(--gov-line);
+  text-align: left;
+}
+.folio .reference-card .fc-report-count {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  color: var(--gov-muted);
+  font-size: 14px;
+}
+.folio .reference-card .fc-report-count > svg {
+  color: var(--gov-green-ink);
+  flex-shrink: 0;
+}
+.folio .reference-card .fc-report-count > strong {
+  color: var(--gov-navy);
+  font-size: 14px;
+  font-weight: 500;
+}
+.folio .reference-card .fc-meta > small {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--gov-link);
+  line-height: 1.8;
+}
+@media (max-width: 760px) {
+  .folio .reference-criteria .reference-card,
+  #home-performance .reference-criteria .reference-card {
+    grid-template-columns: 42px 40px minmax(0, 1fr);
+    gap: 12px;
+    padding: 18px;
+    min-height: 0;
+  }
+  .folio .reference-card .fc-number {
+    width: 42px;
+    height: 46px;
+    font-size: 20px;
+  }
+  .folio .reference-card .academic-icon {
+    width: 40px;
+    height: 40px;
+    padding: 6px;
+  }
+  .folio .reference-card .fc-copy h3,
+  #home-performance .reference-card .fc-copy h3 {
+    font-size: 16px;
+  }
+  .folio .reference-card .fc-copy > .reference-pill {
+    font-size: 11px;
+  }
+  .folio .reference-card .fc-meta {
+    grid-column: 1/-1;
+    justify-self: stretch;
+    width: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0 0;
+    margin-top: 2px;
+    border: 0;
+    border-top: 1px solid var(--gov-line);
+  }
+  .folio .reference-card .fc-report-count {
+    justify-content: flex-start;
   }
 }
