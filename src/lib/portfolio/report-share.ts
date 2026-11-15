@@ -25,7 +25,7 @@ export async function createReportFiles(
     if (!doc) throw new Error("تعذر تجهيز نسخة المشاركة");
     doc.open();
     doc.write(
-      '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"></head><body></body></html>',
+      '<!doctype html><html lang="ar" dir="ltr"><head><meta charset="utf-8"></head><body></body></html>',
     );
     doc.close();
     const font = await fetch("/fonts/Tajawal-Regular.ttf");
@@ -35,23 +35,81 @@ export async function createReportFiles(
     style.textContent =
       fontCss +
       reportCss +
-      "body{margin:0;background:white}.simple-report{width:794px;max-width:none;min-height:1123px;margin:0;border:0}.report-pages{margin:0}";
+      "html,body{direction:ltr;margin:0;padding:0;width:794px;min-width:794px;overflow:visible;background:white;scroll-behavior:auto}.simple-report{direction:rtl;position:relative;left:0;right:auto;width:794px;max-width:none;min-height:1123px;margin:0;border:0;transform:none}.report-pages{direction:ltr;width:794px;margin:0;padding:0}";
     doc.head.append(style);
     const clone = source.cloneNode(true) as HTMLElement;
     for (const image of clone.querySelectorAll<HTMLImageElement>("img")) {
       const response = await fetch(image.src);
       if (!response.ok) throw new Error("تعذر تحميل إحدى صور التقرير");
-      image.src = await asDataUrl(await response.blob());
+      let imageBlob = await response.blob();
+      if (imageBlob.type.includes("svg")) {
+        const svgDoc = new DOMParser().parseFromString(await imageBlob.text(), "image/svg+xml");
+        const svg = svgDoc.documentElement;
+        const viewBox = svg.getAttribute("viewBox")?.split(/[ ,]+/).map(Number);
+        if (svg.tagName === "svg" && viewBox?.length === 4 && viewBox[2]! > 0 && viewBox[3]! > 0) {
+          // Give Safari a high-resolution intrinsic raster for small vector logos.
+          svg.setAttribute("width", String(viewBox[2]! * 10));
+          svg.setAttribute("height", String(viewBox[3]! * 10));
+          imageBlob = new Blob([new XMLSerializer().serializeToString(svg)], {
+            type: "image/svg+xml",
+          });
+        }
+      }
+      image.src = await asDataUrl(imageBlob);
       image.removeAttribute("loading");
       image.removeAttribute("srcset");
     }
     doc.body.append(clone);
     await doc.fonts.load("16px Tajawal");
     await doc.fonts.ready;
-    await Promise.all([...doc.images].map((image) => image.decode()));
+    await Promise.all(
+      [...doc.images].map(async (image) => {
+        await image.decode();
+        if (!image.naturalWidth || !image.naturalHeight)
+          throw new Error("تعذر تحميل صورة التقرير كاملة");
+      }),
+    );
+    doc.documentElement.scrollLeft = 0;
+    doc.body.scrollLeft = 0;
+    // Flatten gradient border layers to bitmaps: Canvas renderers do not reliably
+    // support layered background-clip, while the live/print template stays unchanged.
+    for (const box of clone.querySelectorAll<HTMLElement>(".sr-box")) {
+      const { width, height } = box.getBoundingClientRect();
+      const border = doc.createElement("canvas");
+      border.width = Math.ceil(width * 2);
+      border.height = Math.ceil(height * 2);
+      const ctx = border.getContext("2d");
+      if (!ctx) throw new Error("تعذر رسم حدود التقرير");
+      ctx.scale(2, 2);
+      const gradient = ctx.createLinearGradient(0, 0, width, height);
+      gradient.addColorStop(0, "#2989bb");
+      gradient.addColorStop(1, "#40b879");
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.roundRect(0, 0, width, height, 9);
+      ctx.fill();
+      ctx.fillStyle = "white";
+      ctx.beginPath();
+      ctx.roundRect(1.3, 1.3, width - 2.6, height - 2.6, 7.7);
+      ctx.fill();
+      box.style.background = `url(${border.toDataURL("image/png")}) center / 100% 100% no-repeat border-box`;
+      border.width = 0;
+      border.height = 0;
+    }
+    // Keep list bullets on the RTL leading edge, including Safari/Canvas output.
+    for (const list of clone.querySelectorAll<HTMLElement>(".sr-narrative ul")) {
+      list.style.listStyle = "none";
+      list.style.padding = "0";
+      for (const item of list.children) {
+        const bullet = doc.createElement("span");
+        bullet.textContent = "• ";
+        bullet.style.cssText = "display:inline-block;width:14px;text-align:right";
+        item.prepend(bullet);
+      }
+    }
     const pages = [...clone.querySelectorAll<HTMLElement>(".simple-report")];
     if (!pages.length) throw new Error("لا توجد صفحات للتصدير");
-    const { toBlob } = await import("html-to-image");
+    const { default: html2canvas } = await import("html2canvas");
     const safeName =
       title
         .replace(/[\\/:*?"<>|]/g, " ")
@@ -65,14 +123,40 @@ export async function createReportFiles(
     }
     for (let i = 0; i < pages.length; i++) {
       const page = pages[i]!;
-      const blob = await toBlob(page, {
-        pixelRatio: 2,
-        backgroundColor: "#fff",
-        fontEmbedCSS: fontCss,
+      const height = Math.ceil(page.getBoundingClientRect().height);
+      if (Math.abs(page.getBoundingClientRect().width - 794) > 1 || page.scrollWidth > 795) {
+        throw new Error("تعذر ضبط عرض التقرير. أعد المحاولة قبل المشاركة.");
+      }
+      // Canvas renderer avoids Safari's SVG foreignObject cropping / missing-image bugs.
+      // The viewport is LTR at x=0; only each report's contents use RTL.
+      const canvas = await html2canvas(page, {
+        scale: 2,
+        backgroundColor: "#ffffff",
         width: 794,
-        height: Math.ceil(page.getBoundingClientRect().height),
-        cacheBust: false,
+        height,
+        windowWidth: 900,
+        windowHeight: Math.max(1400, height),
+        scrollX: 0,
+        scrollY: 0,
+        foreignObjectRendering: false,
+        allowTaint: false,
+        useCORS: false,
+        imageTimeout: 20000,
+        logging: false,
+        onclone: async (clonedDoc) => {
+          await clonedDoc.fonts.ready;
+          await Promise.all(
+            [...clonedDoc.images].map(async (image) => {
+              await image.decode();
+              if (!image.naturalWidth || !image.naturalHeight)
+                throw new Error("إحدى صور التقرير غير مكتملة");
+            }),
+          );
+        },
       });
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+      canvas.width = 0;
+      canvas.height = 0;
       if (!blob) throw new Error("تعذر إنشاء صورة التقرير");
       if (pdf) {
         const image = await pdf.embedPng(await blob.arrayBuffer());

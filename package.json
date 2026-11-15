@@ -15,7 +15,8 @@
     "test:db": "node scripts/test-database.mjs",
     "test:browser": "node scripts/test-browser.mjs && node scripts/test-courses-browser.mjs",
     "package:evidence": "node scripts/build-package.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:report-share": "node scripts/test-report-sharing.mjs"
   },
   "overrides": {
     "rolldown": "1.2.1"
@@ -60,6 +61,7 @@
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
     "html-to-image": "^1.11.13",
+    "html2canvas": "^1.4.1",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.575.0",
     "pdf-lib": "^1.17.1",
