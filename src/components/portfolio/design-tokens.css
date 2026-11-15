@@ -1,65 +1,72 @@
-/* Public portfolio design primitives. Scoped away from reports and owner tools. */
-.folio:not([data-view="report"]) {
-  --folio-ivory: #fbf9f6;
-  --folio-paper: #f3eee6;
-  --folio-sand: #d9d2c7;
-  --folio-taupe: #9c8b79;
-  --folio-taupe-deep: #6e5f50;
-  --folio-slate: #3e4c59;
-  --folio-slate-deep: #303c47;
-  --folio-white: #fff;
-  --folio-body: #55514b;
-  --folio-muted: #6e665e;
-  --folio-rule: #e5dfd6;
+@font-face {
+  font-family: IBMPlexSansArabic;
+  src: url("/fonts/reference/IBMPlexSansArabic-Regular.ttf") format("truetype");
+  font-display: swap;
+}
+:root {
+  --gov-green: #07a869;
+  --gov-blue: #3d7eb9;
+  --gov-turquoise: #0da9a6;
+  --gov-navy: #15445a;
+  --gov-sand: #c1b489;
+  --gov-gray: #c2c1c1;
+  --gov-bg: #f8fafb;
+  --gov-card: #fff;
+  --gov-link: #27638f;
+  --gov-green-ink: #006c43;
+  --gov-text: #15445a;
+  --gov-muted: #526773;
+  --gov-line: #e0e7eb;
+  --gov-cyan: #69cee3;
+  --gov-purple: #351375;
+  --gov-violet: #7258a4;
+  --gov-lilac: #7a80ff;
+  --gov-ocean: #3078a6;
+  --gov-aqua: #218caa;
+  --gov-font: IBMPlexSansArabic, Tajawal, sans-serif;
+  --gov-radius: 12px;
+  --gov-space-1: 4px;
+  --gov-space-2: 8px;
+  --gov-space-3: 12px;
+  --gov-space-4: 16px;
+  --gov-space-6: 24px;
+  --gov-space-8: 32px;
+  --gov-space-12: 48px;
+  --gov-shadow: 0 4px 18px #15445a06;
+  --gov-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --gov-duration: 250ms;
+}
+.folio {
+  --folio-ivory: var(--gov-bg);
+  --folio-paper: #edf7f5;
+  --folio-sand: var(--gov-line);
+  --folio-taupe: var(--gov-green);
+  --folio-taupe-deep: var(--gov-green-ink);
+  --folio-slate: var(--gov-navy);
+  --folio-slate-deep: #103749;
+  --folio-white: var(--gov-card);
+  --folio-body: var(--gov-text);
+  --folio-muted: var(--gov-muted);
+  --folio-rule: var(--gov-line);
+  --folio-focus: var(--gov-blue);
   --folio-on-dark: #fff;
-  --folio-focus: #6e5f50;
-  --folio-font-display: ReferenceRuqaa, ReferenceAmiri, serif;
-  --folio-font-heading: ReferenceKufi, Tajawal, sans-serif;
-  --folio-font-body: ReferenceSans, Tajawal, sans-serif;
-  --folio-space-1: 4px;
-  --folio-space-2: 8px;
-  --folio-space-3: 12px;
-  --folio-space-4: 16px;
-  --folio-space-5: 24px;
-  --folio-space-6: 32px;
-  --folio-space-7: 48px;
-  --folio-space-8: 64px;
-  --folio-space-9: 96px;
-  --folio-radius-small: 6px;
-  --folio-radius-card: 16px;
-  --folio-radius-panel: 24px;
-  --folio-radius-pill: 999px;
-  --folio-content-width: 1180px;
+  --folio-font-display: var(--gov-font);
+  --folio-font-heading: var(--gov-font);
+  --folio-font-body: var(--gov-font);
+  --folio-content-width: 1240px;
   --folio-reading-width: 72ch;
+  --folio-radius-small: 8px;
+  --folio-radius-card: 12px;
+  --folio-radius-panel: 16px;
+  --folio-radius-pill: 999px;
   --folio-touch-target: 44px;
-  --folio-hairline: 1px;
-  --folio-shadow-rest: 0 2px 8px rgb(62 76 89 / 3%);
-  --folio-shadow-hover: 0 10px 28px rgb(62 76 89 / 8%);
-  --folio-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --folio-duration-feedback: 160ms;
-  --folio-duration-layout: 320ms;
-  --folio-duration-reveal: 640ms;
-  --folio-duration-ink: 1200ms;
-  --folio-stagger: 80ms;
-}
-@media (prefers-reduced-motion: reduce) {
-  .folio:not([data-view="report"]) {
-    --folio-duration-feedback: 0ms;
-    --folio-duration-layout: 0ms;
-    --folio-duration-reveal: 0ms;
-    --folio-duration-ink: 0ms;
-    --folio-stagger: 0ms;
-  }
-}
-@media print {
-  .folio:not([data-view="report"]) {
-    --folio-ivory: #fff;
-    --folio-paper: #fff;
-    --folio-shadow-rest: none;
-    --folio-shadow-hover: none;
-    --folio-duration-feedback: 0ms;
-    --folio-duration-layout: 0ms;
-    --folio-duration-reveal: 0ms;
-    --folio-duration-ink: 0ms;
-  }
+  --folio-shadow-rest: var(--gov-shadow);
+  --folio-shadow-hover: 0 10px 25px #15445a0c;
+  --folio-ease-out: var(--gov-ease);
+  --ink: var(--gov-text);
+  --body: var(--gov-muted);
+  --teal: var(--gov-blue);
+  --green: var(--gov-green);
+  --line: var(--gov-line);
+  --pale: var(--gov-bg);
 }

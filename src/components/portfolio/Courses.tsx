@@ -28,6 +28,7 @@ export function Courses({ settings, revision }: { settings: Settings; revision: 
   const [include, setInclude] = useState(false);
   const [busy, setBusy] = useState("");
   const [order, setOrder] = useState<"newest" | "oldest">("newest");
+  const [query, setQuery] = useState("");
   const [retry, setRetry] = useState(0);
   useEffect(() => {
     let active = true;
@@ -49,7 +50,11 @@ export function Courses({ settings, revision }: { settings: Settings; revision: 
     };
   }, [revision, retry]);
   const totals = courseTotals(courses);
-  const orderedCourses = sortCourses(courses, order);
+  const orderedCourses = sortCourses(courses, order).filter((c) =>
+    `${c.title} ${c.provider ?? ""}`
+      .toLocaleLowerCase("ar")
+      .includes(query.trim().toLocaleLowerCase("ar")),
+  );
   async function document(course: Course) {
     if (!course.document) return;
     const win = window.open("", "_blank");
@@ -150,6 +155,18 @@ export function Courses({ settings, revision }: { settings: Settings; revision: 
           </div>
           {courses.length > 0 ? (
             <>
+              <label className="gov-course-search">
+                بحث في الدورات والجهات
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="اسم الدورة أو الجهة"
+                />
+              </label>
+              <p className="gov-search-count" role="status">
+                {orderedCourses.length} دورة معروضة
+              </p>
               <div className="courses-order-bar">
                 <label htmlFor="course-order">
                   ترتيب الدورات
@@ -186,6 +203,11 @@ export function Courses({ settings, revision }: { settings: Settings; revision: 
                 تُجمع الساعات المسجلة بالساعات فقط، وتبقى مدد الأيام منفصلة.
                 {totals.unknown > 0 ? ` ${totals.unknown} دورة لم تحدد مدتها.` : ""}
               </p>
+              {orderedCourses.length === 0 && (
+                <p className="folio-empty" role="status">
+                  لا توجد دورات تطابق البحث.
+                </p>
+              )}
               <div className="courses-grid">
                 {orderedCourses.map((course) => (
                   <article className="course-card" key={course.id}>

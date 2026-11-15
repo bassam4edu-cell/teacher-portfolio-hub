@@ -14,6 +14,7 @@ import {
   UserRound,
   X,
   Download,
+  Printer,
   Images,
   ArrowRight,
 } from "lucide-react";
@@ -25,18 +26,11 @@ import { SimpleReport } from "./SimpleReport";
 import { About } from "./About";
 import { Courses } from "./Courses";
 import { CourseManager } from "./CourseManager";
-import "./folio.css";
-import "./experience.css";
-import "./reading-design.css";
-import "./interactive-experience.css";
 import "./design-tokens.css";
-import "./reference-identity.css";
-import "./manuscript-layout.css";
-import "./manuscript-surfaces.css";
-import "./manuscript-motion.css";
-import "./education-identity.css";
-import { ManuscriptMotion } from "./ManuscriptMotion";
-import manuscriptTitle from "./assets/manuscript-title.svg?raw";
+import "./gov-base.css";
+import "./gov-ui.css";
+import { GovMotion } from "./GovMotion";
+import { PortfolioOverview } from "./PortfolioOverview";
 import { ReferenceCriteria, VerificationZone } from "./ReferenceIdentity";
 import { ReadingControls, ReportSearch, ReportGallery } from "./InteractiveExperience";
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
@@ -231,29 +225,19 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
         <section className="folio-hero">
           <div className="hero-grid-art" aria-hidden="true" />
           <div className="folio-hero-copy">
+            <img
+              className="hero-logo"
+              src="/brand/moe-white.svg"
+              alt="وزارة التعليم"
+              width="130"
+              height="70"
+            />
             <p className="reference-institution">
               المملكة العربية السعودية · وزارة التعليم
               <br />
               {settings.teacher.administration}
             </p>
-            <p
-              className="reference-calligraphy"
-              aria-label="مَلَفُّ الإِنْجَازِ المِهْنِيِّ وَالتَّعْلِيمِيِّ"
-            >
-              <span className="manuscript-title-text">
-                مَلَفُّ الإِنْجَازِ المِهْنِيِّ وَالتَّعْلِيمِيِّ
-              </span>
-              <span
-                className="manuscript-title-art"
-                aria-hidden="true"
-                dangerouslySetInnerHTML={{ __html: manuscriptTitle }}
-              />
-            </p>
-            <div className="reference-ribbon">
-              <i />
-              <span>ضمن أعمال وممارسات</span>
-              <i />
-            </div>
+            <p className="gov-document-title">ملف الإنجاز المهني والتعليمي</p>
             <h1>{settings.teacher.name}</h1>
             <p className="reference-specialty">معلم اللغــــة الإنجليزيــــة — المرحلة الثانوية</p>
             <p className="hero-document-title">ملف الإنجاز المهني</p>
@@ -297,6 +281,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
             </dl>
           </aside>
         </section>
+        <PortfolioOverview publications={publications} revision={revision.current} />
         <section id="home-performance" tabIndex={-1} aria-label="عناصر الأداء الوظيفي">
           <Section
             title="عناصر الأداء الوظيفي"
@@ -445,7 +430,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
           }}
         >
           <span className="folio-brand-icon">
-            <BookOpen size={25} strokeWidth={1.5} />
+            <img src="/brand/moe-color.png" alt="وزارة التعليم" width="72" height="55" />
           </span>
           <span>
             {settings.teacher.name}
@@ -470,6 +455,25 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
           ))}
         </nav>
         <div className="folio-header-end">
+          <button
+            className="gov-print-link"
+            onClick={() => window.print()}
+            aria-label="طباعة الصفحة"
+          >
+            <Printer size={19} />
+          </button>
+          <a className="gov-admin-link" href="/admin" aria-label="لوحة الإدارة">
+            <ShieldCheck size={19} />
+          </a>
+          <a
+            className="gov-qr-link"
+            href="/brand/portfolio-qr.svg"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="رمز QR للملف"
+          >
+            <img src="/brand/portfolio-qr.svg" width="32" height="32" alt="" />
+          </a>
           <span className="folio-live">
             <i />
             {loading ? "جارٍ التحميل" : "ملف متجدد"}
@@ -534,7 +538,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
         )}
       </main>
       <VerificationZone settings={settings} />
-      <ManuscriptMotion pageKey={`${view}/${criterion ?? ""}/${reportId}`} />
+      <GovMotion pageKey={`${view}/${criterion ?? ""}/${reportId}`} />
       <ReadingControls />
       <footer className="folio-footer">
         <div className="footer-identity">

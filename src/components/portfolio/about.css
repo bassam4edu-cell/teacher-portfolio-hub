@@ -399,7 +399,7 @@
   letter-spacing: 0.03em;
 }
 .folio .cv-profile h3 {
-  font-family: "Markazi Text", Tajawal, serif;
+  font-family: var(--gov-font);
   font-size: 36px;
   font-weight: 500;
   line-height: 1.25;

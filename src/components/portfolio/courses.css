@@ -23,7 +23,7 @@
   color: #4b8b79;
 }
 .folio .courses-cover h2 {
-  font-family: "Markazi Text", Tajawal, serif;
+  font-family: var(--gov-font);
   font-size: 38px;
   font-weight: 500;
   color: #205b52;

@@ -1,0 +1,584 @@
+/* Gov digital interface: one semantic skin over consolidated structural rules. */
+.folio {
+  font-family: var(--gov-font);
+  background: var(--gov-bg);
+  color: var(--gov-text);
+  line-height: 1.9;
+}
+.folio :is(h1, h2, h3, h4, button, input, select, textarea) {
+  font-family: var(--gov-font);
+}
+.folio :is(h1, h2, h3, h4) {
+  letter-spacing: normal;
+  text-wrap: balance;
+  color: var(--gov-navy);
+}
+.folio ::selection {
+  background: #ccefe4;
+  color: var(--gov-navy);
+}
+.folio :is(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid var(--gov-blue);
+  outline-offset: 4px;
+}
+.folio :is(button, a) {
+  transition:
+    transform var(--gov-duration) var(--gov-ease),
+    background-color var(--gov-duration),
+    box-shadow var(--gov-duration);
+}
+.folio .folio-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: white;
+  border-bottom: 1px solid var(--gov-line);
+  max-width: none;
+  width: 100%;
+  padding: 16px max(24px, calc((100vw - 1200px) / 2));
+  gap: 24px;
+  box-shadow: var(--gov-shadow);
+}
+.folio .folio-brand {
+  min-width: 220px;
+  color: var(--gov-navy);
+}
+.folio .folio-brand-icon {
+  background: transparent;
+  border-radius: 0;
+  width: 72px;
+  height: 55px;
+  padding: 0;
+}
+.folio .folio-brand-icon img {
+  width: 72px;
+  height: 55px;
+  object-fit: contain;
+}
+.folio .folio-header nav a {
+  border-radius: 8px;
+  color: var(--gov-navy);
+  min-height: 44px;
+}
+.folio .folio-header nav a.active {
+  background: #e5f7ee;
+  color: var(--gov-green-ink);
+}
+.folio .folio-header nav a.active::after {
+  background: var(--gov-green);
+}
+.folio .folio-header-end {
+  gap: 14px;
+}
+.folio .gov-admin-link,
+.folio .gov-qr-link {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--gov-line);
+  border-radius: 8px;
+  color: var(--gov-navy);
+  background: white;
+}
+.folio .gov-document-title {
+  font-size: 17px;
+  margin: 0 0 18px;
+  font-weight: 600;
+}
+.folio[data-view="home"] .folio-hero {
+  background:
+    linear-gradient(#15445a55, #15445a55),
+    linear-gradient(115deg, var(--gov-blue), var(--gov-green));
+  border-radius: 20px;
+  padding: 44px;
+  gap: 38px;
+  margin: 24px 0 28px;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  box-shadow: none;
+  border: 0;
+  color: white;
+}
+.folio[data-view="home"]
+  .folio-hero
+  :is(h1, .reference-institution, .reference-specialty, .hero-summary, .gov-document-title) {
+  color: white;
+}
+.folio[data-view="home"] .folio-hero h1 {
+  font-size: clamp(32px, 4vw, 49px);
+  line-height: 1.5;
+  font-weight: 700;
+}
+.folio[data-view="home"] .reference-institution {
+  font-size: 13px;
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+.folio[data-view="home"] .reference-specialty {
+  font-size: 18px;
+  margin: 15px 0;
+}
+.folio[data-view="home"] .hero-summary {
+  font-size: 16px;
+  line-height: 2;
+  margin-top: 20px;
+}
+.folio[data-view="home"] .hero-record {
+  background: #fffffffa;
+  border: 0;
+  padding: 26px;
+  border-radius: 12px;
+  box-shadow: var(--gov-shadow);
+}
+.folio[data-view="home"] .hero-record::before {
+  display: none;
+}
+.folio[data-view="home"] .hero-record dt {
+  color: var(--gov-muted);
+}
+.folio[data-view="home"] .hero-record dd {
+  color: var(--gov-navy);
+}
+.folio .hero-logo {
+  display: block;
+  width: 130px;
+  height: 70px;
+  object-fit: contain;
+  margin-bottom: 24px;
+}
+.folio[data-view="home"] .hero-actions .hero-cta {
+  background: white;
+  color: var(--gov-navy);
+  border-color: white;
+}
+.folio[data-view="home"] .hero-actions .hero-secondary {
+  background: transparent;
+  color: white;
+  border-color: #ffffffa0;
+}
+.folio .gov-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 40px;
+}
+.folio .gov-kpi {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--gov-card);
+  padding: 24px;
+  border: 1px solid var(--gov-line);
+  border-bottom: 3px solid var(--gov-green);
+  border-radius: var(--gov-radius);
+  box-shadow: var(--gov-shadow);
+}
+.folio .gov-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #0da9a61f;
+  color: var(--gov-navy);
+}
+.folio .gov-kpi strong {
+  display: block;
+  font-size: 29px;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  color: var(--gov-navy);
+}
+.folio .gov-kpi div > span {
+  font-size: 13px;
+  color: var(--gov-muted);
+}
+.folio .folio-section-heading {
+  padding: 16px 0 20px;
+  border-bottom: 1px dotted var(--gov-gray);
+  margin: 36px 0 24px;
+}
+.folio .folio-section-heading::after {
+  display: none;
+}
+.folio .folio-section-heading h2 {
+  font-size: 28px;
+  line-height: 1.6;
+}
+.folio
+  :is(.reference-card, .folio-report-card, .course-card, .about-panel, .cv-section, .folio-card) {
+  background: var(--gov-card);
+  border: 1px solid var(--gov-line);
+  border-bottom: 3px solid var(--gov-green);
+  border-radius: var(--gov-radius);
+  box-shadow: var(--gov-shadow);
+}
+.folio .reference-criteria .reference-card,
+#home-performance .reference-criteria .reference-card {
+  border-bottom: 3px solid var(--gov-green);
+  border-radius: var(--gov-radius);
+  min-height: 112px;
+}
+.folio .reference-card .fc-copy h3 {
+  font-family: var(--gov-font);
+  font-weight: 700;
+  font-size: 19px;
+}
+.folio .reference-card .academic-icon {
+  color: var(--gov-navy);
+  padding: 8px;
+  border-radius: 50%;
+  background: #0da9a61f;
+}
+.folio .reference-card .fc-number {
+  background: #eaf5fb;
+  color: var(--gov-navy);
+  border-color: #d7e9f1;
+  font-variant-numeric: tabular-nums;
+}
+.folio .reference-card[data-populated="true"] .fc-number {
+  background: var(--gov-green);
+  border-color: var(--gov-green);
+  color: #06232f;
+  font-weight: 700;
+}
+.folio .reference-card:hover {
+  transform: translateY(-2px);
+  border-color: #a4d9ca;
+  box-shadow: 0 8px 24px #15445a0c;
+}
+.folio .reference-card:hover .fc-number {
+  transform: none;
+  background: var(--gov-green);
+  color: var(--gov-navy);
+}
+.folio .reference-card:hover .academic-icon {
+  transform: none;
+}
+.folio .reference-card::before,
+.folio .reference-card::after {
+  display: none;
+}
+.folio :is(.reference-pill, .course-card-duration) {
+  background: #ecf7f4;
+  color: var(--gov-green-ink);
+  border-color: #cfe8df;
+}
+.folio .folio-primary,
+.folio .course-card-actions button:first-child {
+  background: var(--gov-green);
+  border-color: var(--gov-green);
+  color: #06232f;
+  font-weight: 700;
+}
+.folio .folio-primary:hover {
+  background: #07975f;
+  color: #06232f;
+}
+.folio .folio-footer {
+  background: var(--gov-navy);
+  color: white;
+}
+.folio .about-tabs button {
+  background: white;
+  border-color: var(--gov-line);
+}
+.folio .about-tabs button[aria-selected="true"] {
+  background: var(--gov-navy);
+  color: white;
+  border-color: var(--gov-navy);
+}
+.folio .folio-about-cover {
+  background: #eaf6f3;
+  border-color: #d2eae1;
+  border-radius: 16px;
+}
+.folio .folio-about-cover::before,
+.folio .about-monogram::before {
+  display: none;
+}
+.folio .about-monogram {
+  background: var(--gov-green);
+  color: var(--gov-navy);
+  font-family: var(--gov-font);
+}
+.folio .about-panel-heading {
+  background: #f0f8fa;
+  border-bottom: 1px dotted var(--gov-gray);
+}
+.folio .cv-timeline {
+  border-inline-start: 2px solid var(--gov-green);
+  padding-inline-start: 24px;
+}
+.folio .cv-timeline-item {
+  position: relative;
+  padding-bottom: 24px;
+}
+.folio .courses-grid {
+  gap: 24px;
+}
+.folio .courses-stats {
+  background: var(--gov-navy);
+  color: white;
+  border: 0;
+  border-radius: 12px;
+  padding: 24px;
+}
+.folio .courses-stats :is(strong, span) {
+  color: white;
+}
+.folio .course-card-icon {
+  background: #0da9a61f;
+  color: var(--gov-navy);
+  border-radius: 50%;
+  border: 0;
+}
+.folio .course-card-actions button {
+  min-height: 44px;
+}
+.folio .gov-course-search {
+  display: grid;
+  gap: 8px;
+  max-width: 560px;
+  margin-top: 24px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.folio .gov-course-search input {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1px solid var(--gov-gray);
+  border-radius: 8px;
+  background: white;
+  color: var(--gov-navy);
+  min-height: 48px;
+}
+.folio .gov-search-count {
+  font-size: 13px;
+  color: var(--gov-muted);
+  margin: 8px 0;
+}
+.folio .folio-week th {
+  background: #eef6fa;
+  color: var(--gov-navy);
+  border-color: var(--gov-line);
+}
+.folio .folio-week th.schedule-today {
+  background: var(--gov-green);
+  color: var(--gov-navy);
+}
+.folio .folio-week td {
+  border-color: var(--gov-line);
+}
+.folio .reference-drawer {
+  background: white;
+  border: 1px solid var(--gov-line);
+  border-radius: 16px;
+}
+.folio .reference-drawer::backdrop {
+  background: #15445a66;
+}
+.folio .reference-verification {
+  border: 1px dotted var(--gov-gray);
+  background: #eef6f8;
+  border-radius: 12px;
+}
+/* Owner dashboard shares typography, tokens and touch targets with public pages. */
+.folio.owner-access,
+.folio.admin-shell {
+  background: var(--gov-bg);
+  font-family: var(--gov-font);
+}
+.folio :is(.owner-box, .admin-panel) {
+  border: 1px solid var(--gov-line);
+  border-radius: 16px;
+  background: white;
+  box-shadow: var(--gov-shadow);
+}
+.folio :is(input, select, textarea) {
+  border: 1px solid #aebec7;
+  border-radius: 8px;
+  padding: 11px 13px;
+  background: white;
+  color: var(--gov-navy);
+  font-size: 16px;
+  max-width: 100%;
+}
+.folio textarea {
+  min-height: 112px;
+  line-height: 1.8;
+}
+.folio :is(.settings-tabs, .admin-tabs) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+  background: #eef5f7;
+  border-radius: 12px;
+}
+.folio .folio-form-grid {
+  gap: 20px;
+}
+.folio :is(.review-row, .attachment-row) {
+  padding: 18px;
+  border-bottom: 1px dotted var(--gov-gray);
+}
+.folio .gov-target-note {
+  font-size: 12px;
+  color: var(--gov-muted);
+  display: block;
+}
+@media (hover: hover) {
+  .folio :is(.course-card, .folio-report-card):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px #15445a0c;
+  }
+}
+@media (max-width: 1050px) {
+  .folio .folio-header {
+    padding: 14px 24px;
+    gap: 14px;
+  }
+  .folio .folio-brand {
+    min-width: 0;
+  }
+  .folio .gov-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .folio .gov-qr-link {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  .folio[data-view="home"] .folio-hero {
+    grid-template-columns: 1fr;
+    padding: 28px;
+    gap: 24px;
+  }
+  .folio[data-view="home"] .hero-record dl {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .folio .folio-header nav.is-open {
+    background: white;
+  }
+}
+@media (max-width: 540px) {
+  .folio .folio-header {
+    padding: 12px 20px;
+  }
+  .folio .folio-brand-icon,
+  .folio .folio-brand-icon img {
+    width: 52px;
+    height: 42px;
+  }
+  .folio .folio-live {
+    display: none;
+  }
+  .folio .folio-header-end {
+    gap: 8px;
+  }
+  .folio .gov-admin-link {
+    width: 40px;
+    height: 40px;
+  }
+  .folio[data-view="home"] .folio-hero {
+    padding: 24px;
+    margin-top: 12px;
+    border-radius: 14px;
+  }
+  .folio[data-view="home"] .hero-record dl {
+    grid-template-columns: 1fr;
+  }
+  .folio .gov-kpi {
+    padding: 16px;
+    gap: 10px;
+  }
+  .folio .gov-kpi .gov-icon {
+    width: 36px;
+    height: 36px;
+  }
+  .folio .gov-kpi strong {
+    font-size: 24px;
+  }
+  .folio .gov-kpi div > span {
+    font-size: 12px;
+  }
+  .folio .gov-overview {
+    gap: 12px;
+  }
+  .folio .folio-section-heading h2 {
+    font-size: 24px;
+  }
+  .folio .hero-logo {
+    width: 100px;
+    height: 60px;
+  }
+  .folio .reference-card .fc-copy h3 {
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .folio *,
+  .folio *::before,
+  .folio *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media print {
+  .folio .folio-header,
+  .folio .gov-overview,
+  .folio .gov-course-search,
+  .folio .gov-search-count {
+    display: none !important;
+  }
+  .folio[data-view="home"] .folio-hero {
+    background: white;
+    color: var(--gov-navy);
+    padding: 0;
+  }
+  .folio[data-view="home"] .folio-hero :is(h1, p) {
+    color: var(--gov-navy);
+  }
+  .folio .hero-logo {
+    display: none;
+  }
+}
+.folio .folio-footer :is(a, span, p, small) {
+  color: #fff;
+}
+.folio .folio-footer a:hover {
+  color: #69cee3;
+}
+.folio.owner-access {
+  padding: 24px;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+.folio .owner-box {
+  width: min(100%, 560px);
+  min-width: 0;
+  margin: 32px auto;
+  padding: 28px;
+  box-sizing: border-box;
+}
+.folio .owner-box :is(form, input, button, label) {
+  max-width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+.folio .owner-box form {
+  display: grid;
+  gap: 16px;
+}
+@media (max-width: 540px) {
+  .folio.owner-access {
+    padding: 16px;
+  }
+  .folio .owner-box {
+    padding: 20px;
+    margin: 16px auto;
+  }
+}

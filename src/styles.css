@@ -8,6 +8,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "./components/portfolio/design-tokens.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -75,14 +76,14 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(0.985 0.008 85);
-  --foreground: oklch(0.129 0.042 264.695);
+  --background: var(--gov-bg);
+  --foreground: var(--gov-navy);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.45 0.09 160);
-  --primary-foreground: oklch(0.984 0.003 247.858);
+  --primary: var(--gov-green);
+  --primary-foreground: var(--gov-navy);
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
   --muted: oklch(0.968 0.007 247.896);
