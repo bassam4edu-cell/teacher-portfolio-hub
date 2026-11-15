@@ -196,6 +196,23 @@
   color: #71928a;
   font-size: 12px;
 }
+/* Three or four attachments share the same evidence box and A4 report page. */
+.sr-photos.sr-photos-four {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.sr-photos.sr-photos-four img,
+.sr-photos.sr-photos-four .sr-image-loading {
+  height: 100px;
+  max-height: none;
+  object-fit: contain;
+}
+.sr-photo-empty {
+  min-height: 102px;
+  border: 1px solid #d9eae3;
+  border-radius: 7px;
+  background: white;
+}
 .sr-no-images {
   text-align: center;
   font-size: 13px;

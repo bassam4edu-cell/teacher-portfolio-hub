@@ -14,7 +14,7 @@ export function SimpleReport({
   const chunks = p.assets
     .filter((a) => a.mime.startsWith("image/"))
     .reduce<(typeof p.assets)[]>((result, a, i) => {
-      if (i % 2 === 0) result.push([]);
+      if (i % 4 === 0) result.push([]);
       result.at(-1)!.push(a);
       return result;
     }, []);
@@ -72,7 +72,7 @@ export function SimpleReport({
             )}
             <ReportBox title="الشواهد" className="sr-evidence">
               {photos.length ? (
-                <div className="sr-photos">
+                <div className={`sr-photos${photos.length > 2 ? " sr-photos-four" : ""}`}>
                   {photos.map((a) => (
                     <figure key={a.id}>
                       {urls[a.id] ? (
@@ -86,6 +86,7 @@ export function SimpleReport({
                       )}
                     </figure>
                   ))}
+                  {photos.length === 3 && <div className="sr-photo-empty" aria-hidden="true" />}
                 </div>
               ) : (
                 <p className="sr-no-images">لا توجد صور مرفقة بهذا التقرير.</p>
