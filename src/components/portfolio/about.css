@@ -483,10 +483,6 @@
   margin: 0;
   border: 0;
 }
-.folio .educator-about .resume-label {
-  font-size: 12px;
-  color: var(--gov-muted);
-}
 .folio .educator-about .cv-profile h3 {
   font-size: 23px;
   line-height: 1.7;
@@ -855,5 +851,11 @@
   }
   .folio .educator-about .about-source a {
     color: #15445a;
+  }
+}
+
+@media print {
+  body:has(.educator-about) .folio-skip {
+    display: none !important;
   }
 }

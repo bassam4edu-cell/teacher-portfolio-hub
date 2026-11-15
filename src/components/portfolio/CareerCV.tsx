@@ -24,7 +24,6 @@ export function CareerCV({ settings: s }: { settings: Settings }) {
           <BookOpen size={32} strokeWidth={1.3} />
         </div>
         <div>
-          <span className="resume-label">السيرة المهنية</span>
           <h3>{s.teacher.name}</h3>
           <p>معلم {s.teacher.subject}</p>
           <span className="cv-school">{s.teacher.school}</span>
