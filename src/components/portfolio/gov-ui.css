@@ -363,14 +363,6 @@
 .folio .folio-week td {
   border-color: var(--gov-line);
 }
-.folio .reference-drawer {
-  background: white;
-  border: 1px solid var(--gov-line);
-  border-radius: 16px;
-}
-.folio .reference-drawer::backdrop {
-  background: #15445a66;
-}
 .folio .reference-verification {
   border: 1px dotted var(--gov-gray);
   background: #eef6f8;
@@ -716,4 +708,182 @@
   .folio .reference-card .fc-report-count {
     justify-content: flex-start;
   }
+}
+/* Criterion detail uses the current education identity, independent of old title styles. */
+.folio .criterion-page {
+  min-width: 0;
+  padding-block: 16px 40px;
+}
+.folio .criterion-page > .folio-back {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--gov-link);
+  margin-bottom: 24px;
+  background: white;
+  border-color: var(--gov-line);
+}
+.folio .criterion-page-header {
+  padding: 32px;
+  background: var(--gov-card);
+  border: 1px solid var(--gov-line);
+  border-bottom: 3px solid var(--gov-green);
+  border-radius: 16px;
+  margin-bottom: 32px;
+}
+.folio .criterion-page-heading {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.folio .criterion-page-number {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 68px;
+  background: #0da9a61f;
+  color: var(--gov-navy);
+  border-radius: 12px;
+  font-size: 28px;
+  font-weight: 600;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.folio .criterion-page-weight {
+  display: inline-block;
+  font-size: 13px;
+  color: var(--gov-link);
+  margin-bottom: 8px;
+}
+.folio .criterion-page h1 {
+  font-family: var(--gov-font);
+  font-size: clamp(25px, 3vw, 36px);
+  font-weight: 700;
+  line-height: 1.6;
+  color: var(--gov-navy);
+  margin: 0;
+}
+.folio .criterion-page-header > p {
+  font-size: 16px;
+  line-height: 2;
+  color: var(--gov-muted);
+  max-width: 75ch;
+  margin: 20px 0 0;
+}
+.folio .criterion-page-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 0 0 20px;
+  margin-bottom: 24px;
+  border-bottom: 1px dotted var(--gov-gray);
+  color: var(--gov-muted);
+}
+.folio .criterion-page-summary h2 {
+  font-size: 21px;
+  line-height: 1.8;
+  font-weight: 600;
+  color: var(--gov-navy);
+  margin: 0;
+}
+.folio .criterion-page-summary > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--gov-green-ink);
+  background: #edf7f3;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+.folio .criterion-page .folio-report-grid {
+  gap: 24px;
+}
+.folio .criterion-page .folio-report-card {
+  background: var(--gov-card);
+  border-color: var(--gov-line);
+  border-bottom-color: var(--gov-green);
+  border-radius: 12px;
+}
+.folio .criterion-page .frc-photo {
+  background: #edf5f8;
+}
+.folio .criterion-page .frc-body {
+  text-align: right;
+}
+.folio .criterion-page .frc-category {
+  color: var(--gov-link);
+  background: none;
+}
+.folio .criterion-page .frc-category-number {
+  background: #0da9a61f;
+  color: var(--gov-navy);
+  border-color: var(--gov-line);
+}
+.folio .criterion-page .frc-body h3 {
+  color: var(--gov-navy);
+  font-family: var(--gov-font);
+}
+.folio .criterion-page :is(.frc-date, .frc-count, .frc-summary) {
+  color: var(--gov-muted);
+}
+.folio .criterion-page .frc-actions {
+  border-color: var(--gov-line);
+}
+.folio .criterion-page .frc-actions button:first-child {
+  background: var(--gov-green);
+  border-color: var(--gov-green);
+  color: #06232f;
+}
+.folio .criterion-page .frc-actions .frc-pdf {
+  background: white;
+  color: var(--gov-link);
+  border-color: var(--gov-line);
+}
+.folio .criterion-page .folio-empty {
+  background: white;
+  color: var(--gov-muted);
+  border: 1px dashed var(--gov-gray);
+  border-radius: 12px;
+  padding: 40px 24px;
+}
+.folio .criterion-page .folio-empty > svg {
+  color: var(--gov-green-ink);
+}
+.folio .criterion-page .folio-empty h3 {
+  color: var(--gov-navy);
+}
+@media (max-width: 600px) {
+  .folio .criterion-page-header {
+    padding: 24px 20px;
+  }
+  .folio .criterion-page-heading {
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .folio .criterion-page-number {
+    width: 48px;
+    height: 52px;
+    font-size: 22px;
+  }
+  .folio .criterion-page h1 {
+    font-size: 24px;
+  }
+  .folio .criterion-page-header > p {
+    font-size: 15px;
+  }
+  .folio .criterion-page-weight {
+    font-size: 12px;
+  }
+  .folio .criterion-page-summary h2 {
+    font-size: 19px;
+  }
+}
+.folio .criterion-page .frc-meta {
+  border-color: var(--gov-line);
+}
+.folio .criterion-page :is(.frc-meta svg, .frc-count svg, .frc-date svg) {
+  color: var(--gov-link);
 }

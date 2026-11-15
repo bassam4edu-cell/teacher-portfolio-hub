@@ -342,19 +342,30 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
     );
   else if (view === "criteria")
     content = chosen ? (
-      <>
+      <section className="criterion-page" aria-label={chosen.name}>
         <button className="folio-back" onClick={() => go("criteria")}>
           <ArrowRight size={17} /> جميع عناصر الأداء
         </button>
-        <PageTitle
-          eyebrow={`العنصر ${chosen.id.toString().padStart(2, "0")} · الوزن ${chosen.weight}%`}
-          title={chosen.name}
-        >
-          {chosen.description}
-        </PageTitle>
-        <div className="folio-element-summary">
-          <span>{reports.filter((r) => r.criterion === chosen.id).length} تقارير منشورة</span>
-          <span>اضغط التقرير لعرضه وصوره</span>
+        <header className="criterion-page-header">
+          <div className="criterion-page-heading">
+            <span className="criterion-page-number" aria-hidden="true">
+              {String(chosen.id).padStart(2, "0")}
+            </span>
+            <div>
+              <span className="criterion-page-weight">
+                العنصر {chosen.id} · الوزن {chosen.weight}%
+              </span>
+              <h1>{chosen.name}</h1>
+            </div>
+          </div>
+          <p>{chosen.description}</p>
+        </header>
+        <div className="criterion-page-summary">
+          <h2>التقارير والشواهد</h2>
+          <span>
+            <FileText size={17} aria-hidden="true" />{" "}
+            {reports.filter((r) => r.criterion === chosen.id).length} تقارير منشورة
+          </span>
         </div>
         {reports.some((r) => r.criterion === chosen.id) ? (
           <div className="folio-report-grid">
@@ -375,7 +386,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
             ستظهر التقارير هنا مباشرة عند إضافتها.
           </Empty>
         )}
-      </>
+      </section>
     ) : (
       <>
         <PageTitle eyebrow="شواهد الممارسة المهنية" title="عناصر الأداء الوظيفي">

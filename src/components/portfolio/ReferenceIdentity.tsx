@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { ArrowUpLeft, CalendarDays, Check, Clock3, FileText, Globe, X } from "lucide-react";
+import { ArrowUpLeft, CalendarDays, Check, Clock3, FileText, Globe } from "lucide-react";
 import type { Settings } from "@/lib/portfolio/model";
 import type { Publication } from "@/lib/portfolio/simple-report";
-import { publicReportAsset } from "@/lib/portfolio/api";
 export function AcademicIcon({ index }: { index: number }) {
   return (
     <svg className="academic-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true">
@@ -35,37 +34,6 @@ export function AcademicIcon({ index }: { index: number }) {
     </svg>
   );
 }
-function EvidencePreview({ report }: { report: Publication }) {
-  const [url, setUrl] = useState("");
-  useEffect(() => {
-    let active = true;
-    let current = "";
-    const asset = report.assets[0];
-    if (asset)
-      publicReportAsset(asset.id)
-        .then((value) => {
-          current = value;
-          if (active) setUrl(value);
-          else URL.revokeObjectURL(value);
-        })
-        .catch(() => {});
-    return () => {
-      active = false;
-      if (current) URL.revokeObjectURL(current);
-    };
-  }, [report.id, report.assets]);
-  return (
-    <a className="reference-evidence" href={`#criteria/${report.criterion}/report/${report.id}`}>
-      {url ? <img src={url} alt={report.title} /> : <FileText aria-hidden="true" />}
-      <div>
-        <h3>{report.title}</h3>
-        <span>
-          {report.assets.length} صور · عرض التقرير <ArrowUpLeft size={15} />
-        </span>
-      </div>
-    </a>
-  );
-}
 const filters = [
   ["all", "جميع المعايير"],
   ["teaching", "الشواهد التعليمية"],
@@ -84,11 +52,7 @@ export function ReferenceCriteria({
   compact?: boolean;
 }) {
   const [filter, setFilter] = useState("all");
-  const [selected, setSelected] = useState<number | null>(null);
-  const drawer = useRef<HTMLDialogElement>(null);
   const root = useRef<HTMLDivElement>(null);
-  const criterion = settings.criteria.find((c) => c.id === selected);
-  const evidence = reports.filter((p) => p.criterion === selected);
   const visible = [...settings.criteria]
     .sort((a, b) => a.id - b.id)
     .filter(
@@ -135,10 +99,7 @@ export function ReferenceCriteria({
               className="folio-criterion reference-card"
               key={c.id}
               style={{ "--card-delay": `${Math.min(i, 5) * 80}ms` } as CSSProperties}
-              onClick={() => {
-                setSelected(c.id);
-                drawer.current?.showModal();
-              }}
+              onClick={() => onOpen(c.id)}
             >
               <span className="fc-number">{String(c.id).padStart(2, "0")}</span>
               <AcademicIcon index={c.id} />
@@ -164,50 +125,6 @@ export function ReferenceCriteria({
         })}
       </div>
       {!visible.length && <p className="folio-empty">لم تُضف شواهد منشورة ضمن هذا التصنيف بعد.</p>}
-      <dialog
-        ref={drawer}
-        className="reference-drawer"
-        aria-label="شواهد عنصر الأداء"
-        onClick={(e) => {
-          if (e.target === drawer.current) drawer.current.close();
-        }}
-      >
-        <div className="reference-drawer-heading">
-          <AcademicIcon index={selected ?? 1} />
-          <button aria-label="إغلاق معاينة العنصر" onClick={() => drawer.current?.close()}>
-            <X />
-          </button>
-        </div>
-        {criterion && (
-          <>
-            <span className="reference-pill">
-              العنصر {criterion.id} · الوزن {criterion.weight}%
-            </span>
-            <h2>{criterion.name}</h2>
-            <p>{criterion.description}</p>
-            <p className="reference-drawer-count">{evidence.length} تقارير منشورة</p>
-            <div
-              onClick={(e) => {
-                if ((e.target as HTMLElement).closest("a")) drawer.current?.close();
-              }}
-            >
-              {evidence.map((report) => (
-                <EvidencePreview key={report.id} report={report} />
-              ))}
-            </div>
-            {!evidence.length && <p>لم يُضف تقرير لهذا العنصر بعد.</p>}
-            <button
-              className="folio-primary"
-              onClick={() => {
-                drawer.current?.close();
-                onOpen(criterion.id);
-              }}
-            >
-              فتح صفحة العنصر <ArrowUpLeft size={17} />
-            </button>
-          </>
-        )}
-      </dialog>
     </>
   );
 }

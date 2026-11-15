@@ -139,13 +139,14 @@ ok(
 await p.getByRole("button", { name: "جميع المعايير", exact: true }).click();
 await p.waitForFunction(() => document.querySelectorAll(".fc-number").length === 11);
 await p.locator(".folio-criterion").filter({ hasText: s.criteria[3].name }).click();
-await p.locator(".reference-drawer").waitFor({ state: "visible" });
+await p.locator(".criterion-page").waitFor();
 ok(
-  (await p.locator(".reference-evidence").count()) === 1,
-  "Criterion drawer shows its actual reports",
+  p.url().endsWith("#criteria/4") && (await p.locator(".folio-report-card").count()) === 1,
+  "Home criterion opens its full page directly with actual reports",
 );
-await p.keyboard.press("Escape");
-ok(!(await p.locator(".reference-drawer").isVisible()), "Evidence drawer closes with Escape");
+ok((await p.locator(".reference-drawer").count()) === 0, "Criterion side drawer is removed");
+await p.goBack();
+await p.getByRole("button", { name: "استعراض ملف الإنجاز", exact: true }).waitFor();
 await p.getByRole("button", { name: "استعراض ملف الإنجاز", exact: true }).click();
 ok(
   await p.locator("#home-performance").evaluate((el) => document.activeElement === el),
@@ -181,7 +182,8 @@ ok(
   "Report count is calculated under its primary element",
 );
 await p.locator(".folio-criterion").filter({ hasText: s.criteria[3].name }).click();
-await p.getByRole("button", { name: "فتح صفحة العنصر", exact: true }).click();
+await p.locator(".criterion-page").waitFor();
+ok(p.url().endsWith("#criteria/4"), "Criteria list opens the full criterion page directly");
 const card = p.locator(".folio-report-card");
 await card.locator("h3").waitFor({ state: "visible" });
 ok(

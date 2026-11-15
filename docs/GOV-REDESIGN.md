@@ -5,7 +5,7 @@ User pinned a modern Saudi education palette and requested removal of manuscript
 
 First viewport: genuine ministry logo asset, teacher identity, educational bio, separate metadata panel over green-to-blue banner. White KPI cards below show actual published reports, unique public attachments, course count and known training hours. Course loading failure displays a dash, never fabricated zero. Fixed numerical criteria order, six About tabs and existing report routes remain.
 
-Signature behavior: criteria drawer, keyboard/Escape, native scrolling and 280ms Web Animations API card entrances. Reduced motion disables entrances. No cursor replacement, splash, manuscript ink, GSAP timelines or Lenis scrolling. Existing report export and course print remain separate document styles.
+Signature behavior: direct criterion page routing, keyboard navigation, native scrolling and 280ms Web Animations API card entrances. Reduced motion disables entrances. No cursor replacement, splash, manuscript ink, GSAP timelines or Lenis scrolling. Existing report export and course print remain separate document styles.
 
 ## Stylesheet ownership
 - `src/styles.css`: Tailwind/shadcn application entry and shared token import.
@@ -21,3 +21,7 @@ Bright brand green cannot support ordinary white labels at AA. Primary controls 
 ## Run / validate
 `npm run dev -- --host 0.0.0.0 --port 5173`
 `npm run typecheck`, `npm run lint`, `npm run build`, `npm run test:browser`.
+
+
+## Direct criterion pages
+Criteria cards now call the existing onOpen callback directly from both the home and full criteria lists. The side drawer, its preview component and its obsolete styles were removed. Existing `#criteria/{id}` and `#criteria/{id}/report/{id}` paths and APIs are unchanged. Criterion page header, weight, description, report count, thumbnails, empty state and back action use the current green/blue/navy token palette. Report templates and export/share remain unchanged. Browser contracts verify direct opening and browser back instead of the removed drawer.
