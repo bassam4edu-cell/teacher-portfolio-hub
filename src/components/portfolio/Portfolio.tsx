@@ -428,6 +428,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
           reports={reports}
           onOpen={(id) => go("criteria", id)}
         />
+        <PortfolioOverview publications={publications} revision={revision.current} />
         <p className="folio-reference">
           العناصر والأوزان وفق نموذج تقييم المعلم في دليل وزارة التعليم.{" "}
           <a href={settings.standard.document_url} target="_blank" rel="noreferrer">

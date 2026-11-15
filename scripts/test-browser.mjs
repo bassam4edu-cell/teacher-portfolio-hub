@@ -131,8 +131,9 @@ ok(
   "Home criteria stay in numeric order despite reports on criterion four",
 );
 ok(
-  (await p.locator(".reference-filters,.experience-search").count()) === 0,
-  "Home criteria have no report search or filters",
+  (await p.locator(".criteria-grid-filters button").count()) === 4 &&
+    (await p.locator(".experience-search").count()) === 0,
+  "Home criteria show category tabs without a search field",
 );
 await p.locator(".folio-criterion").filter({ hasText: s.criteria[3].name }).click();
 await p.locator(".criterion-page").waitFor();
@@ -167,14 +168,55 @@ ok(
 );
 ok((await p.locator(".folio-criterion").count()) === 11, "All eleven elements are visible");
 ok(
-  (await p.locator(".reference-filters,.experience-search,input[type=search]").count()) === 0,
-  "Criteria page has no search or filter controls",
+  (await p.locator(".criteria-grid-filters button").count()) === 4 &&
+    (await p.locator("input[type=search]").count()) === 0,
+  "Criteria page shows category tabs without a search field",
 );
 ok(
   JSON.stringify(await p.locator(".fc-number").allTextContents()) ===
     JSON.stringify(Array.from({ length: 11 }, (_, i) => String(i + 1).padStart(2, "0"))),
   "Full criteria page keeps the same numeric order",
 );
+ok(
+  (await p.locator(".criterion-progress-track").count()) === 11 &&
+    (await p.getByRole("progressbar").count()) === 0,
+  "Unknown target completion never creates a numeric percentage",
+);
+const originalTones = await p
+  .locator(".criteria-grid-item")
+  .evaluateAll((items) => items.map((el) => el.dataset.tone));
+await p.getByRole("button", { name: "المبادرات التقنية", exact: true }).click();
+ok(
+  JSON.stringify(await p.locator(".fc-number").allTextContents()) === JSON.stringify(["07"]),
+  "Technology category shows criterion seven",
+);
+await p.getByRole("button", { name: "جميع المعايير", exact: true }).click();
+ok(
+  JSON.stringify(
+    await p
+      .locator(".criteria-grid-item")
+      .evaluateAll((items) => items.map((el) => el.dataset.tone)),
+  ) === JSON.stringify(originalTones),
+  "Reset preserves fixed criterion tones and all criteria",
+);
+await p.locator(".criterion-tile").first().focus();
+await p.waitForTimeout(180);
+ok(
+  await p
+    .locator(".criterion-tile-hint")
+    .first()
+    .evaluate((el) => getComputedStyle(el).visibility === "visible"),
+  "Criterion description is available with keyboard focus",
+);
+await p.keyboard.press("Escape");
+ok(
+  await p
+    .locator(".criterion-tile-hint")
+    .first()
+    .evaluate((el) => getComputedStyle(el).visibility === "hidden"),
+  "Escape dismisses the criterion tooltip",
+);
+
 ok(
   (
     await p.locator(".folio-criterion").filter({ hasText: s.criteria[3].name }).innerText()
