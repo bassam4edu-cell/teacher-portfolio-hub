@@ -32,7 +32,8 @@ import "./gov-ui.css";
 import { GovMotion } from "./GovMotion";
 import { PortfolioOverview } from "./PortfolioOverview";
 import { ReferenceCriteria, VerificationZone } from "./ReferenceIdentity";
-import { ReadingControls, ReportSearch, ReportGallery } from "./InteractiveExperience";
+import { ReportShare } from "./ReportShare";
+import { ReadingControls, ReportSearch } from "./InteractiveExperience";
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <section className={`folio-card ${className}`}>{children}</section>;
 }
@@ -753,7 +754,12 @@ function ReportPage({
           <Download size={17} /> تحميل PDF
         </button>
       </div>
-      <ReportGallery publication={p} urls={urls} />
+      <ReportShare
+        key={p.id}
+        report={ref}
+        title={p.title}
+        ready={Object.keys(urls).length >= p.assets.length}
+      />
       {error && (
         <p role="alert" className="folio-error">
           {error}

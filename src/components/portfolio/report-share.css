@@ -1,0 +1,104 @@
+.folio .report-share-dialog {
+  width: min(540px, calc(100vw - 32px));
+  max-height: 85dvh;
+  overflow: auto;
+  border: 1px solid var(--gov-line);
+  border-radius: 16px;
+  background: white;
+  color: var(--gov-navy);
+  padding: 24px;
+  margin: auto;
+  font-family: var(--gov-font);
+  box-shadow: 0 18px 60px #15445a1c;
+}
+.folio .report-share-dialog::backdrop {
+  background: #15445a77;
+}
+.folio .report-share-dialog header {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.folio .report-share-dialog h2 {
+  font-size: 23px;
+  margin: 0 0 8px;
+}
+.folio .report-share-dialog header p {
+  color: var(--gov-muted);
+  font-size: 14px;
+  line-height: 1.9;
+  margin: 0;
+}
+.folio .report-share-dialog header > button {
+  padding: 8px;
+  min-width: 44px;
+  flex-shrink: 0;
+}
+.folio .report-share-formats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.folio .report-share-formats button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 12px;
+  background: #f2f9f8;
+  border: 1px solid #d3e8e3;
+  border-radius: 12px;
+}
+.folio .report-share-formats button span {
+  font-size: 12px;
+  color: var(--gov-muted);
+}
+.folio .report-share-dialog [role="status"] {
+  font-size: 14px;
+  line-height: 1.9;
+}
+.folio .report-share-ready {
+  margin-top: 16px;
+  border-top: 1px dotted var(--gov-gray);
+  padding-top: 20px;
+}
+.folio .report-share-ready > button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.folio .report-share-ready p {
+  font-size: 14px;
+  line-height: 2;
+}
+.folio .report-share-ready small {
+  display: block;
+  color: var(--gov-muted);
+  font-size: 12px;
+  line-height: 1.9;
+  margin-top: 12px;
+}
+.folio .report-share-downloads {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+.folio .report-share-downloads a {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  color: var(--gov-link);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+@media print {
+  .report-extras,
+  .report-share-dialog {
+    display: none !important;
+  }
+}
