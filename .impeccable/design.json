@@ -79,7 +79,8 @@
       "navigation": "Direct criterion page; no drawer and no search",
       "data": "All 11 criteria sorted by ID; real public report counts. Completion unknown until a trusted aggregate and configured targets exist; never fabricate percentages.",
       "motion": "220–250ms hover/focus feedback; reduced-motion static",
-      "scope": "Criterion grids on home and criteria index; navy header/background only on criteria index. Approved report documents unchanged."
+      "scope": "Criterion grids on home and criteria index; navy header/background only on criteria index. Approved report documents unchanged.",
+      "homeSurface": "Transparent on the existing light home canvas; no navy panel or arabesque; dark readable filter labels and pale green active state. Standalone criteria index stays navy."
     }
   },
   "narrative": {

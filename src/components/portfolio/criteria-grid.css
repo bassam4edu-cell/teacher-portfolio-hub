@@ -281,6 +281,24 @@
   line-height: 1.9;
   margin: 18px 0 0;
 }
+/* Home keeps its light canvas; the standalone index retains its navy surface. */
+.folio[data-view="home"] .criteria-showcase {
+  background: transparent;
+}
+.folio[data-view="home"] .criteria-showcase::before {
+  display: none;
+}
+.folio[data-view="home"] .criteria-grid-filters button {
+  color: var(--gov-navy);
+}
+.folio[data-view="home"] .criteria-grid-filters button[aria-pressed="true"],
+.folio[data-view="home"] .criteria-grid-filters button:hover {
+  background: #def1e8;
+  color: var(--gov-green-ink);
+}
+.folio[data-view="home"] :is(.criteria-completion-note, .criteria-grid-empty) {
+  color: var(--gov-muted);
+}
 @media (min-width: 901px) and (max-width: 1100px) {
   .folio .criteria-grid-item .criterion-tile {
     grid-template-columns: 48px minmax(0, 1fr) 96px;
