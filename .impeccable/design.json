@@ -1,35 +1,35 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-11-12T00:00:00Z",
-  "title": "Design System: Teacher portfolio library reference identity",
+  "title": "Design System: Teacher portfolio education identity",
   "components": [
     {
       "name": "Primary action",
       "kind": "button",
       "description": "Primary action from the pinned library reference identity.",
       "html": "<button class=\"ds-primary\">عناصر الأداء</button>",
-      "css": ".ds-primary{font-family:ReferenceSans,Tajawal,sans-serif;background:#2f4846;color:white;border:1px solid #2f4846;border-radius:7px;min-height:48px;padding:10px 18px;font-weight:700}.ds-primary:hover{background:#263b3a}.ds-primary:focus-visible{outline:2px solid #2f4846;outline-offset:4px}"
+      "css": ".ds-primary{font-family:ReferenceSans,Tajawal,sans-serif;background:#15445a;color:white;border:1px solid #15445a;border-radius:7px;min-height:48px;padding:10px 18px;font-weight:700}.ds-primary:hover{background:#103749}.ds-primary:focus-visible{outline:2px solid #15445a;outline-offset:4px}"
     },
     {
       "name": "Secondary action",
       "kind": "button",
       "description": "Secondary action from the pinned library reference identity.",
       "html": "<button class=\"ds-secondary\">عن المعلم</button>",
-      "css": ".ds-secondary{font-family:ReferenceSans,Tajawal,sans-serif;background:transparent;color:#2f4846;border:1px solid #d8d2c7;border-radius:7px;min-height:48px;padding:10px 20px}.ds-secondary:hover{background:#f0ece4}.ds-secondary:focus-visible{outline:2px solid #2f4846;outline-offset:4px}"
+      "css": ".ds-secondary{font-family:ReferenceSans,Tajawal,sans-serif;background:transparent;color:#15445a;border:1px solid #dbe7eb;border-radius:7px;min-height:48px;padding:10px 20px}.ds-secondary:hover{background:#e7f5ef}.ds-secondary:focus-visible{outline:2px solid #15445a;outline-offset:4px}"
     },
     {
       "name": "Public navigation",
       "kind": "nav",
       "description": "Public navigation from the pinned library reference identity.",
       "html": "<nav class=\"ds-nav\" dir=\"rtl\"><a href=\"#\" aria-current=\"page\">الرئيسية</a><a href=\"#about\">عن المعلم</a></nav>",
-      "css": ".ds-nav{display:flex;gap:4px;background:#faf9f6}.ds-nav a{font-family:ReferenceSans,Tajawal,sans-serif;color:#625f58;padding:12px 15px;border-radius:6px;text-decoration:none}.ds-nav a[aria-current]{background:#f0ece4;color:#2f4846;font-weight:700}.ds-nav a:hover{background:#f0ece4}.ds-nav a:focus-visible{outline:2px solid #2f4846;outline-offset:4px}"
+      "css": ".ds-nav{display:flex;gap:4px;background:#f6f9fb}.ds-nav a{font-family:ReferenceSans,Tajawal,sans-serif;color:#344f5d;padding:12px 15px;border-radius:6px;text-decoration:none}.ds-nav a[aria-current]{background:#e7f5ef;color:#15445a;font-weight:700}.ds-nav a:hover{background:#e7f5ef}.ds-nav a:focus-visible{outline:2px solid #15445a;outline-offset:4px}"
     },
     {
       "name": "Evidence filters",
       "kind": "chip",
       "description": "Evidence filters from the pinned library reference identity.",
       "html": "<div class=\"ds-filters\" dir=\"rtl\"><button aria-pressed=\"true\">جميع المعايير</button><button aria-pressed=\"false\">الشواهد التعليمية</button></div>",
-      "css": ".ds-filters{display:flex;flex-wrap:wrap;gap:8px}.ds-filters button{font-family:ReferenceSans,Tajawal,sans-serif;background:transparent;border:1px solid #d8d2c7;border-radius:999px;padding:9px 18px;font-size:13px;color:#625f58;transition:background .25s,color .25s}.ds-filters button[aria-pressed=\"true\"]{background:#2f4846;color:white;border-color:#2f4846}.ds-filters button:hover{border-color:#9a8b7a}.ds-filters button:focus-visible{outline:2px solid #2f4846;outline-offset:4px}",
+      "css": ".ds-filters{display:flex;flex-wrap:wrap;gap:8px}.ds-filters button{font-family:ReferenceSans,Tajawal,sans-serif;background:transparent;border:1px solid #dbe7eb;border-radius:999px;padding:9px 18px;font-size:13px;color:#344f5d;transition:background .25s,color .25s}.ds-filters button[aria-pressed=\"true\"]{background:#15445a;color:white;border-color:#15445a}.ds-filters button:hover{border-color:#087e69}.ds-filters button:focus-visible{outline:2px solid #15445a;outline-offset:4px}",
       "refersTo": "filter"
     },
     {
@@ -37,14 +37,14 @@
       "kind": "chip",
       "description": "Criterion metadata from the pinned library reference identity.",
       "html": "<span class=\"ds-pill\" dir=\"rtl\">عنصر الأداء 1</span>",
-      "css": ".ds-pill{font-family:ReferenceSans,Tajawal,sans-serif;display:inline-flex;border-radius:999px;border:1px solid #c5b9a8;background:#f7f5f0;color:#796858;font-size:12px;line-height:1.7;padding:2px 14px}"
+      "css": ".ds-pill{font-family:ReferenceSans,Tajawal,sans-serif;display:inline-flex;border-radius:999px;border:1px solid #c6e3dc;background:#f0f8f7;color:#086855;font-size:12px;line-height:1.7;padding:2px 14px}"
     },
     {
       "name": "Horizontal criterion card",
       "kind": "card",
       "description": "Horizontal criterion card from the pinned library reference identity.",
       "html": "<button class=\"ds-card\" dir=\"rtl\"><span class=\"ds-number\">01</span><span class=\"ds-copy\">أداء الواجبات الوظيفية</span><span class=\"ds-meta\">0 تقارير · عرض الشواهد</span></button>",
-      "css": ".ds-card{font-family:ReferenceSans,Tajawal,sans-serif;display:grid;grid-template-columns:54px minmax(0,1fr) 176px;gap:22px;align-items:center;border:1px solid #d5cfc4;border-radius:14px;background:white;box-shadow:0 2px 5px #2f484607;min-height:122px;padding:20px 28px;color:#2f4846;width:100%;text-align:start;transition:transform .3s,border-color .3s,box-shadow .3s}.ds-number{display:grid;place-items:center;width:56px;height:60px;margin-inline-start:-43px;border-radius:10px;background:#9a8b7a;color:white;font-size:24px}.ds-copy{font-size:19px;font-weight:700;line-height:1.7}.ds-meta{border-inline-start:1px solid #e2ddd3;padding-inline-start:24px;color:#7a756c;font-size:12px}.ds-card:hover{transform:translateX(-4px);border-color:#9a8b7a;box-shadow:0 8px 20px #2f484610}.ds-card:focus-visible{outline:2px solid #2f4846;outline-offset:4px}@media(prefers-reduced-motion:reduce){.ds-card{transition:none}.ds-card:hover{transform:none}}",
+      "css": ".ds-card{font-family:ReferenceSans,Tajawal,sans-serif;display:grid;grid-template-columns:54px minmax(0,1fr) 176px;gap:22px;align-items:center;border:1px solid #dbe7eb;border-radius:14px;background:white;box-shadow:0 2px 5px #15445a07;min-height:122px;padding:20px 28px;color:#15445a;width:100%;text-align:start;transition:transform .3s,border-color .3s,box-shadow .3s}.ds-number{display:grid;place-items:center;width:56px;height:60px;margin-inline-start:-43px;border-radius:10px;background:#087e69;color:white;font-size:24px}.ds-copy{font-size:19px;font-weight:700;line-height:1.7}.ds-meta{border-inline-start:1px solid #e2ddd3;padding-inline-start:24px;color:#526a76;font-size:12px}.ds-card:hover{transform:translateX(-4px);border-color:#087e69;box-shadow:0 8px 20px #15445a10}.ds-card:focus-visible{outline:2px solid #15445a;outline-offset:4px}@media(prefers-reduced-motion:reduce){.ds-card{transition:none}.ds-card:hover{transform:none}}",
       "refersTo": "criterion-card"
     }
   ],
@@ -250,12 +250,12 @@
     "shadows": [
       {
         "name": "criterion-rest",
-        "value": "0 2px 5px #2f484607",
+        "value": "0 2px 5px #15445a07",
         "purpose": "Light separation above warm paper."
       },
       {
         "name": "criterion-hover",
-        "value": "0 8px 20px #2f484610",
+        "value": "0 8px 20px #15445a10",
         "purpose": "Criterion-card interaction."
       }
     ],

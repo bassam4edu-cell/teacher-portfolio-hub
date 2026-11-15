@@ -1,0 +1,2 @@
+# Teacher portfolio
+Personal public Arabic RTL professional portfolio for teacher بسام غربي العنزي, English teacher at ثانوية أم القرى بالخرج. Visitors browse About, weekly schedule, eleven ordered performance criteria, published reports and courses. Owner manages data privately. React/TypeScript/TanStack/Vite and existing Supabase RPC remain unchanged. Reports and print templates are approved artifacts and excluded from visual redesign. Never invent activities, counts, credentials or official endorsement.

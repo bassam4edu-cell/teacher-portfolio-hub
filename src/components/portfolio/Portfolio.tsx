@@ -34,6 +34,7 @@ import "./reference-identity.css";
 import "./manuscript-layout.css";
 import "./manuscript-surfaces.css";
 import "./manuscript-motion.css";
+import "./education-identity.css";
 import { ManuscriptMotion } from "./ManuscriptMotion";
 import manuscriptTitle from "./assets/manuscript-title.svg?raw";
 import { ReferenceCriteria, VerificationZone } from "./ReferenceIdentity";

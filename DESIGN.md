@@ -1,20 +1,20 @@
 ---
-name: Teacher portfolio library reference identity
-description: Arabic professional portfolio with warm paper, bronze calligraphy, and horizontal academic cards
+name: Teacher portfolio education identity
+description: Arabic professional portfolio with white surfaces, green and blue accents, navy typography and horizontal academic cards
 colors:
-  reference-paper: "#FAF9F6"
-  reference-bronze: "#9A8B7A"
-  reference-teal: "#2F4846"
-  reference-line: "#D8D2C7"
-  reading-body: "#625F58"
-  reading-muted: "#7A756C"
+  reference-paper: "#F6F9FB"
+  reference-bronze: "#087E69"
+  reference-teal: "#15445A"
+  reference-line: "#DBE7EB"
+  reading-body: "#344F5D"
+  reading-muted: "#526A76"
   white: "#FFFFFF"
-  navigation-active: "#F0ECE4"
-  pill-surface: "#F7F5F0"
-  pill-ink: "#796858"
-  pill-line: "#C5B9A8"
-  card-line: "#D5CFC4"
-  action-hover: "#263B3A"
+  navigation-active: "#E7F5EF"
+  pill-surface: "#F0F8F7"
+  pill-ink: "#086855"
+  pill-line: "#C6E3DC"
+  card-line: "#DBE7EB"
+  action-hover: "#103749"
 typography:
   display:
     fontFamily: "ReferenceRuqaa, ReferenceAmiri, serif"
@@ -71,7 +71,7 @@ components:
     rounded: "{rounded.evidence}"
 ---
 
-# Design System: Teacher portfolio library reference identity
+# Design System: Teacher portfolio education identity
 
 ## Overview
 
@@ -131,7 +131,7 @@ All six About destinations remain visible, with their existing responsive layout
 
 ## Elevation & Depth
 
-White cards sit lightly above warm paper; bronze edges and fine dividers provide most hierarchy. Criterion cards use `0 2px 5px #2f484607` at rest and `0 8px 20px #2f484610` on hover. Hover adds a subtle surface sweep, a 4px leftward shift, a slight number-tab scale, and a small icon rise.
+White cards sit lightly above warm paper; bronze edges and fine dividers provide most hierarchy. Criterion cards use `0 2px 5px #15445a07` at rest and `0 8px 20px #15445a10` on hover. Hover adds a subtle surface sweep, a 4px leftward shift, a slight number-tab scale, and a small icon rise.
 
 Calligraphy reveals once, corner motifs fade in, and cards enter when observed with a capped stagger. Reduced motion disables these animations, card transitions, and hover transforms. The drawer uses a dark teal backdrop and a brief left-edge entrance.
 
@@ -192,3 +192,8 @@ The lower information zone shows the saved current period and factual evidence c
 The current public surface uses `design-tokens.css` as the palette authority: ivory #FBF9F6, paper #F3EEE6, sand #D9D2C7, decorative taupe #9C8B79, readable dark taupe #6E5F50 and slate #3E4C59. Earlier reference samples above remain historical component examples; public stylesheet overrides use the current tokens. Report templates retain their approved identity.
 
 `manuscript-layout.css` establishes RTL rhythm and responsive grids; `manuscript-surfaces.css` adds paper grain and geometric hairlines; `manuscript-motion.css` and `ManuscriptMotion.tsx` provide progressive motion. The signature title is connected Ruqaa SVG outlines, with the unchanged Arabic source accessible to assistive technology. Desktop smooth scrolling is optional enhancement; mobile and reduced-motion preferences keep native scrolling. No splash screen blocks the portfolio. Decorative geometry never indicates official approval. See `docs/REDESIGN-PHASES.md` for scope and validation.
+
+
+## Current education identity
+
+The user replaced the manuscript direction with the supplied education palette. The last stylesheet `education-identity.css` now controls the public visual layer: #15445A navy, #087E69 readable green, #0DA9A6 turquoise and #3078A6 blue. Manuscript texture, rosettes, SVG title and custom cursor are suppressed on public pages. Original title text is displayed with modern Arabic typography. The desktop hero has two columns with a separate metadata panel; mobile stacks them. Approved document templates remain excluded. See docs/EDUCATION-IDENTITY.md. Earlier manuscript notes describe the previous phase, not current visual authority.
