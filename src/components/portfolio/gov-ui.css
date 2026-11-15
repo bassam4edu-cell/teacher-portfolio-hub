@@ -801,46 +801,47 @@
 .folio .criterion-page .folio-report-grid {
   gap: 24px;
 }
-.folio .criterion-page .folio-report-card {
+.folio .folio-report-card {
   background: var(--gov-card);
   border-color: var(--gov-line);
   border-bottom-color: var(--gov-green);
   border-radius: 12px;
 }
-.folio .criterion-page .frc-photo {
+.folio .folio-report-card .frc-photo {
   background: #edf5f8;
 }
-.folio .criterion-page .frc-body {
+.folio .folio-report-card .frc-body {
   text-align: right;
 }
-.folio .criterion-page .frc-category {
+.folio .folio-report-card .frc-category {
   color: var(--gov-link);
-  background: none;
+  background: #edf5fa;
+  border-color: var(--gov-line);
 }
-.folio .criterion-page .frc-category-number {
+.folio .folio-report-card .frc-category-number {
   background: #0da9a61f;
   color: var(--gov-navy);
   border-color: var(--gov-line);
 }
-.folio .criterion-page .frc-body h3 {
+.folio .folio-report-card .frc-body h3 {
   color: var(--gov-navy);
   font-family: var(--gov-font);
 }
-.folio .criterion-page :is(.frc-date, .frc-count, .frc-summary) {
+.folio .folio-report-card :is(.frc-date, .frc-count, .frc-summary) {
   color: var(--gov-muted);
 }
-.folio .criterion-page .frc-actions {
+.folio .folio-report-card .frc-actions {
   border-color: var(--gov-line);
 }
-.folio .criterion-page .frc-actions button:first-child {
+.folio .folio-report-card .frc-actions button:first-child {
   background: var(--gov-green);
   border-color: var(--gov-green);
   color: #06232f;
 }
-.folio .criterion-page .frc-actions .frc-pdf {
-  background: white;
-  color: var(--gov-link);
-  border-color: var(--gov-line);
+.folio .folio-report-card .frc-actions .frc-pdf {
+  background: var(--gov-link);
+  color: white;
+  border-color: var(--gov-link);
 }
 .folio .criterion-page .folio-empty {
   background: white;
@@ -881,10 +882,10 @@
     font-size: 19px;
   }
 }
-.folio .criterion-page .frc-meta {
+.folio .folio-report-card .frc-meta {
   border-color: var(--gov-line);
 }
-.folio .criterion-page :is(.frc-meta svg, .frc-count svg, .frc-date svg) {
+.folio .folio-report-card :is(.frc-meta svg, .frc-count svg, .frc-date svg) {
   color: var(--gov-link);
 }
 /* Requested white title artwork is limited to the home cover. */
@@ -934,4 +935,22 @@
     filter: brightness(0);
     animation: none;
   }
+}
+
+/* Shared report-card states: home classroom section and criterion pages. */
+.folio .folio-report-card .frc-actions button:first-child:hover:not(:disabled) {
+  background: #07975f;
+  border-color: #07975f;
+  color: #06232f;
+}
+.folio .folio-report-card .frc-actions .frc-pdf:hover:not(:disabled) {
+  background: var(--gov-navy);
+  border-color: var(--gov-navy);
+  color: white;
+}
+.folio .folio-report-card :is(.frc-body h3, .frc-category, .frc-meta, .frc-actions) {
+  border-color: var(--gov-line);
+}
+.folio .folio-report-card .frc-photo > img {
+  background: transparent;
 }
