@@ -93,6 +93,10 @@ await popup.waitForFunction(
   () => document.querySelector(".fp-progress-screen")?.dataset.state === "complete",
 );
 assert.equal(await popup.getByRole("progressbar").getAttribute("aria-valuenow"), "100");
+assert(
+  !(await popup.evaluate(() => document.documentElement.scrollWidth > innerWidth)),
+  "A4 staging must not shift the mobile progress viewport",
+);
 await popup.screenshot({ path: "/tmp/print-progress/complete.png", animations: "disabled" });
 await popup.locator(".fp-progress-screen").waitFor({ state: "detached" });
 await p.evaluate(() => {

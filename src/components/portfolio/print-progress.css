@@ -1,3 +1,17 @@
+/* Clip A4 staging outside document flow so RTL overflow never shifts the loading viewport. */
+.fp-staging {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: -1;
+  direction: ltr;
+}
+.fp-staging .fp-document {
+  width: 794px;
+  direction: rtl;
+}
 .fp-progress-screen,
 .fp-progress-screen * {
   box-sizing: border-box;

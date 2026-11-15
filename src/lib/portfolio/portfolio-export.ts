@@ -129,7 +129,12 @@ export async function generatePortfolioReport(win: Window, onBusyChange?: (busy:
     host.style.visibility = "hidden";
     host.inert = true;
     host.setAttribute("aria-hidden", "true");
-    doc.body.append(toolbar, host);
+    const staging = doc.createElement("div");
+    staging.className = "fp-staging";
+    staging.setAttribute("aria-hidden", "true");
+    staging.inert = true;
+    staging.append(toolbar, host);
+    doc.body.append(staging);
     progress.update(80, "تحميل الخط العربي…", 3);
     await doc.fonts.load("16px PortfolioPrint");
     progress.update(84, "ترقيم صفحات الملف…", 3);
@@ -181,6 +186,8 @@ export async function generatePortfolioReport(win: Window, onBusyChange?: (busy:
       }
     };
     await progress.finish(pages.length, warning);
+    doc.body.append(toolbar, host);
+    staging.remove();
     toolbar.style.visibility = "visible";
     toolbar.inert = false;
     host.style.visibility = "visible";
@@ -190,6 +197,7 @@ export async function generatePortfolioReport(win: Window, onBusyChange?: (busy:
     return { window: win, pages: pages.length, previewFailures: failures };
   } catch (err) {
     if (!win.closed) {
+      doc.querySelector(".fp-staging")?.remove();
       doc.querySelector(".fp-document")?.remove();
       doc.querySelector(".fp-toolbar")?.remove();
       progress.fail(errorText(err), () => generatePortfolioReport(win, onBusyChange));
