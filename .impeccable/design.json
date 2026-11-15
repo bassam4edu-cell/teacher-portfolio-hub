@@ -48,6 +48,21 @@
       "mobileWidth": "100% contained",
       "animation": "350ms subtle reveal; reduced-motion static",
       "scope": "Home cover only; no manuscript fonts or page theme"
+    },
+    "referenceHomeCover": {
+      "source": "src/components/portfolio/home-cover.css",
+      "reference": "Owner-supplied navy/green cover screenshot",
+      "composition": "Full-width navy banner; right title/name/actions; left floating teacher card; four desktop KPI cards",
+      "colors": {
+        "navy": "#0b3044",
+        "greenGlow": "#009269",
+        "sandName": "#d4c79d",
+        "cardBorder": "#b6b694",
+        "mint": "#dfeee6",
+        "accessibleCTA": "#007d56"
+      },
+      "mobile": "Stacked cover, then two-column KPI grid",
+      "scope": "Home only; preserve actual records and actions"
     }
   },
   "narrative": {

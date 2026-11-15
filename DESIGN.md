@@ -28,3 +28,7 @@ The six About routes now use an independent `educator-about` workspace, not the 
 ## Home title artwork
 
 Owner-requested two-line Arabic wordmark replaces the small home document-title phrase. `public/brand/portfolio-title-art.png` is an alpha image displayed white through a CSS filter, centered above the existing teacher name, at up to 510px desktop width and contained on mobile. Its accessible alternative retains the original title wording. A 350ms subtle entrance respects reduced motion; print renders it dark. This is confined to the home cover and does not restore the old manuscript theme or fonts. Asset provenance is stored alongside the PNG.
+
+## Pinned home cover composition
+
+The owner supplied a new screenshot and requested its exact cover composition. `home-cover.css` now scopes the full-bleed navy/green-glow banner, paired title/teacher-card layout, white floating book emblem, sand name/border, dotted card rows, corner arabesque and four white desktop KPI cards to the home view. Other routes retain the education interface. Reference colors: navy #0b3044, green glow #009269, sand title #d4c79d, card border #b6b694, mint #dfeee6, accessible green CTA #007d56 with white labels. Mobile stacks the same content and uses two KPI columns. Reuses existing fonts, title artwork and logo. See docs/REFERENCE-HOME-COVER.md.

@@ -17,6 +17,10 @@ import {
   Printer,
   Images,
   ArrowRight,
+  Globe,
+  School,
+  Compass,
+  CircleCheck,
 } from "lucide-react";
 import { db, errorText, loadSimplePortfolio, publicReportAsset, rpc } from "@/lib/portfolio/api";
 import { defaultSettings, days, currentDayRiyadh, type Settings } from "@/lib/portfolio/model";
@@ -29,6 +33,7 @@ import { CourseManager } from "./CourseManager";
 import "./design-tokens.css";
 import "./gov-base.css";
 import "./gov-ui.css";
+import "./home-cover.css";
 import { GovMotion } from "./GovMotion";
 import { PortfolioOverview } from "./PortfolioOverview";
 import { ReferenceCriteria, VerificationZone } from "./ReferenceIdentity";
@@ -223,128 +228,146 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
   else if (view === "home")
     content = (
       <>
-        <section className="folio-hero">
-          <div className="hero-grid-art" aria-hidden="true" />
-          <div className="folio-hero-copy">
-            <img
-              className="hero-logo"
-              src="/brand/moe-white.svg"
-              alt="وزارة التعليم"
-              width="130"
-              height="70"
-            />
-            <p className="reference-institution">
-              المملكة العربية السعودية · وزارة التعليم
-              <br />
-              {settings.teacher.administration}
-            </p>
-            <div className="hero-title-art">
+        <section className="folio-hero home-reference-cover">
+          <div className="home-cover-inner">
+            <div className="hero-grid-art" aria-hidden="true" />
+            <div className="folio-hero-copy">
               <img
-                src="/brand/portfolio-title-art.png"
-                alt="ملف الإنجاز المهني والتعليمي"
-                width="2172"
-                height="724"
-                fetchPriority="high"
+                className="hero-logo"
+                src="/brand/moe-white.svg"
+                alt="وزارة التعليم"
+                width="130"
+                height="70"
               />
-            </div>
-            <h1>{settings.teacher.name}</h1>
-            <p className="reference-specialty">معلم اللغــــة الإنجليزيــــة — المرحلة الثانوية</p>
-            <p className="hero-document-title">ملف الإنجاز المهني</p>
-            <p className="hero-summary">{settings.teacher.bio}</p>
-            <div className="hero-actions">
-              <button
-                className="folio-primary hero-cta"
-                onClick={() => {
-                  const section = document.getElementById("home-performance");
-                  section?.scrollIntoView({
-                    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-                      ? "instant"
-                      : "smooth",
-                    block: "start",
-                  });
-                  section?.focus({ preventScroll: true });
-                }}
-              >
-                استعراض ملف الإنجاز <ArrowUpLeft size={19} />
-              </button>
-              <button className="hero-secondary" onClick={() => go("about")}>
-                عن المعلم <ChevronLeft size={17} />
-              </button>
-            </div>
-          </div>
-          <aside className="hero-record" aria-label="بيانات الملف">
-            <BookOpen size={44} strokeWidth={1.2} aria-hidden="true" />
-            <dl>
-              <div>
-                <dt>التخصص</dt>
-                <dd>{settings.teacher.subject}</dd>
-              </div>
-              <div>
-                <dt>المدرسة</dt>
-                <dd>{settings.teacher.school}</dd>
-              </div>
-              <div>
-                <dt>الفترة الدراسية</dt>
-                <dd>{current?.name}</dd>
-              </div>
-            </dl>
-          </aside>
-        </section>
-        <PortfolioOverview publications={publications} revision={revision.current} />
-        <section id="home-performance" tabIndex={-1} aria-label="عناصر الأداء الوظيفي">
-          <Section
-            title="عناصر الأداء الوظيفي"
-            subtitle="اختر عنصرًا لاستعراض تقاريره وشواهده."
-            action={() => go("criteria")}
-          />
-          <ReferenceCriteria
-            settings={settings}
-            reports={reports}
-            onOpen={(id) => go("criteria", id)}
-            compact
-          />
-        </section>
-        {reports.length > 0 && (
-          <>
-            <Section title="من داخل الصف" subtitle="أحدث التقارير والصور الصفية." />
-            <div className="folio-report-grid home-practices">
-              {reports.slice(0, 3).map((p) => (
-                <ReportCard
-                  key={p.id}
-                  publication={p}
-                  settings={settings}
-                  criterionName={settings.criteria.find((c) => c.id === p.criterion)?.name ?? ""}
-                  onOpen={() => go("criteria", p.criterion, p.id)}
+              <p className="reference-institution">
+                المملكة العربية السعودية · وزارة التعليم
+                <br />
+                {settings.teacher.administration}
+              </p>
+              <div className="hero-title-art">
+                <img
+                  src="/brand/portfolio-title-art.png"
+                  alt="ملف الإنجاز المهني والتعليمي"
+                  width="2172"
+                  height="724"
+                  fetchPriority="high"
                 />
-              ))}
+              </div>
+              <h1>{settings.teacher.name}</h1>
+              <p className="reference-specialty">
+                معلم اللغــــة الإنجليزيــــة — المرحلة الثانوية
+              </p>
+              <p className="hero-document-title">ملف الإنجاز المهني</p>
+              <p className="hero-summary">{settings.teacher.bio}</p>
+              <div className="hero-actions">
+                <button
+                  className="folio-primary hero-cta"
+                  onClick={() => {
+                    const section = document.getElementById("home-performance");
+                    section?.scrollIntoView({
+                      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                        ? "instant"
+                        : "smooth",
+                      block: "start",
+                    });
+                    section?.focus({ preventScroll: true });
+                  }}
+                >
+                  استعراض ملف الإنجاز <ArrowUpLeft size={19} />
+                </button>
+                <button className="hero-secondary" onClick={() => go("about")}>
+                  عن المعلم <ChevronLeft size={17} />
+                </button>
+              </div>
             </div>
-          </>
-        )}
-        <div className="home-utilities">
-          <section className="folio-schedule-teaser">
-            <div className="teaser-icon">
-              <CalendarDays size={30} />
-            </div>
-            <div>
-              <h2>الجدول المدرسي</h2>
-              <p>الجدول الأسبوعي للحصص والتكليفات.</p>
-            </div>
-            <button onClick={() => go("schedule")}>
-              استعراض الجدول <ArrowUpLeft size={18} />
-            </button>
+            <aside className="hero-record" aria-label="بيانات الملف">
+              <div className="teacher-card-emblem" aria-hidden="true">
+                <BookOpen size={48} strokeWidth={1.5} />
+              </div>
+              <header className="teacher-card-heading">
+                <h2>بطاقة المعلم</h2>
+                <p>معلومات عامة</p>
+              </header>
+              <dl>
+                <div>
+                  <span className="teacher-row-icon teacher-row-icon-sand" aria-hidden="true">
+                    <Globe size={20} />
+                  </span>
+                  <dt>التخصص</dt>
+                  <dd>{settings.teacher.subject}</dd>
+                </div>
+                <div>
+                  <span className="teacher-row-icon" aria-hidden="true">
+                    <School size={20} />
+                  </span>
+                  <dt>المدرسة</dt>
+                  <dd>{settings.teacher.school}</dd>
+                </div>
+                <div>
+                  <dt>الفترة الدراسية</dt>
+                  <dd>{current?.name}</dd>
+                </div>
+              </dl>
+            </aside>
+          </div>
+        </section>
+        <div className="home-reference-content">
+          <PortfolioOverview publications={publications} revision={revision.current} />
+          <section id="home-performance" tabIndex={-1} aria-label="عناصر الأداء الوظيفي">
+            <Section
+              title="عناصر الأداء الوظيفي"
+              subtitle="اختر عنصرًا لاستعراض تقاريره وشواهده."
+              action={() => go("criteria")}
+            />
+            <ReferenceCriteria
+              settings={settings}
+              reports={reports}
+              onOpen={(id) => go("criteria", id)}
+              compact
+            />
           </section>
-          <section className="folio-courses-teaser">
-            <div className="teaser-icon">
-              <GraduationCap size={30} />
-            </div>
-            <div>
-              <h2>الدورات والتطوير المهني</h2>
-              <p>الدورات التدريبية ووثائقها في سجل واحد.</p>
-            </div>
-            <button onClick={() => go("courses")}>
-              استعراض الدورات <ArrowUpLeft size={18} />
-            </button>
-          </section>
+          {reports.length > 0 && (
+            <>
+              <Section title="من داخل الصف" subtitle="أحدث التقارير والصور الصفية." />
+              <div className="folio-report-grid home-practices">
+                {reports.slice(0, 3).map((p) => (
+                  <ReportCard
+                    key={p.id}
+                    publication={p}
+                    settings={settings}
+                    criterionName={settings.criteria.find((c) => c.id === p.criterion)?.name ?? ""}
+                    onOpen={() => go("criteria", p.criterion, p.id)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+          <div className="home-utilities">
+            <section className="folio-schedule-teaser">
+              <div className="teaser-icon">
+                <CalendarDays size={30} />
+              </div>
+              <div>
+                <h2>الجدول المدرسي</h2>
+                <p>الجدول الأسبوعي للحصص والتكليفات.</p>
+              </div>
+              <button onClick={() => go("schedule")}>
+                استعراض الجدول <ArrowUpLeft size={18} />
+              </button>
+            </section>
+            <section className="folio-courses-teaser">
+              <div className="teaser-icon">
+                <GraduationCap size={30} />
+              </div>
+              <div>
+                <h2>الدورات والتطوير المهني</h2>
+                <p>الدورات التدريبية ووثائقها في سجل واحد.</p>
+              </div>
+              <button onClick={() => go("courses")}>
+                استعراض الدورات <ArrowUpLeft size={18} />
+              </button>
+            </section>
+          </div>
         </div>
       </>
     );
@@ -483,7 +506,8 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
             <Printer size={19} />
           </button>
           <a className="gov-admin-link" href="/admin" aria-label="لوحة الإدارة">
-            <ShieldCheck size={19} />
+            <ShieldCheck className="default-admin-icon" size={19} />
+            <CircleCheck className="home-admin-icon" size={19} />
           </a>
           <a
             className="gov-qr-link"
@@ -493,6 +517,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
             aria-label="رمز QR للملف"
           >
             <img src="/brand/portfolio-qr.svg" width="32" height="32" alt="" />
+            <Compass className="home-qr-compass" size={19} />
           </a>
           <span className="folio-live">
             <i />

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" fill="none" stroke="#c1b489" stroke-width="2.5">
+<defs><g id="loop"><circle cx="240" cy="129" r="87"/><path d="M240 22C304 58 323 118 288 169L240 214 192 169C157 118 176 58 240 22Z"/></g></defs>
+<circle cx="240" cy="240" r="229"/><circle cx="240" cy="240" r="216"/>
+<use href="#loop"/><use href="#loop" transform="rotate(45 240 240)"/><use href="#loop" transform="rotate(90 240 240)"/><use href="#loop" transform="rotate(135 240 240)"/><use href="#loop" transform="rotate(180 240 240)"/><use href="#loop" transform="rotate(225 240 240)"/><use href="#loop" transform="rotate(270 240 240)"/><use href="#loop" transform="rotate(315 240 240)"/>
+<circle cx="240" cy="240" r="55"/><circle cx="240" cy="240" r="35"/>
+</svg>
