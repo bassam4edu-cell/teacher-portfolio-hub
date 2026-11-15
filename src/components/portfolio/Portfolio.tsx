@@ -111,7 +111,10 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
     setPrintError("");
     try {
       const { generatePortfolioReport } = await import("@/lib/portfolio/portfolio-export");
-      await generatePortfolioReport(win);
+      await generatePortfolioReport(win, (busy) => {
+        setPrintBusy(busy);
+        if (busy) setPrintError("");
+      });
     } catch (err) {
       setPrintError(errorText(err));
     } finally {

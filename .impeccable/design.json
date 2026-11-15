@@ -92,7 +92,8 @@
       "pagination": "Measured blocks; intact cards; word-boundary splits only for oversized prose; actual page numbers and totals",
       "data": "Fresh public snapshot and public display documents only; no private originals/contact or database mutation",
       "output": "Direct A4 PDF with clickable links and native print/selectable-text PDF; sequential 2x rendering",
-      "scope": "Header print action only; existing single-report and course exports unchanged"
+      "scope": "Header print action only; existing single-report and course exports unchanged",
+      "preparation": "Responsive progress screen, animated document icon and ring, monotonic 0–100 weighted task completion; real resource/image/certificate/section/decode events. 100 only after document ready; short success check then automatic reveal. Error retry reuses window and owner busy state. Reduced motion static."
     }
   },
   "narrative": {

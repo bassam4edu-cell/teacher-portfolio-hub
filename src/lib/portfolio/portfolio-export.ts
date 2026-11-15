@@ -8,11 +8,13 @@ import {
   type DocumentBlock,
   type DocumentMedia,
 } from "./portfolio-document";
+import { createPrintProgress } from "./print-progress";
 import css from "@/components/portfolio/portfolio-print.css?raw";
 const e = escapePrint;
 
 /** Pre-opened by the click handler so mobile browsers preserve the user gesture. */
-export async function generatePortfolioReport(win: Window) {
+export async function generatePortfolioReport(win: Window, onBusyChange?: (busy: boolean) => void) {
+  onBusyChange?.(true);
   const doc = win.document;
   doc.open();
   doc.write(
@@ -22,6 +24,7 @@ export async function generatePortfolioReport(win: Window) {
   const base = doc.createElement("base");
   base.href = window.location.origin + "/";
   doc.head.append(base);
+  const progress = createPrintProgress(doc);
   const status = (message: string) => {
     if (win.closed) throw Error("أُغلقت نافذة التقرير.");
     const node = doc.querySelector("[role=status]");
@@ -34,8 +37,15 @@ export async function generatePortfolioReport(win: Window) {
       "/brand/moe-color.png",
       "/brand/cover-arabesque.svg",
     ];
+    let resourcesDone = 0;
     const embedded = new Map(
-      await Promise.all(paths.map(async (path) => [path, await embeddedAsset(path)] as const)),
+      await Promise.all(
+        paths.map(async (path) => {
+          const data = await embeddedAsset(path);
+          progress.update((++resourcesDone * 8) / paths.length, "تجهيز موارد تصميم الملف…", 0);
+          return [path, data] as const;
+        }),
+      ),
     );
     const style = doc.createElement("style");
     style.textContent = css
@@ -48,7 +58,18 @@ export async function generatePortfolioReport(win: Window) {
         `url("${embedded.get(paths[3]!)}")`,
       );
     doc.head.append(style);
-    const [data, courses] = await Promise.all([loadSimplePortfolio(), loadCourses()]);
+    let readsDone = 0;
+    const readDone = () => progress.update(8 + ++readsDone * 4, "قراءة بيانات الملف والدورات…", 0);
+    const [data, courses] = await Promise.all([
+      loadSimplePortfolio().then((value) => {
+        readDone();
+        return value;
+      }),
+      loadCourses().then((value) => {
+        readDone();
+        return value;
+      }),
+    ]);
     const s = data.settings,
       media: DocumentMedia = { reports: {}, courses: {} };
     let failures = 0;
@@ -57,7 +78,11 @@ export async function generatePortfolioReport(win: Window) {
       ...new Map(data.publications.flatMap((r) => r.assets).map((a) => [a.id, a])).values(),
     ].filter((a) => a.mime.startsWith("image/"));
     for (const [i, a] of assets.entries()) {
-      status(`تجهيز صور الشواهد ${i + 1} من ${assets.length}…`);
+      progress.update(
+        16 + (i * 24) / assets.length,
+        `تجهيز صورة الشاهد ${i + 1} من ${assets.length}…`,
+        1,
+      );
       let url = "";
       try {
         url = await publicReportAsset(a.id);
@@ -67,27 +92,47 @@ export async function generatePortfolioReport(win: Window) {
       } finally {
         if (url) URL.revokeObjectURL(url);
       }
+      progress.update(
+        16 + ((i + 1) * 24) / assets.length,
+        `اكتمل تجهيز ${i + 1} من ${assets.length} صور شواهد`,
+        1,
+      );
     }
-    for (const [i, c] of courses.entries()) {
-      if (!c.document) continue;
-      status(`تجهيز معاينات الشهادات ${i + 1} من ${courses.length}…`);
+    progress.update(40, "تجهيز شهادات الدورات…", 2);
+    const documented = courses.filter((course) => course.document);
+    for (const [i, c] of documented.entries()) {
+      progress.update(
+        40 + (i * 40) / documented.length,
+        `تجهيز الشهادة ${i + 1} من ${documented.length}…`,
+        2,
+      );
       try {
-        media.courses[c.id] = await certificatePreview(await courseDocument(c.document.id));
+        media.courses[c.id] = await certificatePreview(await courseDocument(c.document!.id));
       } catch {
         failures++;
       }
+      progress.update(
+        40 + ((i + 1) * 40) / documented.length,
+        `اكتمل تجهيز ${i + 1} من ${documented.length} شهادة`,
+        2,
+      );
     }
-    status("تنسيق صفحات A4 والفهرس…");
+    progress.update(80, "تنسيق صفحات A4 والفهرس…", 3);
     const toolbar = doc.createElement("div");
     toolbar.className = "fp-toolbar";
     toolbar.innerHTML =
       '<button id="fp-download" type="button">تنزيل PDF الكامل</button><button id="fp-print" type="button">طباعة / حفظ PDF من المتصفح</button><span role="status" aria-live="polite"></span>';
     const host = doc.createElement("main");
     host.className = "fp-document";
-    doc.body.replaceChildren(toolbar, host);
-    status("تحميل الخط العربي…");
+    toolbar.style.visibility = "hidden";
+    toolbar.inert = true;
+    host.style.visibility = "hidden";
+    host.inert = true;
+    host.setAttribute("aria-hidden", "true");
+    doc.body.append(toolbar, host);
+    progress.update(80, "تحميل الخط العربي…", 3);
     await doc.fonts.load("16px PortfolioPrint");
-    status("ترقيم صفحات الملف…");
+    progress.update(84, "ترقيم صفحات الملف…", 3);
     const sections = portfolioSections(
       s,
       data.publications,
@@ -95,18 +140,31 @@ export async function generatePortfolioReport(win: Window) {
       media,
       window.location.origin,
     );
-    await paginatePortfolio(doc, host, s, sections);
+    await paginatePortfolio(doc, host, s, sections, (done, total) => {
+      progress.update(84 + (10 * done) / total, `تنسيق القسم ${done} من ${total}…`, 3);
+    });
     for (const img of doc.images) {
       const data = embedded.get(img.getAttribute("src") ?? "");
       if (data) img.src = data;
     }
-    await Promise.all([...doc.images].map((img) => img.decode()));
+    const images = [...doc.images];
+    let decoded = 0;
+    await Promise.all(
+      images.map(async (img) => {
+        await img.decode();
+        progress.update(
+          94 + (5 * ++decoded) / images.length,
+          "التحقق من الصور والفهرس النهائي…",
+          3,
+        );
+      }),
+    );
     const pages = [...host.querySelectorAll<HTMLElement>(".fp-page")];
     const warning = failures
       ? ` · تعذر تحميل ${failures} معاينة؛ تظهر أماكنها وروابطها في الملف.`
       : "";
-    status(`جاهز: ${pages.length} صفحة${warning}`);
-    if (failures) doc.querySelector("[role=status]")?.classList.add("fp-warning");
+    toolbar.querySelector("[role=status]")!.textContent = `جاهز: ${pages.length} صفحة${warning}`;
+    if (failures) toolbar.querySelector("[role=status]")?.classList.add("fp-warning");
     doc.getElementById("fp-print")!.onclick = () => win.print();
     const download = doc.getElementById("fp-download") as HTMLButtonElement;
     download.onclick = async () => {
@@ -122,16 +180,23 @@ export async function generatePortfolioReport(win: Window) {
         download.disabled = false;
       }
     };
+    await progress.finish(pages.length, warning);
+    toolbar.style.visibility = "visible";
+    toolbar.inert = false;
+    host.style.visibility = "visible";
+    host.inert = false;
+    host.removeAttribute("aria-hidden");
+    download.focus({ preventScroll: true });
     return { window: win, pages: pages.length, previewFailures: failures };
   } catch (err) {
     if (!win.closed) {
-      doc.body.replaceChildren();
-      const notice = doc.createElement("p");
-      notice.setAttribute("role", "alert");
-      notice.textContent = `تعذر إنشاء الملف: ${errorText(err)}. أغلق النافذة وأعد المحاولة من الموقع.`;
-      doc.body.append(notice);
+      doc.querySelector(".fp-document")?.remove();
+      doc.querySelector(".fp-toolbar")?.remove();
+      progress.fail(errorText(err), () => generatePortfolioReport(win, onBusyChange));
     }
     throw err;
+  } finally {
+    onBusyChange?.(false);
   }
 }
 
@@ -176,6 +241,7 @@ export async function paginatePortfolio(
   host: HTMLElement,
   s: Settings,
   sections: DocumentSection[],
+  onSection?: (done: number, total: number) => void,
 ) {
   const cover = makePage(doc, host, s, "ملف الإنجاز المهني والتعليمي", true, "fp-cover");
   cover.classList.remove("fp-section-cover");
@@ -200,7 +266,7 @@ export async function paginatePortfolio(
       html: `<a class="fp-toc-row" href="#fp-${e(section.id)}" data-toc="${e(section.id)}"><span>${e(section.title)}${section.cover ? " — غلاف القسم" : ""}</span><strong>000</strong></a>`,
     })),
   };
-  for (const section of [toc, ...sections]) {
+  for (const [sectionIndex, section] of [toc, ...sections].entries()) {
     let page = makePage(doc, host, s, section.title, section.cover, `fp-${section.id}`);
     starts.set(section.id, page);
     if (section.cover) {
@@ -213,6 +279,7 @@ export async function paginatePortfolio(
           "beforebegin",
           `<div class="fp-cover-meta">${e(s.teacher.name)}<br>${e(s.teacher.school)}</div>`,
         );
+      onSection?.(sectionIndex + 1, sections.length + 1);
       continue;
     }
     let body = page.querySelector<HTMLElement>(".fp-body")!;
@@ -263,6 +330,7 @@ export async function paginatePortfolio(
         if (words.length) next();
       }
     }
+    onSection?.(sectionIndex + 1, sections.length + 1);
   }
   const pages = [...host.querySelectorAll<HTMLElement>(".fp-page")];
   for (const anchor of host.querySelectorAll<HTMLElement>("[data-toc]")) {
