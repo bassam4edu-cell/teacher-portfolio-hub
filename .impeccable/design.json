@@ -15,6 +15,12 @@
       "kind": "card",
       "html": "<article class=\"gov-card\">المحتوى المهني</article>",
       "css": ".gov-card{background:#fff;color:#15445a;border:1px solid #e0e7eb;border-bottom:3px solid #07a869;border-radius:12px;padding:24px;box-shadow:0 4px 18px #15445a06}"
+    },
+    {
+      "name": "About section tab",
+      "kind": "tab",
+      "html": "<button role=\"tab\" aria-selected=\"true\">المقدمة</button>",
+      "css": ".educator-tabs button{font-family:var(--gov-font);min-height:48px;border-radius:10px;padding:14px 16px}.educator-tabs button[aria-selected=true]{background:#15445a;color:#fff}"
     }
   ],
   "extensions": {
@@ -23,7 +29,18 @@
       "src/components/portfolio/design-tokens.css",
       "src/components/portfolio/gov-ui.css",
       "src/components/portfolio/gov-base.css"
-    ]
+    ],
+    "about": {
+      "mode": "Read",
+      "source": "src/components/portfolio/about.css",
+      "desktopRail": "268px",
+      "columnGap": "40px",
+      "readingMeasure": "70ch",
+      "mobileBreakpoint": "999px",
+      "sections": 6,
+      "motion": "250ms; prefers-reduced-motion static",
+      "content": "Existing saved/default content and routes retained"
+    }
   },
   "narrative": {
     "northStar": "Modern education digital portfolio",

@@ -18,13 +18,13 @@ export function CareerCV({ settings: s }: { settings: Settings }) {
   const known = new Set<string>(groups.map((g) => g.type));
   const other = s.career.filter((item) => !known.has(item.type));
   return (
-    <div className="cv-layout">
+    <div className="cv-layout educator-resume">
       <header className="cv-profile">
         <div className="cv-profile-icon" aria-hidden="true">
           <BookOpen size={32} strokeWidth={1.3} />
         </div>
         <div>
-          <span className="cv-kicker">المسيرة المهنية</span>
+          <span className="resume-label">السيرة المهنية</span>
           <h3>{s.teacher.name}</h3>
           <p>معلم {s.teacher.subject}</p>
           <span className="cv-school">{s.teacher.school}</span>
@@ -48,12 +48,16 @@ export function CareerCV({ settings: s }: { settings: Settings }) {
                 <group.icon size={22} strokeWidth={1.5} />
                 <h3>{group.title}</h3>
               </div>
-              <ul className={group.type === "skill" ? "cv-skills" : "cv-timeline"}>
+              <ul
+                className={
+                  group.type === "skill" ? "cv-skills resume-skills" : "cv-timeline resume-timeline"
+                }
+              >
                 {entries.map((item) => (
                   <li key={item.id}>
                     <h4>{item.title}</h4>
                     {item.institution && <p className="cv-institution">{item.institution}</p>}
-                    {item.date && <span className="cv-date">{item.date}</span>}
+                    {item.date && <time className="cv-date">{item.date}</time>}
                     {item.description && <p>{item.description}</p>}
                   </li>
                 ))}
@@ -72,7 +76,7 @@ export function CareerCV({ settings: s }: { settings: Settings }) {
                 <li key={item.id}>
                   <h4>{item.title}</h4>
                   {item.institution && <p>{item.institution}</p>}
-                  {item.date && <span className="cv-date">{item.date}</span>}
+                  {item.date && <time className="cv-date">{item.date}</time>}
                   {item.description && <p>{item.description}</p>}
                 </li>
               ))}

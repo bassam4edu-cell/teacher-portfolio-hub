@@ -1,11 +1,4 @@
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type KeyboardEvent,
-  type ReactNode,
-} from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import {
   BookOpen,
   Compass,
@@ -14,6 +7,8 @@ import {
   Scale,
   ShieldCheck,
   ArrowUpLeft,
+  ArrowLeft,
+  Printer,
 } from "lucide-react";
 import type { Settings } from "@/lib/portfolio/model";
 import { aboutDefaults, aboutSources } from "@/lib/portfolio/about-content";
@@ -41,7 +36,7 @@ function currentTab(): Tab {
 }
 function Card({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="about-content-card">
+    <section className="educator-block about-content-card">
       <h3>{title}</h3>
       {children}
     </section>
@@ -59,45 +54,63 @@ function Paragraphs({ text }: { text: string }) {
     </div>
   );
 }
+function DocumentText({ text, kind }: { text: string; kind: "ethics" | "policy" }) {
+  const [lead, ...principles] = text.split(/\n+/).filter(Boolean);
+  return (
+    <div className={`educator-document educator-document-${kind}`}>
+      <p className="educator-document-lead">{lead}</p>
+      <ol>
+        {principles.map((principle, index) => (
+          <li key={index}>
+            <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            <p>{principle}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
 export function About({ settings: s }: { settings: Settings }) {
   const [active, setActive] = useState<Tab>(currentTab);
   const track = useRef<HTMLDivElement>(null);
-  const content = useRef<HTMLDivElement>(null);
-  const [marker, setMarker] = useState({ left: 0, width: 0 });
-  const [height, setHeight] = useState<number>();
+  const [vertical, setVertical] = useState(false);
   const data = { ...aboutDefaults, ...s.about };
   useEffect(() => {
     const route = () => setActive(currentTab());
     window.addEventListener("hashchange", route);
     return () => window.removeEventListener("hashchange", route);
   }, []);
-  useLayoutEffect(() => {
-    const update = () => {
-      const selected = track.current?.querySelector<HTMLElement>('[aria-selected="true"]');
-      if (selected) setMarker({ left: selected.offsetLeft, width: selected.offsetWidth });
-      if (content.current) setHeight(content.current.getBoundingClientRect().height);
-    };
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1000px)");
+    const update = () => setVertical(media.matches);
     update();
-    const observer = new ResizeObserver(update);
-    if (track.current) observer.observe(track.current);
-    if (content.current) observer.observe(content.current);
-    track.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({
-      block: "nearest",
-      inline: "nearest",
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "instant"
-        : "smooth",
-    });
-    return () => observer.disconnect();
-  }, [active]);
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+  useEffect(() => {
+    if (vertical) return;
+    const selected = track.current?.querySelector<HTMLElement>('[aria-selected="true"]');
+    const scroller = track.current?.parentElement;
+    if (!selected || !scroller) return;
+    const item = selected.getBoundingClientRect();
+    const viewport = scroller.getBoundingClientRect();
+    const delta =
+      item.left < viewport.left
+        ? item.left - viewport.left
+        : item.right > viewport.right
+          ? item.right - viewport.right
+          : 0;
+    if (delta) scroller.scrollBy({ left: delta, behavior: "instant" });
+  }, [active, vertical]);
   function select(id: Tab) {
     setActive(id);
     location.hash = `about/${id}`;
   }
   function keyboard(e: KeyboardEvent, index: number) {
     let next = index;
-    if (e.key === "ArrowLeft") next = (index + 1) % tabs.length;
-    else if (e.key === "ArrowRight") next = (index - 1 + tabs.length) % tabs.length;
+    if (e.key === "ArrowLeft" || e.key === "ArrowDown") next = (index + 1) % tabs.length;
+    else if (e.key === "ArrowRight" || e.key === "ArrowUp")
+      next = (index - 1 + tabs.length) % tabs.length;
     else if (e.key === "Home") next = 0;
     else if (e.key === "End") next = tabs.length - 1;
     else return;
@@ -107,54 +120,63 @@ export function About({ settings: s }: { settings: Settings }) {
       ?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
       [next]?.focus({ preventScroll: true });
   }
+  const ActiveIcon = tabs.find((tab) => tab.id === active)!.icon;
   return (
-    <>
-      <div className="folio-page-title">
-        <div>
-          <span className="folio-eyebrow">المعلم وراء الممارسة</span>
+    <div className="educator-about">
+      <header className="educator-cover">
+        <div className="educator-heading">
           <h1>عن المعلم</h1>
+          <p>{s.teacher.name}</p>
         </div>
-      </div>
-      <section className="folio-about-cover">
-        <span className="about-monogram" aria-hidden="true">
-          ب ع
-        </span>
-        <div>
-          <h2>{s.teacher.name}</h2>
-          <p>
-            معلم {s.teacher.subject} · {s.teacher.school}
-          </p>
+        <div className="educator-identity">
+          <span className="educator-avatar" aria-hidden="true">
+            <GraduationCap size={32} strokeWidth={1.5} />
+          </span>
+          <div>
+            <strong>معلم {s.teacher.subject}</strong>
+            <span>{s.teacher.school}</span>
+          </div>
         </div>
-        <span className="about-cover-detail" aria-hidden="true">
-          <BookOpen size={76} strokeWidth={0.8} />
-        </span>
-      </section>
-      <div className="about-tabs-scroll">
-        <div className="about-tabs" role="tablist" aria-label="عن المعلم" ref={track}>
-          <span
-            className="about-tab-marker"
-            aria-hidden="true"
-            style={{ width: marker.width, transform: `translateX(${marker.left}px)` }}
-          />
-          {tabs.map((tab, i) => (
-            <button
-              key={tab.id}
-              id={`about-tab-${tab.id}`}
-              role="tab"
-              aria-selected={active === tab.id}
-              aria-controls={active === tab.id ? `about-panel-${tab.id}` : undefined}
-              tabIndex={active === tab.id ? 0 : -1}
-              onClick={() => select(tab.id)}
-              onKeyDown={(e) => keyboard(e, i)}
+      </header>
+      <div className="educator-workspace">
+        <aside className="educator-navigation">
+          <div className="educator-nav-label">أقسام التعريف</div>
+          <div className="educator-tabs-scroll">
+            <div
+              className="educator-tabs"
+              role="tablist"
+              aria-label="عن المعلم"
+              aria-orientation={vertical ? "vertical" : "horizontal"}
+              ref={track}
             >
-              <tab.icon size={19} strokeWidth={1.6} />
-              <span>{tab.label}</span>
+              {tabs.map((tab, i) => (
+                <button
+                  key={tab.id}
+                  id={`about-tab-${tab.id}`}
+                  role="tab"
+                  aria-selected={active === tab.id}
+                  aria-controls={active === tab.id ? `about-panel-${tab.id}` : undefined}
+                  tabIndex={active === tab.id ? 0 : -1}
+                  onClick={() => select(tab.id)}
+                  onKeyDown={(e) => keyboard(e, i)}
+                >
+                  <span className="educator-tab-icon">
+                    <tab.icon size={19} strokeWidth={1.6} />
+                  </span>
+                  <span>{tab.label}</span>
+                  <ArrowLeft className="educator-tab-arrow" size={16} aria-hidden="true" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </aside>
+        <div className="educator-reading">
+          <div className="educator-reading-tools">
+            <span>{String(tabs.findIndex((t) => t.id === active) + 1).padStart(2, "0")} / 06</span>
+            <button onClick={() => window.print()}>
+              <Printer size={16} /> طباعة القسم
             </button>
-          ))}
-        </div>
-      </div>
-      <div className="about-panel-shell" style={{ height }}>
-        <div ref={content}>
+          </div>
           <section
             className="about-panel"
             key={active}
@@ -163,15 +185,17 @@ export function About({ settings: s }: { settings: Settings }) {
             aria-labelledby={`about-tab-${active}`}
             tabIndex={0}
           >
-            <div className="about-panel-heading">
-              <span>{String(tabs.findIndex((t) => t.id === active) + 1).padStart(2, "0")}</span>
+            <div className="educator-panel-heading">
+              <span className="educator-panel-icon" aria-hidden="true">
+                <ActiveIcon size={24} strokeWidth={1.5} />
+              </span>
               <h2>{tabs.find((t) => t.id === active)!.label}</h2>
             </div>
             {active === "introduction" && (
               <>
                 <Paragraphs text={data.introduction} />
                 <blockquote className="about-intro-quote">{s.teacher.bio}</blockquote>
-                <div className="about-intro-sign">
+                <div className="educator-author">
                   {s.teacher.name}
                   <span>معلم {s.teacher.subject}</span>
                 </div>
@@ -216,7 +240,7 @@ export function About({ settings: s }: { settings: Settings }) {
             {(active === "ethics" || active === "policy") && (
               <>
                 <p className="about-summary-label">ملخص تعريفي بصياغة مبسطة</p>
-                <Paragraphs text={data[active]} />
+                <DocumentText text={data[active]} kind={active} />
                 <aside className="about-source">
                   <FileText size={22} />
                   <div>
@@ -260,6 +284,6 @@ export function About({ settings: s }: { settings: Settings }) {
           </section>
         </div>
       </div>
-    </>
+    </div>
   );
 }
