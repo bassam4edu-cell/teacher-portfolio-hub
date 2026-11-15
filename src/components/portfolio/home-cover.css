@@ -680,7 +680,7 @@
   position: relative;
 }
 .folio[data-view="home"] .hero-title-art::after {
-  content: "";
+  content: none;
   position: absolute;
   top: 13%;
   right: 35%;

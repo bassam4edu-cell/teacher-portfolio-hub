@@ -274,10 +274,10 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
               </p>
               <div className="hero-title-art">
                 <img
-                  src="/brand/portfolio-title-art.png"
+                  src="/brand/portfolio-calligraphy.png"
                   alt="ملف الإنجاز المهني والتعليمي"
-                  width="2172"
-                  height="724"
+                  width="1534"
+                  height="1025"
                   fetchPriority="high"
                 />
               </div>
