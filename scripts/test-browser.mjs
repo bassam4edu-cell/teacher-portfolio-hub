@@ -130,14 +130,10 @@ ok(
     JSON.stringify(Array.from({ length: 11 }, (_, i) => String(i + 1).padStart(2, "0"))),
   "Home criteria stay in numeric order despite reports on criterion four",
 );
-await p.getByRole("button", { name: "المبادرات التقنية", exact: true }).click();
-await p.waitForFunction(() => document.querySelectorAll(".fc-number").length === 0);
 ok(
-  await p.getByText("لم تُضف شواهد منشورة ضمن هذا التصنيف بعد.", { exact: true }).isVisible(),
-  "Technology filter shows a truthful empty state for fixture without technology reports",
+  (await p.locator(".reference-filters,.experience-search").count()) === 0,
+  "Home criteria have no report search or filters",
 );
-await p.getByRole("button", { name: "جميع المعايير", exact: true }).click();
-await p.waitForFunction(() => document.querySelectorAll(".fc-number").length === 11);
 await p.locator(".folio-criterion").filter({ hasText: s.criteria[3].name }).click();
 await p.locator(".criterion-page").waitFor();
 ok(
@@ -170,6 +166,10 @@ ok(
   "Skip link focuses content without replacing the current route",
 );
 ok((await p.locator(".folio-criterion").count()) === 11, "All eleven elements are visible");
+ok(
+  (await p.locator(".reference-filters,.experience-search,input[type=search]").count()) === 0,
+  "Criteria page has no search or filter controls",
+);
 ok(
   JSON.stringify(await p.locator(".fc-number").allTextContents()) ===
     JSON.stringify(Array.from({ length: 11 }, (_, i) => String(i + 1).padStart(2, "0"))),

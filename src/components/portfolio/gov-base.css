@@ -4747,41 +4747,6 @@
     text-decoration: underline;
     display: inline-flex;
   }
-  .folio .experience-search {
-    margin-block: 24px 32px;
-  }
-  .folio .experience-search label {
-    background: #f3f5f1;
-    border: 1px solid #dce1dc;
-    border-radius: 8px;
-    align-items: center;
-    gap: 14px;
-    padding: 16px 20px;
-    display: flex;
-  }
-  .folio .experience-search input {
-    color: #284850;
-    background: 0 0;
-    border: 0;
-    flex: 1;
-    min-width: 0;
-    padding: 8px;
-    font-size: 16px;
-  }
-  .folio .search-label {
-    font-weight: 700;
-  }
-  .folio .search-results {
-    padding: 16px 0;
-  }
-  .folio .search-results button {
-    text-align: start;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-top: 8px;
-    display: flex;
-  }
   .folio .reading-top {
     bottom: 24px;
     z-index: 35;
@@ -4852,9 +4817,6 @@
     display: flex;
   }
   @media (width<=640px) {
-    .folio .search-label {
-      display: none;
-    }
     .folio .gallery-stage {
       height: 57dvh;
     }
@@ -4885,17 +4847,6 @@
   }
   .folio .folio-main {
     view-transition-name: portfolio-reading;
-  }
-  .folio .experience-search label {
-    flex-direction: row;
-  }
-  .folio .experience-search input {
-    flex: 1;
-    width: 100%;
-  }
-  .folio .experience-search input::placeholder {
-    color: #566b6e;
-    opacity: 1;
   }
   .folio .courses-order-bar {
     color: #485e62;
@@ -5147,28 +5098,6 @@
     color: var(--folio-slate, var(--gov-navy));
     font-family: var(--gov-font);
   }
-  .folio .reference-filters {
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-block: 22px;
-    display: flex;
-  }
-  .folio .reference-filters button {
-    border: 1px solid var(--folio-sand, var(--gov-line));
-    color: var(--folio-body, #625f58);
-    background: 0 0;
-    border-radius: 999px;
-    padding: 9px 18px;
-    font-size: 13px;
-    transition:
-      background 0.25s,
-      color 0.25s;
-  }
-  .folio .reference-filters button[aria-pressed="true"] {
-    background: var(--folio-slate, var(--gov-navy));
-    color: #fff;
-    border-color: var(--folio-slate, var(--gov-navy));
-  }
   .folio .reference-criteria,
   #home-performance .reference-criteria {
     grid-template-columns: 1fr;
@@ -5394,13 +5323,6 @@
     }
     .folio .hero-record dl {
       gap: 14px 24px;
-    }
-    .folio .reference-filters {
-      gap: 6px;
-    }
-    .folio .reference-filters button {
-      padding: 8px 12px;
-      font-size: 12px;
     }
     .folio .reference-criteria .reference-card,
     #home-performance .reference-criteria .reference-card {
@@ -5928,17 +5850,6 @@
     color: #086855;
     background: #f0f8f7;
     border-color: #c6e3dc;
-  }
-  .folio:not([data-view="report"]) .reference-filters button {
-    color: #344f5d;
-    background: #fff;
-    border-color: #d9e6e8;
-    min-height: 44px;
-  }
-  .folio:not([data-view="report"]) .reference-filters button[aria-pressed="true"] {
-    background: var(--gov-navy);
-    border-color: var(--gov-navy);
-    color: #fff;
   }
   .folio:not([data-view="report"]) .fc-meta {
     color: #526a76;

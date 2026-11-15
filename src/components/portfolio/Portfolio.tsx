@@ -38,7 +38,7 @@ import { GovMotion } from "./GovMotion";
 import { PortfolioOverview } from "./PortfolioOverview";
 import { ReferenceCriteria, VerificationZone } from "./ReferenceIdentity";
 import { ReportShare } from "./ReportShare";
-import { ReadingControls, ReportSearch } from "./InteractiveExperience";
+import { ReadingControls } from "./InteractiveExperience";
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <section className={`folio-card ${className}`}>{children}</section>;
 }
@@ -423,7 +423,6 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
         <PageTitle eyebrow="شواهد الممارسة المهنية" title="عناصر الأداء الوظيفي">
           كل تقرير تحت العنصر الذي يوثّقه، مع صوره ونسخة للطباعة.
         </PageTitle>
-        <ReportSearch reports={reports} onOpen={(p) => go("criteria", p.criterion, p.id)} />
         <ReferenceCriteria
           settings={settings}
           reports={reports}

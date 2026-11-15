@@ -34,12 +34,6 @@ export function AcademicIcon({ index }: { index: number }) {
     </svg>
   );
 }
-const filters = [
-  ["all", "جميع المعايير"],
-  ["teaching", "الشواهد التعليمية"],
-  ["technology", "المبادرات التقنية"],
-  ["english", "English Teaching Artifacts"],
-] as const;
 export function ReferenceCriteria({
   settings,
   reports,
@@ -51,23 +45,8 @@ export function ReferenceCriteria({
   onOpen: (id: number) => void;
   compact?: boolean;
 }) {
-  const [filter, setFilter] = useState("all");
   const root = useRef<HTMLDivElement>(null);
-  const visible = [...settings.criteria]
-    .sort((a, b) => a.id - b.id)
-    .filter(
-      (c) =>
-        filter === "all" ||
-        reports.some(
-          (p) =>
-            p.criterion === c.id &&
-            (filter === "technology"
-              ? c.id === 7
-              : filter === "teaching"
-                ? c.id !== 7
-                : /الإنجليز|الانجليز|English/i.test(p.title + " " + p.report.description)),
-        ),
-    );
+  const visible = [...settings.criteria].sort((a, b) => a.id - b.id);
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) =>
@@ -81,16 +60,9 @@ export function ReferenceCriteria({
     );
     root.current?.querySelectorAll(".folio-criterion").forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, [filter]);
+  }, []);
   return (
     <>
-      <div className="reference-filters" aria-label="تصفية عناصر الأداء">
-        {filters.map(([id, label]) => (
-          <button key={id} aria-pressed={filter === id} onClick={() => setFilter(id)}>
-            {label}
-          </button>
-        ))}
-      </div>
       <div className="folio-criteria reference-criteria" ref={root}>
         {visible.map((c, i) => {
           const count = reports.filter((p) => p.criterion === c.id).length;
@@ -124,7 +96,7 @@ export function ReferenceCriteria({
           );
         })}
       </div>
-      {!visible.length && <p className="folio-empty">لم تُضف شواهد منشورة ضمن هذا التصنيف بعد.</p>}
+      {!visible.length && <p className="folio-empty">لم تُضف عناصر الأداء بعد.</p>}
     </>
   );
 }
