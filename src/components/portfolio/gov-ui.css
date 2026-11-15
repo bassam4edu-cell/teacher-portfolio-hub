@@ -887,3 +887,51 @@
 .folio .criterion-page :is(.frc-meta svg, .frc-count svg, .frc-date svg) {
   color: var(--gov-link);
 }
+/* Requested white title artwork is limited to the home cover. */
+.folio[data-view="home"] .hero-title-art {
+  width: min(100%, 510px);
+  margin: 18px auto 26px;
+  line-height: 0;
+}
+.folio[data-view="home"] .hero-title-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: brightness(0) invert(1);
+  object-fit: contain;
+  animation: hero-title-appear 350ms var(--gov-ease) both;
+}
+.folio[data-view="home"] .folio-hero h1 {
+  font-size: clamp(27px, 3.3vw, 39px);
+  margin: 0 0 12px;
+}
+@keyframes hero-title-appear {
+  from {
+    opacity: 0.75;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 600px) {
+  .folio[data-view="home"] .hero-title-art {
+    width: 100%;
+    margin: 20px 0 24px;
+  }
+  .folio[data-view="home"] .folio-hero h1 {
+    font-size: 28px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .folio[data-view="home"] .hero-title-art img {
+    animation: none;
+  }
+}
+@media print {
+  .folio[data-view="home"] .hero-title-art img {
+    filter: brightness(0);
+    animation: none;
+  }
+}

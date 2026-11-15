@@ -238,7 +238,15 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
               <br />
               {settings.teacher.administration}
             </p>
-            <p className="gov-document-title">ملف الإنجاز المهني والتعليمي</p>
+            <div className="hero-title-art">
+              <img
+                src="/brand/portfolio-title-art.png"
+                alt="ملف الإنجاز المهني والتعليمي"
+                width="2172"
+                height="724"
+                fetchPriority="high"
+              />
+            </div>
             <h1>{settings.teacher.name}</h1>
             <p className="reference-specialty">معلم اللغــــة الإنجليزيــــة — المرحلة الثانوية</p>
             <p className="hero-document-title">ملف الإنجاز المهني</p>

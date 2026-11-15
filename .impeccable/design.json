@@ -40,6 +40,14 @@
       "sections": 6,
       "motion": "250ms; prefers-reduced-motion static",
       "content": "Existing saved/default content and routes retained"
+    },
+    "homeTitle": {
+      "asset": "public/brand/portfolio-title-art.png",
+      "display": "white alpha title above teacher name",
+      "desktopWidth": "510px",
+      "mobileWidth": "100% contained",
+      "animation": "350ms subtle reveal; reduced-motion static",
+      "scope": "Home cover only; no manuscript fonts or page theme"
     }
   },
   "narrative": {

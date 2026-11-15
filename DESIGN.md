@@ -23,3 +23,8 @@ Data, API, record versions, permissions and report templates remain unchanged. K
 ## About section — reading workspace
 
 The six About routes now use an independent `educator-about` workspace, not the previous cover/card dashboard. A 268px right rail is sticky on desktop; below 1000px the same six tabs scroll horizontally. Active tab uses navy with white text and a cyan line icon. Reading surface: white, 1px semantic border, 16px radius, 36px desktop / 18px mobile padding; 70ch text measure. Vision/mission uses navy and pale green, values use dotted rows, policy/ethics numbered paragraphs, resume a grouped career timeline. Existing content and source links are preserved. Printing hides navigation and prints only the selected section. See docs/ABOUT-REDESIGN.md.
+
+
+## Home title artwork
+
+Owner-requested two-line Arabic wordmark replaces the small home document-title phrase. `public/brand/portfolio-title-art.png` is an alpha image displayed white through a CSS filter, centered above the existing teacher name, at up to 510px desktop width and contained on mobile. Its accessible alternative retains the original title wording. A 350ms subtle entrance respects reduced motion; print renders it dark. This is confined to the home cover and does not restore the old manuscript theme or fonts. Asset provenance is stored alongside the PNG.
