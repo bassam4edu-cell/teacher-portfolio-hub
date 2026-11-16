@@ -19,12 +19,10 @@ export function ClassroomGallery({
   reports,
   settings,
   onOpen,
-  onAll,
 }: {
   reports: Publication[];
   settings: Settings;
   onOpen: (report: Publication) => void;
-  onAll: () => void;
 }) {
   // An edited report keeps its place: publication updated_at is deliberately excluded.
   const ordered = useMemo(
@@ -120,18 +118,9 @@ export function ClassroomGallery({
       }}
     >
       <header className="classroom-heading">
-        <div className="classroom-heading-copy">
-          <span className="classroom-heading-icon" aria-hidden="true">
-            <Images size={25} />
-          </span>
-          <div>
-            <h2 id="classroom-title">من داخل الصف</h2>
-            <p>ممارسات تعليمية وشواهد من بيئة التعلم</p>
-          </div>
-        </div>
-        <button className="classroom-all" onClick={onAll}>
-          جميع التقارير <ArrowUpLeft size={17} />
-        </button>
+        <h2 id="classroom-title">
+          من داخل <span className="classroom-title-word">الصف</span>
+        </h2>
       </header>
       <div className="classroom-window" aria-roledescription="معرض تقارير">
         <div className="classroom-viewport" ref={viewport}>

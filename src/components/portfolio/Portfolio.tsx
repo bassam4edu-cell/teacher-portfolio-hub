@@ -349,7 +349,6 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
               reports={reports}
               settings={settings}
               onOpen={(p) => go("criteria", p.criterion, p.id)}
-              onAll={() => go("criteria")}
             />
           )}
           <div className="home-utilities">

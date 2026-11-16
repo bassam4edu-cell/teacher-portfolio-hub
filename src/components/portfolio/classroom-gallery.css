@@ -3,55 +3,50 @@
   color: #15445a;
 }
 .classroom-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 20px;
-}
-.classroom-heading-copy {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-width: 0;
-}
-.classroom-heading-icon {
-  display: grid;
-  place-items: center;
-  flex: 0 0 52px;
-  height: 52px;
-  background: #0da9a61a;
-  border-radius: 50%;
-  color: #15445a;
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+  max-width: calc(100% - 48px);
+  margin: 0 24px -24px;
 }
 .classroom-heading h2 {
+  position: relative;
   margin: 0;
-  font-size: 27px;
-  font-weight: 700;
-  line-height: 1.6;
-  color: #15445a;
-}
-.classroom-heading p {
-  margin: 4px 0 0;
-  color: #526976;
-  font-size: 14px;
-  line-height: 1.8;
-}
-.classroom-all {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-  padding: 10px 14px;
-  border: 1px solid #ccd9de;
-  border-radius: 8px;
+  padding: 12px 24px 18px;
+  border: 1px solid #d7e1e5;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
   background: #fff;
+  font-size: 29px;
+  font-weight: 700;
+  line-height: 1.5;
   color: #15445a;
-  font: inherit;
-  font-size: 13px;
-  cursor: pointer;
+}
+.classroom-heading h2::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: -1px;
+  top: 17px;
+  bottom: 16px;
+  width: 3px;
+  border-radius: 2px;
+  background: #c1b489;
+}
+.classroom-title-word {
+  position: relative;
+  display: inline-block;
+}
+.classroom-title-word::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -4px;
+  height: 3px;
+  border-radius: 2px;
+  background: #07a869;
 }
 .classroom-window {
+  padding-block-start: 32px;
   background: #fff;
   border: 1px solid #d7e1e5;
   border-radius: 20px;
@@ -248,18 +243,11 @@
     margin-block: 30px;
   }
   .classroom-heading {
-    flex-wrap: wrap;
-    gap: 12px;
+    margin-inline: 16px;
+    max-width: calc(100% - 32px);
   }
   .classroom-heading h2 {
     font-size: 23px;
-  }
-  .classroom-heading p {
-    font-size: 12px;
-  }
-  .classroom-all {
-    margin-inline-start: 66px;
-    padding: 7px 11px;
   }
   .classroom-slide {
     grid-template-columns: minmax(0, 1fr);
@@ -309,8 +297,7 @@
   }
 }
 @media print {
-  .classroom-controls,
-  .classroom-all {
+  .classroom-controls {
     display: none;
   }
   .classroom-track {
