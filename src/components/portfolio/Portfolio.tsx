@@ -38,6 +38,7 @@ import { PortfolioOverview } from "./PortfolioOverview";
 import { ReferenceCriteria, VerificationZone } from "./ReferenceIdentity";
 import { ReportShare } from "./ReportShare";
 import { ReadingControls } from "./InteractiveExperience";
+import { ClassroomGallery } from "./ClassroomGallery";
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <section className={`folio-card ${className}`}>{children}</section>;
 }
@@ -344,20 +345,12 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
             />
           </section>
           {reports.length > 0 && (
-            <>
-              <Section title="من داخل الصف" subtitle="أحدث التقارير والصور الصفية." />
-              <div className="folio-report-grid home-practices">
-                {reports.slice(0, 3).map((p) => (
-                  <ReportCard
-                    key={p.id}
-                    publication={p}
-                    settings={settings}
-                    criterionName={settings.criteria.find((c) => c.id === p.criterion)?.name ?? ""}
-                    onOpen={() => go("criteria", p.criterion, p.id)}
-                  />
-                ))}
-              </div>
-            </>
+            <ClassroomGallery
+              reports={reports}
+              settings={settings}
+              onOpen={(p) => go("criteria", p.criterion, p.id)}
+              onAll={() => go("criteria")}
+            />
           )}
           <div className="home-utilities">
             <section className="folio-schedule-teaser">
