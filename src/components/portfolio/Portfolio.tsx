@@ -224,6 +224,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
     );
   }
   const current = settings.periods.find((p) => p.id === settings.current_period);
+  const periodLines = current?.name.split(/\s*[—–]\s*|\s+-\s+/).filter(Boolean) ?? [];
   const reports = publications.filter((p) => p.period_id === settings.current_period);
   const selected = publications.find((p) => p.id === reportId);
   const chosen = settings.criteria.find((c) => c.id === criterion);
@@ -260,17 +261,10 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
           <div className="home-cover-inner">
             <div className="hero-grid-art" aria-hidden="true" />
             <div className="folio-hero-copy">
-              <img
-                className="hero-logo"
-                src="/brand/moe-white.svg"
-                alt="وزارة التعليم"
-                width="130"
-                height="70"
-              />
               <p className="reference-institution">
-                المملكة العربية السعودية · وزارة التعليم
-                <br />
-                {settings.teacher.administration}
+                <span>المملكة العربية السعودية</span>
+                <span>وزارة التعليم</span>
+                <span>{settings.teacher.administration}</span>
               </p>
               <div className="hero-title-art">
                 <img
@@ -281,7 +275,6 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
                   fetchPriority="high"
                 />
               </div>
-              <h1>{settings.teacher.name}</h1>
               <p className="reference-specialty">
                 معلم اللغــــة الإنجليزيــــة — المرحلة الثانوية
               </p>
@@ -309,12 +302,11 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
               </div>
             </div>
             <aside className="hero-record" aria-label="بيانات الملف">
-              <div className="teacher-card-emblem" aria-hidden="true">
-                <BookOpen size={48} strokeWidth={1.5} />
+              <div className="teacher-card-emblem">
+                <img src="/brand/moe-color.png" alt="شعار وزارة التعليم" width="84" height="68" />
               </div>
               <header className="teacher-card-heading">
-                <h2>بطاقة المعلم</h2>
-                <p>معلومات عامة</p>
+                <h1>{settings.teacher.name}</h1>
               </header>
               <dl>
                 <div>
@@ -333,7 +325,11 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
                 </div>
                 <div>
                   <dt>الفترة الدراسية</dt>
-                  <dd>{current?.name}</dd>
+                  <dd className="teacher-period">
+                    {periodLines.map((line, index) => (
+                      <span key={index}>{line}</span>
+                    ))}
+                  </dd>
                 </div>
               </dl>
             </aside>

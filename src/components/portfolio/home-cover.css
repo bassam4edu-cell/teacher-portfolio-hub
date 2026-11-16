@@ -126,6 +126,9 @@
   color: #e3edf0;
   margin: 0 0 22px;
 }
+.folio[data-view="home"] .reference-institution span {
+  display: block;
+}
 .folio[data-view="home"] .home-reference-cover .hero-title-art {
   width: min(100%, 520px);
   margin: 0 auto 20px;
@@ -216,11 +219,18 @@
   place-items: center;
   border: 7px solid white;
   border-radius: 50%;
-  background: #dfeee6;
+  background: #fff;
   color: #07584e;
   box-shadow:
     0 8px 16px #173e3e2b,
     inset 0 0 0 2px #f5faf7;
+}
+.folio[data-view="home"] .teacher-card-emblem img {
+  width: 84px;
+  height: 68px;
+  max-width: 86%;
+  max-height: 82%;
+  object-fit: contain;
 }
 .folio[data-view="home"] .teacher-card-heading {
   position: relative;
@@ -228,7 +238,7 @@
   padding-bottom: 16px;
   margin-bottom: 0;
 }
-.folio[data-view="home"] .teacher-card-heading h2 {
+.folio[data-view="home"] .home-reference-cover .teacher-card-heading h1 {
   font-size: 25px;
   line-height: 1.5;
   color: #102a32;
@@ -268,13 +278,20 @@
   margin: 0;
 }
 .folio[data-view="home"] .home-reference-cover .hero-record dl > div:last-child dd {
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.8;
   font-weight: 400;
-  background: #e1eee6;
-  border-radius: 8px;
-  padding: 8px 12px;
+  background: transparent;
+  padding: 0;
   color: #183c37;
+}
+.folio[data-view="home"] .teacher-period span {
+  display: block;
+}
+.folio[data-view="home"] .teacher-period span + span {
+  margin-block-start: 2px;
+  color: #53615d;
+  font-size: 0.9em;
 }
 .folio[data-view="home"] .teacher-row-icon {
   position: absolute;
@@ -593,8 +610,8 @@
   .folio[data-view="home"] .teacher-card-heading {
     padding-bottom: 10px;
   }
-  .folio[data-view="home"] .teacher-card-heading h2 {
-    font-size: 18px;
+  .folio[data-view="home"] .home-reference-cover .teacher-card-heading h1 {
+    font-size: 21px;
   }
   .folio[data-view="home"] .teacher-card-heading p {
     font-size: 10px;
@@ -615,9 +632,9 @@
     padding: 10px 0 0;
   }
   .folio[data-view="home"] .home-reference-cover .hero-record dl > div:last-child dd {
-    font-size: 10px;
+    font-size: 13px;
     line-height: 1.7;
-    padding: 6px 9px;
+    padding: 0;
   }
   .folio[data-view="home"] .teacher-row-icon {
     width: 28px;
