@@ -281,7 +281,7 @@
   line-height: 1.9;
   margin: 18px 0 0;
 }
-/* Home keeps its light canvas; the standalone index retains its navy surface. */
+/* Home keeps its light canvas; standalone surface rules are scoped below. */
 .folio[data-view="home"] .criteria-showcase {
   background: transparent;
 }
@@ -447,37 +447,37 @@
   pointer-events: none;
 }
 .folio[data-view="criteria"]:has(.criteria-showcase) {
-  background: #0b3044;
+  background: #f8fafb;
 }
 .folio[data-view="criteria"]:has(.criteria-showcase) .folio-header {
-  background: #123f53;
-  border-color: #285265;
-  color: #fff;
+  background: #fff;
+  border-color: #d7e1e5;
+  color: #15445a;
 }
 .folio[data-view="criteria"]:has(.criteria-showcase) .folio-brand {
-  color: white;
+  color: #15445a;
 }
 .folio[data-view="criteria"]:has(.criteria-showcase) .folio-brand-icon {
   display: none;
 }
 .folio[data-view="criteria"]:has(.criteria-showcase) .folio-brand small {
-  color: #d2e1e8;
+  color: #526976;
 }
 .folio[data-view="criteria"]:has(.criteria-showcase) .folio-header nav a {
-  color: #fff;
+  color: #15445a;
   background: none;
 }
 .folio[data-view="criteria"]:has(.criteria-showcase) .folio-header nav a.active {
-  color: #84e1b6;
-  background: #103749;
+  color: #006b49;
+  background: #e8f4ee;
 }
 .folio[data-view="criteria"]:has(.criteria-showcase) .folio-header nav.is-open {
-  background: #123f53;
+  background: #fff;
 }
 .folio[data-view="criteria"]:has(.criteria-showcase) .folio-menu {
-  color: #fff;
-  background: #ffffff0d;
-  border-color: #ffffff44;
+  color: #15445a;
+  background: #fff;
+  border-color: #ccd9de;
 }
 .folio[data-view="criteria"]:has(.criteria-showcase)
   .folio-main
@@ -490,16 +490,17 @@
     .folio-reference,
     .folio-reference a
   ) {
-  color: #e7f0f4;
+  color: #526976;
 }
 .folio[data-view="criteria"]:has(.criteria-showcase) .folio-page-title {
   padding-bottom: 16px;
   margin-bottom: 0;
-  border-color: #355665;
+  border-color: #d7e1e5;
 }
 .folio[data-view="criteria"]:has(.criteria-showcase) .criteria-showcase {
   margin-top: 0;
   padding: 8px 0 0;
+  background: transparent;
 }
 .folio[data-view="criteria"]:has(.criteria-showcase) .gov-overview {
   margin-top: 24px;
@@ -509,6 +510,34 @@
   border: 1px solid #dfe7e9;
   border-radius: 12px;
   box-shadow: 0 4px 12px #001c2c22;
+}
+.folio[data-view="criteria"]:has(.criteria-showcase) .criteria-showcase::before {
+  display: none;
+}
+.folio[data-view="criteria"]:has(.criteria-showcase) .folio-main .folio-page-title h1 {
+  color: #15445a;
+}
+.folio[data-view="criteria"]:has(.criteria-showcase) .criteria-grid-filters button {
+  color: #526976;
+}
+.folio[data-view="criteria"]:has(.criteria-showcase)
+  .criteria-grid-filters
+  button[aria-pressed="true"] {
+  background: #e8f4ee;
+  color: #006b49;
+}
+.folio[data-view="criteria"]:has(.criteria-showcase)
+  .criteria-grid-filters
+  button[aria-pressed="true"]::after {
+  background: #07a869;
+}
+.folio[data-view="criteria"]:has(.criteria-showcase) .criteria-grid-filters button:hover {
+  background: #edf3f5;
+  color: #15445a;
+}
+.folio[data-view="criteria"]:has(.criteria-showcase)
+  :is(.criteria-completion-note, .criteria-grid-empty) {
+  color: #526976;
 }
 @media (min-width: 901px) {
   .folio[data-view="criteria"]:has(.criteria-showcase) .gov-overview {
