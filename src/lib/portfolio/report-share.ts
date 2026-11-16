@@ -1,4 +1,5 @@
 import reportCss from "@/components/portfolio/simple-report.css?raw";
+import { rasterizeReportImages, rasterizeReportNarrative } from "./report-raster";
 export type ReportFormat = "png" | "pdf";
 function asDataUrl(blob: Blob) {
   return new Promise<string>((resolve, reject) => {
@@ -107,6 +108,11 @@ export async function createReportFiles(
         item.prepend(bullet);
       }
     }
+    await rasterizeReportImages(doc, clone);
+    rasterizeReportNarrative(doc, clone);
+    await Promise.all(
+      [...clone.querySelectorAll<HTMLImageElement>("img")].map((img) => img.decode()),
+    );
     const pages = [...clone.querySelectorAll<HTMLElement>(".simple-report")];
     if (!pages.length) throw new Error("لا توجد صفحات للتصدير");
     const { default: html2canvas } = await import("html2canvas");

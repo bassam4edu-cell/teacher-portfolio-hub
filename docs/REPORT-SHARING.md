@@ -8,9 +8,14 @@ Native `canShare({files})` determines whether to offer device sharing. Download 
 
 Validated with a real two-photo report: PNG 1588×2246; PDF parsed as one page; a three-page report parsed as three PDF pages. Mocked Web Share received File objects and no URL. Also checked mobile dialog, unsupported download fallback, and the existing public/courses browser contracts. Actual WhatsApp/Telegram app delivery requires a compatible user device and was not performed by the tests.
 
-
 ## Safari / RTL rendering repair
 
 The isolated document viewport now uses LTR at scroll origin zero; each report retains RTL. This avoids a foreignObject/page-origin shift cropping the right side on Safari. html2canvas renders directly to Canvas, all original and cloned images must decode with nonzero dimensions, and oversized horizontal layouts reject export. Gradient box borders are flattened into local bitmap backgrounds because layered background-clip is not consistently supported by Canvas renderers. Small SVG logos get high-resolution intrinsic dimensions. These changes apply to the temporary export document only, leaving the live and print templates unchanged.
 
 `npm run test:report-share` checks both edge markers, embedded image pixels, two PNG files, two PDF pages and rejection of a broken image. `TEST_BROWSER=webkit` runs the same checks with WebKit; an optional `WEBKIT_EXECUTABLE_PATH` can select a prepared local engine. Actual affected training report also exported in Chromium and mobile WebKit. Native WhatsApp/Telegram delivery on a physical iPhone remains device-dependent.
+
+## Native Arabic and image preparation
+
+The temporary export clone now prepares media through `report-raster.ts` before html2canvas runs. SVG logos are decoded and painted by the browser into 2x PNGs, preserving their masks on WebKit. Photographs and document previews are painted into their existing `object-fit: contain` rectangles, so the Canvas renderer cannot stretch portrait pages. Narrative paragraphs and objective items are painted one complete line at a time with native Canvas Arabic shaping and bidi. DOM text ranges measure the existing line breaks; letters are neither reversed nor painted separately. The displayed report, original text, and attachment bytes remain unchanged.
+
+`npm run test:report-native-raster` compares shared PNG pixels against native Arabic text, a fixed Chromium-rendered ministry-logo reference, and the expected letterboxing of a portrait image. It supports the same `TEST_BASE_URL`, `TEST_BROWSER=webkit`, and `WEBKIT_EXECUTABLE_PATH` options as the sharing test. The affected remedial report was also exported as PNG and one-page PDF in both engines at an iPhone viewport; mocked Web Share received actual PNG/PDF Files, no link, and temporary iframes were removed. Native delivery inside WhatsApp on a physical iPhone has not been tested.

@@ -19,7 +19,8 @@
     "test:report-share": "node scripts/test-report-sharing.mjs",
     "test:portfolio-print": "node scripts/test-portfolio-print.mjs",
     "test:print-progress": "node scripts/test-print-progress.mjs",
-    "test:classroom-gallery": "node scripts/test-classroom-gallery.mjs"
+    "test:classroom-gallery": "node scripts/test-classroom-gallery.mjs",
+    "test:report-native-raster": "node scripts/test-report-native-raster.mjs"
   },
   "overrides": {
     "rolldown": "1.2.1"
