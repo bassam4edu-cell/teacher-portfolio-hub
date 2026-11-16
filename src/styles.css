@@ -12,6 +12,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Hide the hosting editor badge across public and management pages. */
+html body #lovable-badge {
+  display: none !important;
+}
+
 /*
  * Design system definition.
  *
