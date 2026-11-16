@@ -836,7 +836,7 @@
 .folio .folio-report-card .frc-actions button:first-child {
   background: var(--gov-green);
   border-color: var(--gov-green);
-  color: #06232f;
+  color: #fff;
 }
 .folio .folio-report-card .frc-actions .frc-pdf {
   background: var(--gov-link);
@@ -941,7 +941,7 @@
 .folio .folio-report-card .frc-actions button:first-child:hover:not(:disabled) {
   background: #07975f;
   border-color: #07975f;
-  color: #06232f;
+  color: #fff;
 }
 .folio .folio-report-card .frc-actions .frc-pdf:hover:not(:disabled) {
   background: var(--gov-navy);
