@@ -17,8 +17,6 @@ import {
   Printer,
   Images,
   ArrowRight,
-  Globe,
-  School,
   Compass,
   CircleCheck,
 } from "lucide-react";
@@ -275,11 +273,16 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
                   fetchPriority="high"
                 />
               </div>
-              <p className="reference-specialty">
-                معلم اللغــــة الإنجليزيــــة — المرحلة الثانوية
-              </p>
               <p className="hero-document-title">ملف الإنجاز المهني</p>
-              <p className="hero-summary">{settings.teacher.bio}</p>
+              <blockquote className="hero-summary hero-quote">
+                <span className="hero-quote-mark" aria-hidden="true">
+                  “
+                </span>
+                <p>{settings.teacher.bio}</p>
+                <span className="hero-quote-mark" aria-hidden="true">
+                  ”
+                </span>
+              </blockquote>
               <div className="hero-actions">
                 <button
                   className="folio-primary hero-cta"
@@ -301,37 +304,27 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
                 </button>
               </div>
             </div>
-            <aside className="hero-record" aria-label="بيانات الملف">
-              <div className="teacher-card-emblem">
-                <img src="/brand/moe-color.png" alt="شعار وزارة التعليم" width="84" height="68" />
-              </div>
-              <header className="teacher-card-heading">
+            <aside className="hero-record teacher-profile-card" aria-label="بيانات المعلم">
+              <img
+                className="teacher-profile-logo"
+                src="/brand/moe-color.png"
+                alt="شعار وزارة التعليم"
+                width="110"
+                height="76"
+              />
+              <header className="teacher-profile-heading">
                 <h1>{settings.teacher.name}</h1>
+                <p>{settings.teacher.subject}</p>
               </header>
-              <dl>
-                <div>
-                  <span className="teacher-row-icon teacher-row-icon-sand" aria-hidden="true">
-                    <Globe size={20} />
+              <div className="teacher-profile-rule" aria-hidden="true" />
+              <p className="teacher-profile-school">{settings.teacher.school}</p>
+              <footer className="teacher-profile-period" aria-label="الفترة الدراسية">
+                {periodLines.map((line, index) => (
+                  <span key={index}>
+                    {index === 0 ? line.replace(/^العام الدراسي\s*/, "") : line}
                   </span>
-                  <dt>التخصص</dt>
-                  <dd>{settings.teacher.subject}</dd>
-                </div>
-                <div>
-                  <span className="teacher-row-icon" aria-hidden="true">
-                    <School size={20} />
-                  </span>
-                  <dt>المدرسة</dt>
-                  <dd>{settings.teacher.school}</dd>
-                </div>
-                <div>
-                  <dt>الفترة الدراسية</dt>
-                  <dd className="teacher-period">
-                    {periodLines.map((line, index) => (
-                      <span key={index}>{line}</span>
-                    ))}
-                  </dd>
-                </div>
-              </dl>
+                ))}
+              </footer>
             </aside>
           </div>
         </section>

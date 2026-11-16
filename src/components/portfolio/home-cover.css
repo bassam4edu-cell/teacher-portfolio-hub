@@ -1,4 +1,4 @@
-/* Owner-pinned reference composition: full-width navy cover and floating teacher card. */
+/* Owner-pinned reference composition: full-width navy cover and teacher identity. */
 .folio[data-view="home"] {
   background: #eef2f5;
 }
@@ -743,5 +743,133 @@
   }
   .folio[data-view="home"] .teacher-row-icon {
     top: 12px;
+  }
+}
+
+/* Centered professional identity card and the owner's unchanged teaching statement. */
+.folio[data-view="home"] .home-reference-cover .hero-summary.hero-quote {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 30px;
+  align-items: start;
+  gap: 10px;
+  margin: 12px auto 0;
+  padding: 0;
+  border: 0;
+  max-width: 62ch;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+}
+.folio[data-view="home"] .home-reference-cover .hero-quote p {
+  margin: 0;
+  color: #fff;
+  font: inherit;
+  line-height: 1.95;
+  text-align: center;
+}
+.folio[data-view="home"] .home-reference-cover .hero-quote-mark {
+  color: #c1b489;
+  font-family: Georgia, serif;
+  font-size: 72px;
+  line-height: 1;
+  user-select: none;
+}
+.folio[data-view="home"] .home-reference-cover .hero-quote-mark:last-child {
+  align-self: end;
+  transform: translateY(22px);
+}
+.folio[data-view="home"] .home-reference-cover .hero-record.teacher-profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  margin: 0;
+  padding: 28px 24px 0;
+  background: #fff;
+  border: 1px solid #d8d5c7;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px #001e2d26;
+  text-align: center;
+}
+.folio[data-view="home"] .home-reference-cover .teacher-profile-card::before {
+  content: none;
+}
+.folio[data-view="home"] .home-reference-cover .teacher-profile-logo {
+  display: block;
+  width: 110px;
+  height: 76px;
+  object-fit: contain;
+  margin: 0 auto 22px;
+}
+.folio[data-view="home"] .home-reference-cover .teacher-profile-heading h1 {
+  margin: 0;
+  color: #15445a;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.folio[data-view="home"] .home-reference-cover .teacher-profile-heading p {
+  margin: 8px 0 0;
+  color: #536775;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.folio[data-view="home"] .home-reference-cover .teacher-profile-rule {
+  width: 38px;
+  height: 2px;
+  flex-shrink: 0;
+  background: #c1b489;
+  margin-block: 20px;
+}
+.folio[data-view="home"] .home-reference-cover .teacher-profile-school {
+  margin: 0 0 28px;
+  color: #15445a;
+  font-size: 17px;
+  line-height: 1.8;
+  font-weight: 500;
+}
+.folio[data-view="home"] .home-reference-cover .teacher-profile-period {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  align-self: stretch;
+  margin-inline: -24px;
+  margin-block-start: auto;
+  padding: 16px 14px;
+  background: #15445a;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.folio[data-view="home"] .home-reference-cover .teacher-profile-period span {
+  white-space: nowrap;
+}
+.folio[data-view="home"] .home-reference-cover .teacher-profile-period span + span::before {
+  content: "·";
+  display: inline-block;
+  color: #c1b489;
+  margin-inline-end: 8px;
+}
+@media (max-width: 900px) {
+  .folio[data-view="home"] .home-reference-cover .hero-record.teacher-profile-card {
+    margin-block-start: 32px;
+  }
+}
+@media (max-width: 600px) {
+  .folio[data-view="home"] .home-reference-cover .hero-summary.hero-quote {
+    grid-template-columns: 22px minmax(0, 1fr) 22px;
+    gap: 5px;
+  }
+  .folio[data-view="home"] .home-reference-cover .hero-quote-mark {
+    font-size: 58px;
+  }
+  .folio[data-view="home"] .home-reference-cover .teacher-profile-heading h1 {
+    font-size: 24px;
+  }
+}
+@media print {
+  .folio[data-view="home"] .home-reference-cover .hero-quote p {
+    color: #15445a;
   }
 }
