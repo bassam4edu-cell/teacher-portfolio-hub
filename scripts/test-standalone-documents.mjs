@@ -1,12 +1,17 @@
 /** Controlled fixtures only; no database writes. Original PDF bytes must survive open/download. */
 import { chromium } from "@playwright/test";
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, rgb } from "pdf-lib";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 import { defaultSettings } from "../src/lib/portfolio/model.ts";
 const pdf = await PDFDocument.create();
-pdf.addPage([842, 595]);
+pdf
+  .addPage([842, 595])
+  .drawRectangle({ x: 50, y: 50, width: 200, height: 200, color: rgb(0, 1, 0) });
+pdf
+  .addPage([842, 595])
+  .drawRectangle({ x: 50, y: 50, width: 200, height: 200, color: rgb(1, 0, 0) });
 const bytes = Buffer.from(await pdf.save());
 const sha = createHash("sha256").update(bytes).digest("hex");
 const settings = structuredClone(defaultSettings);
@@ -21,7 +26,7 @@ const document = {
   mime: "application/pdf",
   sha256: sha,
   size: bytes.length,
-  pages: 1,
+  pages: 2,
 };
 const browser = await chromium.launch({ args: ["--no-sandbox"] });
 const context = await browser.newContext({
@@ -55,6 +60,28 @@ try {
   await page.goto(base + "/#criteria/6");
   const card = page.locator(".criterion-document-card");
   await card.waitFor();
+  const preview = card.locator(".document-file-preview img");
+  await preview.waitFor();
+  await preview.evaluate((img) => img.decode());
+  const pixels = await preview.evaluate((img) => {
+    const canvas = window.document.createElement("canvas");
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let green = 0,
+      red = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i] < 60 && data[i + 1] > 180 && data[i + 2] < 60) green++;
+      if (data[i] > 180 && data[i + 1] < 60 && data[i + 2] < 60) red++;
+    }
+    return { green, red, fit: getComputedStyle(img).objectFit, width: img.naturalWidth };
+  });
+  assert(pixels.green > 1000 && pixels.red === 0, "Preview must show page one, not another page");
+  assert.equal(pixels.fit, "contain");
+  assert(pixels.width > 800);
+
   assert.equal(await page.locator(".folio-report-card,.simple-report").count(), 0);
   assert.equal(await card.locator("h3").innerText(), document.title);
   assert.equal(await page.getByText("لم يُضف تقرير لهذا العنصر بعد", { exact: true }).count(), 0);
@@ -80,6 +107,10 @@ try {
   if (!view.isClosed()) await view.close();
   await page.setViewportSize({ width: 390, height: 844 });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+  assert.equal(
+    await card.locator(".document-file-preview").evaluate((el) => getComputedStyle(el).flexBasis),
+    "100%",
+  );
   corrupt = true;
   await card.getByRole("button", { name: "تنزيل الأصل", exact: true }).click();
   await card.getByRole("alert").waitFor();
@@ -103,7 +134,7 @@ try {
   );
   assert.deepEqual(errors, []);
   console.log(
-    "Standalone documents: original bytes, open, download, separate counts, no activity template, mobile, criterion scoping and corruption rejection passed.",
+    "Standalone documents: page-one preview pixels, contain, mobile preview, original bytes, open, download, separate counts, no activity template, criterion scoping and corruption rejection passed.",
   );
 } finally {
   await browser.close();

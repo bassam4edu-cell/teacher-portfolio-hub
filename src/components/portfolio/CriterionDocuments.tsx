@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Download, FileText, ArrowUpLeft } from "lucide-react";
 import { errorText, publicDocumentFile } from "@/lib/portfolio/api";
 import type { PublicDocument } from "@/lib/portfolio/documents";
+import { publicDocumentPreview } from "@/lib/portfolio/document-preview";
 import "./criterion-documents.css";
 export function CriterionDocuments({ documents }: { documents: PublicDocument[] }) {
   if (!documents.length) return null;
@@ -60,9 +61,7 @@ function DocumentCard({ document: record }: { document: PublicDocument }) {
   }
   return (
     <article className="criterion-document-card" aria-label={record.title}>
-      <span className="document-file-icon" aria-hidden="true">
-        <FileText size={32} strokeWidth={1.5} />
-      </span>
+      <DocumentPreview record={record} disabled={busy} onOpen={() => open(false)} />
       <div className="document-file-copy">
         <span className="document-file-type">شاهد أصلي · PDF</span>
         <h3>{record.title}</h3>
@@ -90,5 +89,66 @@ function DocumentCard({ document: record }: { document: PublicDocument }) {
         </p>
       )}
     </article>
+  );
+}
+
+function DocumentPreview({
+  record,
+  disabled,
+  onOpen,
+}: {
+  record: PublicDocument;
+  disabled: boolean;
+  onOpen: () => void;
+}) {
+  const element = useRef<HTMLButtonElement>(null);
+  const [src, setSrc] = useState("");
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    let active = true;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        publicDocumentPreview(record)
+          .then((url) => {
+            if (active) setSrc(url);
+          })
+          .catch(() => {
+            if (active) setFailed(true);
+          });
+      },
+      { rootMargin: "200px" },
+    );
+    if (element.current) observer.observe(element.current);
+    return () => {
+      active = false;
+      observer.disconnect();
+    };
+  }, [record]);
+  return (
+    <button
+      className="document-file-preview"
+      ref={element}
+      disabled={disabled}
+      onClick={onOpen}
+      aria-label={`فتح معاينة ${record.title}`}
+    >
+      {src ? (
+        <img
+          src={src}
+          alt={`معاينة الصفحة الأولى — ${record.title}`}
+          width="1200"
+          height="850"
+          decoding="async"
+        />
+      ) : (
+        <span className="document-preview-placeholder" role={failed ? undefined : "status"}>
+          <FileText size={32} strokeWidth={1.5} />
+          <span>{failed ? "تعذرت المعاينة؛ يمكنك فتح الملف" : "جارٍ تحميل المعاينة…"}</span>
+        </span>
+      )}
+      <span className="document-preview-caption">معاينة الصفحة الأولى</span>
+    </button>
   );
 }
