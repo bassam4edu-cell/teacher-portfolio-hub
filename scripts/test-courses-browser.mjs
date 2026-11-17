@@ -11,7 +11,12 @@ const browser = await chromium.launch({
   headless: true,
   args: ["--no-sandbox"],
   ...(process.env.PORTFOLIO_TEST_URL
-    ? { proxy: { server: process.env.HTTPS_PROXY ?? process.env.HTTP_PROXY } }
+    ? {
+        proxy: {
+          server: process.env.HTTPS_PROXY ?? process.env.HTTP_PROXY,
+          bypass: "localhost,127.0.0.1",
+        },
+      }
     : {}),
 });
 try {
