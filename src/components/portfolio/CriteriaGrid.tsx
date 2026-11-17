@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import {
   ArrowUpLeft,
   ClipboardCheck,
@@ -73,14 +73,6 @@ export function CriteriaGrid({
   documents?: PublicDocument[];
 }) {
   const [filter, setFilter] = useState<(typeof filters)[number]["id"]>("all");
-  const [hintsOff, setHintsOff] = useState(false);
-  useEffect(() => {
-    const dismiss = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setHintsOff(true);
-    };
-    document.addEventListener("keydown", dismiss);
-    return () => document.removeEventListener("keydown", dismiss);
-  }, []);
   const visible = [...settings.criteria]
     .sort((a, b) => a.id - b.id)
     .filter(
@@ -122,19 +114,8 @@ export function CriteriaGrid({
             ? Math.min(100, Math.round((value.done / value.total) * 100))
             : null;
           return (
-            <div
-              className="criteria-grid-item"
-              key={c.id}
-              data-tone={accents[c.id - 1] ?? "navy"}
-              data-hint-dismissed={hintsOff}
-              onMouseEnter={() => setHintsOff(false)}
-              onFocus={() => setHintsOff(false)}
-            >
-              <button
-                className="criterion-tile folio-criterion"
-                onClick={() => onOpen(c.id)}
-                aria-describedby={`criterion-hint-${compact ? "home" : "page"}-${c.id}`}
-              >
+            <div className="criteria-grid-item" key={c.id} data-tone={accents[c.id - 1] ?? "navy"}>
+              <button className="criterion-tile folio-criterion" onClick={() => onOpen(c.id)}>
                 <span className="criterion-tile-icon">
                   <Icon size={29} strokeWidth={1.4} aria-hidden="true" />
                 </span>
@@ -142,9 +123,7 @@ export function CriteriaGrid({
                   <span className="fc-number">{String(c.id).padStart(2, "0")}</span>
                   <h3>{c.name}</h3>
                   <span className="criterion-tile-badge">
-                    {compact
-                      ? "الممارسة والتوثيق المهني"
-                      : `الوزن ${c.weight}% · الممارسة والتوثيق المهني`}
+                    {compact ? c.description : `الوزن ${c.weight}% · ${c.description}`}
                   </span>
                 </span>
                 <span className="criterion-tile-action">
@@ -180,13 +159,6 @@ export function CriteriaGrid({
                   </span>
                 </span>
               </button>
-              <span
-                className="criterion-tile-hint"
-                role="tooltip"
-                id={`criterion-hint-${compact ? "home" : "page"}-${c.id}`}
-              >
-                {c.description}
-              </span>
             </div>
           );
         })}

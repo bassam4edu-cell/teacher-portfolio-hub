@@ -200,23 +200,17 @@ ok(
   ) === JSON.stringify(originalTones),
   "Reset preserves fixed criterion tones and all criteria",
 );
-await p.locator(".criterion-tile").first().focus();
-await p.waitForTimeout(180);
 ok(
-  await p
-    .locator(".criterion-tile-hint")
-    .first()
-    .evaluate((el) => getComputedStyle(el).visibility === "visible"),
-  "Criterion description is available with keyboard focus",
+  (await p.locator(".criterion-tile-hint").count()) === 0,
+  "Criterion descriptions no longer create hover tooltips",
 );
-await p.keyboard.press("Escape");
-ok(
-  await p
-    .locator(".criterion-tile-hint")
-    .first()
-    .evaluate((el) => getComputedStyle(el).visibility === "hidden"),
-  "Escape dismisses the criterion tooltip",
-);
+for (const criterion of s.criteria) {
+  const tile = p.locator(".criterion-tile").filter({ hasText: criterion.name });
+  ok(
+    (await tile.locator(".criterion-tile-badge").innerText()).includes(criterion.description),
+    `Criterion ${criterion.id} description is visible inside its existing badge`,
+  );
+}
 
 ok(
   (
