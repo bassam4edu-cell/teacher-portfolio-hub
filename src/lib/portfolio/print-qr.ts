@@ -2,6 +2,8 @@ import QRCode from "qrcode";
 const codes = new Map<string, Promise<string>>();
 export const publicReportLink = (origin: string, criterion: number, id: string) =>
   `${origin}/#criteria/${criterion}/report/${encodeURIComponent(id)}`;
+export const publicDocumentLink = (origin: string, criterion: number, id: string) =>
+  `${origin}/#criteria/${criterion}/document/${encodeURIComponent(id)}`;
 export const publicCertificateLink = (origin: string, id: string) =>
   `${origin}/#courses/certificate/${encodeURIComponent(id)}`;
 export function printQr(url: string) {

@@ -10,7 +10,7 @@ import {
 } from "./portfolio-document";
 import { createPrintProgress } from "./print-progress";
 import { cachedPublicPreview, mapPrintTasks } from "./print-cache";
-import { printQr, publicCertificateLink, publicReportLink } from "./print-qr";
+import { printQr, publicCertificateLink, publicReportLink, publicDocumentLink } from "./print-qr";
 import {
   approvedPrintCss,
   approvedReportNodes,
@@ -85,6 +85,7 @@ export async function generatePortfolioReport(win: Window, onBusyChange?: (busy:
         reports: {},
         courses: {},
         reportCodes: {},
+        documentCodes: {},
         brand: Object.fromEntries(embedded),
       };
     let failures = 0;
@@ -126,6 +127,13 @@ export async function generatePortfolioReport(win: Window, onBusyChange?: (busy:
     const documented = courses.filter((c) => c.document);
     let preparedCodes = 0;
     const codeTasks = [
+      ...data.documents
+        .filter((d) => d.period_id === s.current_period)
+        .map((d) => async () => {
+          media.documentCodes![d.id] = await printQr(
+            publicDocumentLink(window.location.origin, d.criterion, d.id),
+          );
+        }),
       ...documented.map((c) => async () => {
         media.courses[c.id] = await printQr(
           publicCertificateLink(window.location.origin, c.document!.id),
@@ -176,6 +184,7 @@ export async function generatePortfolioReport(win: Window, onBusyChange?: (busy:
       courses,
       media,
       window.location.origin,
+      data.documents,
     );
     await paginatePortfolio(
       doc,

@@ -2,7 +2,8 @@ import type { Settings, Criterion } from "./model";
 import { days } from "./model";
 import type { Publication } from "./simple-report";
 import { graphicAboutSections } from "./about-print";
-import { publicCertificateLink } from "./print-qr";
+import type { PublicDocument } from "./documents";
+import { publicCertificateLink, publicDocumentLink } from "./print-qr";
 import { aboutDefaults, aboutSources } from "./about-content";
 import { courseDate, courseDuration, courseTotals, sortCourses, type Course } from "./courses";
 
@@ -23,6 +24,7 @@ export type DocumentMedia = {
   reports: Record<string, string>;
   courses: Record<string, string>;
   reportCodes?: Record<string, string>;
+  documentCodes?: Record<string, string>;
   brand?: Record<string, string>;
 };
 export const escapePrint = (value: unknown) =>
@@ -51,6 +53,7 @@ export function portfolioSections(
   courses: Course[],
   media: DocumentMedia,
   origin: string,
+  documents: PublicDocument[] = [],
 ): DocumentSection[] {
   const s = settings,
     about = { ...aboutDefaults, ...s.about };
@@ -127,6 +130,9 @@ export function portfolioSections(
   const known = new Set(s.criteria.map((c) => c.id));
   const criteria = [...s.criteria].sort((a, b) => a.id - b.id);
   for (const c of criteria) {
+    const witnesses = documents.filter(
+      (d) => d.criterion === c.id && d.period_id === s.current_period,
+    );
     const rows = publications
       .filter((r) => r.criterion === c.id)
       .sort(
@@ -140,9 +146,11 @@ export function portfolioSections(
       criterion: c,
       cover: true,
       subtitle: c.description,
-      summary: rows.length
-        ? `${rows.length} تقارير منشورة · ${rows.reduce((n, r) => n + r.assets.length, 0)} مرفقات`
-        : "لا توجد تقارير منشورة حتى الآن",
+      summary: witnesses.length
+        ? `${rows.length} تقارير منشورة · ${witnesses.length} وثائق أصلية`
+        : rows.length
+          ? `${rows.length} تقارير منشورة · ${rows.reduce((n, r) => n + r.assets.length, 0)} مرفقات`
+          : "لا توجد تقارير منشورة حتى الآن",
       blocks: [],
     });
     for (const report of rows)
@@ -152,6 +160,19 @@ export function portfolioSections(
         criterion: c,
         publication: report,
         blocks: [],
+      });
+    if (witnesses.length)
+      sections.push({
+        id: `documents-${c.id}`,
+        title: "الوثائق والشواهد الأصلية",
+        criterion: c,
+        blocks: witnesses.map((d) => {
+          const url = publicDocumentLink(origin, c.id, d.id);
+          const code = media.documentCodes?.[d.id];
+          return {
+            html: `<article class="fp-course">${code ? `<a class="fp-course-qr" href="${e(url)}" target="_blank" rel="noreferrer"><img src="${e(code)}" alt="رمز فتح ${e(d.title)}"><span>فتح الشاهد</span></a>` : ""}<div><h3>${e(d.title)}</h3><p>وثيقة أصلية · PDF${d.pages ? ` · ${d.pages} صفحة` : ""}</p><p>${link(url, "معاينة الشاهد وفتح الملف الكامل")}</p></div></article>`,
+          };
+        }),
       });
   }
   for (const report of publications.filter((p) => !known.has(p.criterion)))

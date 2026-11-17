@@ -132,9 +132,31 @@ try {
         .innerText()
     ).includes("1 شاهد"),
   );
+  corrupt = false;
+  const documentLink = `${base}/#criteria/6/document/${document.id}`;
+  await page.goto(documentLink);
+  await card.waitFor();
+  await page.waitForFunction(
+    (id) => window.document.activeElement?.id === `document-${id}`,
+    document.id,
+  );
+  const printPopup = context.waitForEvent("page");
+  await page.getByRole("button", { name: "توليد التقرير الختامي الكامل", exact: true }).click();
+  const printed = await printPopup;
+  await printed.locator("#fp-download").waitFor({ state: "visible", timeout: 60000 });
+  const witnessLink = printed.locator(".fp-course-qr").filter({ hasText: "فتح الشاهد" });
+  assert.equal(await witnessLink.count(), 1);
+  assert.equal(await witnessLink.getAttribute("href"), documentLink);
+  assert((await printed.locator(".fp-document").innerText()).includes(document.title));
+  assert((await printed.locator(".fp-document").innerText()).includes("2 صفحة"));
+  assert(await witnessLink.locator("img").evaluate((img) => img.complete && img.naturalWidth > 0));
+  const witnessPage = printed.locator(".fp-page").filter({ has: witnessLink });
+  assert((await witnessPage.locator(".fp-criterion-heading").innerText()).includes("06"));
+  assert.equal(await witnessPage.locator(".simple-report").count(), 0);
+  await printed.close();
   assert.deepEqual(errors, []);
   console.log(
-    "Standalone documents: page-one preview pixels, contain, mobile preview, original bytes, open, download, separate counts, no activity template, criterion scoping and corruption rejection passed.",
+    "Standalone documents: page-one preview pixels, contain, mobile preview, original bytes, open, download, separate counts, no activity template, criterion scoping, corruption rejection, focused document links and printed document QR cards passed.",
   );
 } finally {
   await browser.close();

@@ -5,6 +5,20 @@ import type { PublicDocument } from "@/lib/portfolio/documents";
 import { publicDocumentPreview } from "@/lib/portfolio/document-preview";
 import "./criterion-documents.css";
 export function CriterionDocuments({ documents }: { documents: PublicDocument[] }) {
+  const documentIds = documents.map((d) => d.id).join(",");
+  useEffect(() => {
+    const focusLinkedDocument = () => {
+      const segments = window.location.hash.slice(1).split("/");
+      const id = segments[2] === "document" ? segments[3] : undefined;
+      if (!id || !documentIds.split(",").includes(id)) return;
+      const card = window.document.getElementById(`document-${id}`);
+      card?.focus({ preventScroll: true });
+      card?.scrollIntoView({ block: "center", behavior: "instant" });
+    };
+    focusLinkedDocument();
+    window.addEventListener("hashchange", focusLinkedDocument);
+    return () => window.removeEventListener("hashchange", focusLinkedDocument);
+  }, [documentIds]);
   if (!documents.length) return null;
   return (
     <section className="criterion-documents" aria-label="الوثائق والشواهد الأصلية">
@@ -60,7 +74,12 @@ function DocumentCard({ document: record }: { document: PublicDocument }) {
     }
   }
   return (
-    <article className="criterion-document-card" aria-label={record.title}>
+    <article
+      id={`document-${record.id}`}
+      tabIndex={-1}
+      className="criterion-document-card"
+      aria-label={record.title}
+    >
       <DocumentPreview record={record} disabled={busy} onOpen={() => open(false)} />
       <div className="document-file-copy">
         <span className="document-file-type">شاهد أصلي · PDF</span>
