@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import { FileText, Images, Clock3, GraduationCap } from "lucide-react";
 import { loadCourses, courseTotals } from "@/lib/portfolio/courses";
 import type { Publication } from "@/lib/portfolio/simple-report";
+import type { PublicDocument } from "@/lib/portfolio/documents";
 /** Published records only; counts are not a formal performance score. */
 export function PortfolioOverview({
   publications,
   revision,
+  documents = [],
 }: {
   publications: Publication[];
   revision: number;
+  documents?: PublicDocument[];
 }) {
   const [totals, setTotals] = useState<ReturnType<typeof courseTotals> | null>(null);
   useEffect(() => {
@@ -29,7 +32,10 @@ export function PortfolioOverview({
     {
       icon: Images,
       label: "مرفق شاهد",
-      value: new Set(publications.flatMap((p) => p.assets.map((a) => a.id))).size,
+      value: new Set([
+        ...publications.flatMap((p) => p.assets.map((a) => a.id)),
+        ...documents.map((d) => d.asset_id),
+      ]).size,
     },
     { icon: GraduationCap, label: "دورة مسجلة", value: totals?.count },
     { icon: Clock3, label: "ساعة تدريبية", value: totals?.hours },

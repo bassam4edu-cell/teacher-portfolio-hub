@@ -39,6 +39,8 @@ import { ReferenceCriteria, VerificationZone } from "./ReferenceIdentity";
 import { ReportShare } from "./ReportShare";
 import { ReadingControls } from "./InteractiveExperience";
 import { ClassroomGallery } from "./ClassroomGallery";
+import { CriterionDocuments } from "./CriterionDocuments";
+import type { PublicDocument } from "@/lib/portfolio/documents";
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <section className={`folio-card ${className}`}>{children}</section>;
 }
@@ -93,6 +95,7 @@ const navigation = [
 export function Portfolio({ initialView = "home" }: { initialView?: string }) {
   const [settings, setSettings] = useState<Settings>(defaultSettings);
   const [publications, setPublications] = useState<Publication[]>([]);
+  const [documents, setDocuments] = useState<PublicDocument[]>([]);
   const [view, setView] = useState<View>("home");
   const [criterion, setCriterion] = useState<number | null>(null);
   const [reportId, setReportId] = useState("");
@@ -133,6 +136,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
       const data = await loadSimplePortfolio();
       setSettings(data.settings);
       setPublications(data.publications);
+      setDocuments(data.documents);
       revision.current = data.revision;
       setError("");
     } catch (e) {
@@ -225,6 +229,8 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
   const current = settings.periods.find((p) => p.id === settings.current_period);
   const periodLines = current?.name.split(/\s*[—–]\s*|\s+-\s+/).filter(Boolean) ?? [];
   const reports = publications.filter((p) => p.period_id === settings.current_period);
+  const witnessDocuments = documents.filter((d) => d.period_id === settings.current_period);
+  const criterionDocuments = witnessDocuments.filter((d) => d.criterion === criterion);
   const selected = publications.find((p) => p.id === reportId);
   const chosen = settings.criteria.find((c) => c.id === criterion);
   if (ownerPage)
@@ -330,7 +336,11 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
           </div>
         </section>
         <div className="home-reference-content">
-          <PortfolioOverview publications={publications} revision={revision.current} />
+          <PortfolioOverview
+            publications={publications}
+            documents={documents}
+            revision={revision.current}
+          />
           <section id="home-performance" tabIndex={-1} aria-label="عناصر الأداء الوظيفي">
             <Section
               title="عناصر الأداء الوظيفي"
@@ -341,6 +351,7 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
               settings={settings}
               reports={reports}
               onOpen={(id) => go("criteria", id)}
+              documents={witnessDocuments}
               compact
             />
           </section>
@@ -405,8 +416,10 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
           <span>
             <FileText size={17} aria-hidden="true" />{" "}
             {reports.filter((r) => r.criterion === chosen.id).length} تقارير منشورة
+            {criterionDocuments.length > 0 && ` · ${criterionDocuments.length} وثيقة`}
           </span>
         </div>
+        <CriterionDocuments documents={criterionDocuments} />
         {reports.some((r) => r.criterion === chosen.id) ? (
           <div className="folio-report-grid">
             {reports
@@ -421,11 +434,11 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
                 />
               ))}
           </div>
-        ) : (
+        ) : criterionDocuments.length === 0 ? (
           <Empty title="لم يُضف تقرير لهذا العنصر بعد">
             ستظهر التقارير هنا مباشرة عند إضافتها.
           </Empty>
-        )}
+        ) : null}
       </section>
     ) : (
       <>
@@ -435,9 +448,14 @@ export function Portfolio({ initialView = "home" }: { initialView?: string }) {
         <ReferenceCriteria
           settings={settings}
           reports={reports}
+          documents={witnessDocuments}
           onOpen={(id) => go("criteria", id)}
         />
-        <PortfolioOverview publications={publications} revision={revision.current} />
+        <PortfolioOverview
+          publications={publications}
+          documents={documents}
+          revision={revision.current}
+        />
         <p className="folio-reference">
           العناصر والأوزان وفق نموذج تقييم المعلم في دليل وزارة التعليم.{" "}
           <a href={settings.standard.document_url} target="_blank" rel="noreferrer">

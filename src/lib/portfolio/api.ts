@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { PublicDocument } from "./documents";
 import { supabase } from "@/integrations/supabase/client";
 import {
   defaultSettings,
@@ -238,16 +239,36 @@ export const examplePackage: ImportPackage = {
 };
 
 export async function loadSimplePortfolio() {
-  const payload = await rpc<{
-    settings: Partial<Settings>;
-    publications: import("./simple-report").Publication[];
-    revision: number;
-  }>("portfolio_public_view");
+  const [payload, documents] = await Promise.all([
+    rpc<{
+      settings: Partial<Settings>;
+      publications: import("./simple-report").Publication[];
+      revision: number;
+    }>("portfolio_public_view"),
+    rpc<PublicDocument[]>("portfolio_public_documents").catch(() => []),
+  ]);
   return {
     settings: { ...defaultSettings, ...payload.settings },
     publications: payload.publications ?? [],
+    documents,
     revision: Number(payload.revision ?? 0),
   };
+}
+export async function publicDocumentFile(document: PublicDocument) {
+  const data = await rpc<{ name: string; mime: string; sha256: string; base64: string }>(
+    "portfolio_public_document",
+    { p_id: document.id },
+  );
+  const bytes = Uint8Array.from(atob(data.base64), (c) => c.charCodeAt(0));
+  if (
+    data.mime !== "application/pdf" ||
+    data.sha256 !== document.sha256 ||
+    bytes.length !== document.size ||
+    (await sha256(bytes.buffer)) !== document.sha256 ||
+    new TextDecoder().decode(bytes.slice(0, 5)) !== "%PDF-"
+  )
+    throw new Error("تعذر التحقق من الملف الأصلي. أعد المحاولة.");
+  return new File([bytes], document.name, { type: "application/pdf" });
 }
 export async function publicReportAsset(id: string) {
   const asset = await rpc<{ name: string; mime: string; sha256: string; base64: string }>(

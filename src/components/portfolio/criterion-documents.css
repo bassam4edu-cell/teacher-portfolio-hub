@@ -1,0 +1,105 @@
+.folio .criterion-documents {
+  display: grid;
+  gap: 16px;
+  margin-block: 20px 28px;
+}
+.folio .criterion-document-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  border: 1px solid #d7e1e5;
+  border-bottom: 3px solid #07a869;
+  border-radius: 14px;
+  background: #fff;
+  color: #15445a;
+}
+.folio .document-file-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 64px;
+  height: 72px;
+  border-radius: 12px;
+  background: #0da9a614;
+  color: #15445a;
+}
+.folio .document-file-copy {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.folio .document-file-type {
+  font-size: 12px;
+  color: #00734d;
+}
+.folio .document-file-copy h3 {
+  margin: 6px 0;
+  font-size: 20px;
+  line-height: 1.7;
+  font-weight: 700;
+  color: #15445a;
+}
+.folio .document-file-copy p {
+  margin: 0;
+  font-size: 12px;
+  color: #526976;
+}
+.folio .document-file-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.folio .document-file-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 11px 16px;
+  border: 1px solid #ccd9de;
+  border-radius: 8px;
+  background: #fff;
+  color: #15445a;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.folio .document-file-actions button.document-action-primary {
+  background: #007d56;
+  border-color: #007d56;
+  color: #fff;
+}
+.folio .document-file-actions button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+.folio .document-file-actions button:focus-visible {
+  outline: 3px solid #218caa;
+  outline-offset: 3px;
+}
+.folio .document-file-notice,
+.folio .document-file-error {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 13px;
+}
+.folio .document-file-error {
+  color: #a42323;
+}
+@media (max-width: 600px) {
+  .folio .criterion-document-card {
+    padding: 18px;
+    gap: 14px;
+  }
+  .folio .document-file-copy {
+    flex-basis: 180px;
+  }
+  .folio .document-file-copy h3 {
+    font-size: 18px;
+  }
+  .folio .document-file-actions {
+    width: 100%;
+  }
+  .folio .document-file-actions button {
+    flex: 1;
+  }
+}

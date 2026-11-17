@@ -76,6 +76,7 @@ try {
       document: null,
     },
   ];
+  await context.route("**/rest/v1/rpc/portfolio_public_documents", (r) => r.fulfill({ json: [] }));
   await context.route("**/rest/v1/rpc/portfolio_public_view", (r) =>
     r.fulfill({
       contentType: "application/json",

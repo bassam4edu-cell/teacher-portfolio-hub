@@ -25,6 +25,7 @@ let reports = Array.from({ length: 3 }, (_, i) => ({
   },
   assets: [{ id: `asset-${i}`, name: "شاهد الاختبار", mime: "image/png", sha256: sha, size: 68 }],
 }));
+await context.route("**/rest/v1/rpc/portfolio_public_documents", (r) => r.fulfill({ json: [] }));
 await context.route("**/rest/v1/rpc/portfolio_public_view", (route) =>
   route.fulfill({ json: { settings, publications: reports, revision: 1 } }),
 );

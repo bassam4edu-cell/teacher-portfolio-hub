@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import type { Settings } from "@/lib/portfolio/model";
 import type { Publication } from "@/lib/portfolio/simple-report";
+import type { PublicDocument } from "@/lib/portfolio/documents";
 import "./criteria-grid.css";
 const icons = [
   ClipboardCheck,
@@ -62,12 +63,14 @@ export function CriteriaGrid({
   onOpen,
   compact = false,
   completion,
+  documents = [],
 }: {
   settings: Settings;
   reports: Publication[];
   onOpen: (id: number) => void;
   compact?: boolean;
   completion?: CriterionCompletion[];
+  documents?: PublicDocument[];
 }) {
   const [filter, setFilter] = useState<(typeof filters)[number]["id"]>("all");
   const [hintsOff, setHintsOff] = useState(false);
@@ -106,6 +109,7 @@ export function CriteriaGrid({
         {visible.map((c) => {
           const Icon = icons[c.id - 1] ?? ClipboardCheck,
             count = reports.filter((r) => r.criterion === c.id).length;
+          const documentCount = documents.filter((d) => d.criterion === c.id).length;
           const value = completion?.find((r) => r.criterion === c.id);
           const valid =
             !!value &&
@@ -149,7 +153,9 @@ export function CriteriaGrid({
                   </span>
                   <strong>
                     <FileText size={14} />
-                    <span>{count} تقارير</span>
+                    <span>
+                      {documentCount && !count ? `${documentCount} شاهد` : `${count} تقارير`}
+                    </span>
                   </strong>
                 </span>
                 <span className="criterion-tile-progress">

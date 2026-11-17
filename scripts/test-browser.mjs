@@ -81,6 +81,7 @@ const report = {
   assets,
   updated_at: new Date().toISOString(),
 };
+await c.route("**/rest/v1/rpc/portfolio_public_documents", (r) => r.fulfill({ json: [] }));
 await c.route("**/rest/v1/rpc/portfolio_public_view", (r) =>
   r.fulfill({
     status: 200,
